@@ -1,0 +1,73 @@
+DCS-BIOS implementation for DCS: MiG-21Bis
+Author: Alex Marsh
+ED Forum profile: wraith444 (http://forums.eagle.ru/member.php?u=80581)
+Reddit: jigglyandfullofjuice
+
+
+-----
+
+3 March 2015
+
+- Began adding clickable controls, in the order presented in clickabledata.lua. Controls added by panel are:
+	
+	Center Lower:
+		Pitot Heat
+		Secondary Pitot Heat
+		Empty pylon warn light test button/brightness knob
+		Loaded pylon warn light test button/brightness knob
+	
+	Center Mid:
+		Warn lights test button/brightness knob (to the right of radar)
+		Fuel quantity adjustment knob
+		Master warn acknowlege/test
+		Master warn brightness adjust (twisting the master warn)
+		Variometer adjustment knob
+
+	Center upper:
+		Accelerometer reset button	
+		Pitot Selection
+
+	Left horizontal:
+		Emergency Afterburner toggle
+		Engine off/throttle lock
+		Radio PTT button
+
+	Left vertical:
+		APU Power
+		Engine cold/normal start selection
+		Emergency Air start toggle
+		Engine starter button
+		Anti-surge door auto/manual toggle
+		Afterburner power
+		Fire extinguisher power
+		Fire extinguisher cover
+		Fire extinguisher button
+		Landing lights toggle
+		Gear warn lights test button/brightness knob
+
+	Right Horizontal:
+		Battery power
+		DC Generator power
+		AC Generator power
+		Emergency gyro toggle
+		Gyro 1 power
+		Gyro 2 power
+		Fuel pump gr. 1 toggle
+		Fuel pump gr. 2 toggle
+		Drain tank pump toggle
+		Text/labelling backlight knob
+		Instrument light knob
+		Main red lights knob
+
+	Right Vertical:
+		Battery heat toggle
+		Inverter 1 toggle
+		Inverter 2 toggle
+		Nav lights toggle
+		Fuel warning lights test button/brightness knob
+		Main warning lights test button/brightness knob
+		Radio on/off
+		Radio/compass audio toggle
+		Radio squelch toggle
+		Radio volume knob
+		Radio channel selector
