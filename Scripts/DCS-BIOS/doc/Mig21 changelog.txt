@@ -4,6 +4,46 @@ ED Forum profile: wraith444 (http://forums.eagle.ru/member.php?u=80581)
 Reddit: jigglyandfullofjuice
 
 
+
+-----
+
+4 March 2015
+
+- Continued adding clickable controls in order of presentation in clickabledata.lua, as before. Controls by panel are:
+
+	Center Lower:
+	
+	Center Mid:
+		ARC marker inner/outer
+
+	Center Upper:
+		RSBN mode toggle
+
+	Left Horizontal:
+
+	Left Vertical:
+		RSBN/ARC selection toggle
+		RSBN Identify button
+		RSBN self-test button
+		RSBN volume knob
+		RSBN channel select knob
+		PRMG select knob
+		RSBN reset button
+		RSBN bearing toggle
+		RSBN distance toggle
+
+	Right Horizontal:
+
+	Right Vertical:
+		ARC power switch
+		ARC volume knob
+		ARC change button
+		ARC channel buttons (as a single toggle switch; May later be implemented as individual buttons also)
+		ARC zones rotary
+		ARC antenna/compass toggle
+		RSBN power switch
+
+		
 -----
 
 3 March 2015
