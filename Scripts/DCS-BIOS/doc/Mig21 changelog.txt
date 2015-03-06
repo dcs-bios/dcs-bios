@@ -3,7 +3,158 @@ Author: Alex Marsh
 ED Forum profile: wraith444 (http://forums.eagle.ru/member.php?u=80581)
 Reddit: jigglyandfullofjuice
 
+5 March 2015
 
+- Continued adding clickable controls in order of presentation in clickabledata.lua, as before. Controls by panel are:
+
+	Center Lower:
+		Emergency nose gear handle
+		Altitude warning set knob
+		Tactical drop cover
+		Tactical drop switch
+		Emergency missile launch cover
+		Emergency missile launch button
+	
+	Center Mid:
+		RADAR display magnetic reset button
+		RADAR continuous interrupt button
+		RADAR temporary interrupt button
+		RADAR passive interrupt button
+		RADAR weather interrupt button
+		RADAR low speed interrupt button
+		RADAR self test button
+		RADAR display polar filter slider
+		SPRD start cover
+		SPRD start button
+		Emergency brake switch
+		KPP cage button
+		KPP pitch knob
+		NPP adjust button
+		NPP course set knob
+		Altimeter pressure knob
+		Wing drop tank jettison cover
+		Wing drop tank jettison button
+		Outboard jettison cover
+		Outboard jettison button
+		Inboard jettison cover
+		Inboard jettison button
+
+	Center Upper:
+		SPO volume knob
+		SPO test button
+		SPO brightness adjustment
+		Nosegear brake switch
+		Nosecone adjustment knob
+		Close canopy button
+		Canopy anti-ice button
+		AA/AG mode switch
+		IR/neutral/SAR mode switch
+		Gun pyro charge 1 button
+		Gun pyro charge 2 button
+		Gun pyro charge 3 button
+		Weapon selection knob
+
+	Left Horizontal:
+		SPRD drop cover
+		SPRD drop button
+		Airbrake button
+		Neutral flaps button
+		Takeoff flaps button
+		Landing flaps button
+		Flaps reset button
+		Drogue chute release cover
+		Drogue chute release button
+		Aileron booster switch
+		Helmet air conditioning switch
+		Emergency oxygen switch
+		Oxygen mixture switch
+
+	Left Vertical:
+		SAU stabilizing mode button
+		SAU low altitude switch
+		SAU command landing button
+		SAU automatic landing button
+		SAU reset button
+		SPS power switch
+		ARU auto/manual switch
+		ARU low/high speed switch
+		ABS switch
+		Gear handle lock
+		Gear handle
+		Drogue chute deploy button
+		Nosecone auto/manual toggle
+		Nozzle position toggle
+		Canopy lock lever
+		Canopy pressurize lever
+		Open canopy button
+		TDC range/pipper span twist grip		
+		IR seeker volume knob
+		Helmet heat auto/manual switch
+		Helmet quick heat button
+		Helmet visor toggle
+		Air conditioning toggle
+
+	Right Horizontal:
+		SPRD power switch
+		SPRD drop mode power switch
+
+	Right Vertical:
+		SAU power switch
+		SAU pitch power switch
+		SPO power switch
+		SRZO power switch
+		SRZO code select knob
+		SRZO type 81 power switch
+		SRZO emergency transmit cover
+		SRZO emergency transmit switch
+		SRZO self destruct cover
+		SRZO self destruct button
+		SOD power switch
+		SOD identify button
+		SOD wave select switch
+		SOD mode select switch
+		RADAR standby/power switch
+		RADAR low alt mode switch
+		RADAR fixed beam switch
+		Emergency gear release lever
+		Trimmer power switch
+		Nosecone power switch
+		Emergency main hydraulics pump switch
+		KPP main/emergency switch
+		NPP power switch
+		Radio altimeter power
+		Canopy emergency jettison lever
+		Canopy ventilation lever
+		Gunsight power switch
+		Missile/rocket heat switch
+		Missile/rocket launch switch
+		Pylons 1-2 power switch
+		Pylons 3-4 power switch
+		Cannon power switch
+		Gun camera power switch
+		
+	Stick:
+		SAU cancel button
+		SAU recovery button
+		RADAR lock button
+		Trimmer switch
+		Centerline droptank jettison button
+		Gun trigger
+		Weapons release button
+		Weapons release cover
+
+	Gunsight:
+		Gunsight auto/manual switch
+		Gunsight shoot/bomb switch
+		Gunsight gun/missile switch
+		Gunsight missile/gyro lever
+		Gunsight pipper on/off switch
+		Gunsight fixed net on/off switch
+		Gunsight target range knob
+		Gunsight intercept angle knob
+		Gunsight scale brightness knob
+		Gunsight pipper brightness knob
+		Gunsight fixed brightness knob
 
 -----
 
