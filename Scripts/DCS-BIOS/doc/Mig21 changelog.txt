@@ -3,6 +3,71 @@ Author: Alex Marsh
 ED Forum profile: wraith444 (http://forums.eagle.ru/member.php?u=80581)
 Reddit: jigglyandfullofjuice
 
+7 March 2015
+
+- Made the following changes:
+	Altered the formatting of the code to make it easier to read and reduce the likelihood of bugs/errors 	arising from spelling issues
+
+	Altered the order of the controls to the order used in clickabledata.lua, making searching/comparing easier
+
+- Fixed the following bugs:
+	Corrected an issue in the ARU speed toggle and the trim adjustment switch where the switches would move in 		both directions, but only perform one of the two actions.
+
+- Added all remaining clickable controls from the clickabledata.lua. Note that some controls have no effect at this time; They were added for the sake of completeness, and in case Leatherneck Simulations decides to do more with them later on in the MiG's development. Controls added by panel are:
+
+	Center Lower:
+
+	Center Mid:
+		Clock lever rotation and push/pull controls
+		Radar emission mode switch and its cover
+
+	Center Upper:
+
+	Left Horizontal:
+		UK-2M mic amplifier M/L, GS/KM switches (No effect in-game)
+		Throttle fixation lever (No effect in-game)
+	Left Vertical:
+		Electrical Bus Nr. 1 switch and its cover (No effect in-game)
+		Suit ventilation knob (No effect in-game)
+
+	Right Horizontal:
+		Mach test button and its cover
+		BU-45 separation button (No effect in-game)
+		SOD control PBU-1, PBU-2 buttons (No effect in-game)
+
+	Right Vertical:
+		Flight recorder power switch
+		Electrical bus Nr. 2 switch (No effect in-game)
+
+	Stick: 
+
+	Gunsight: 
+		IAB PBK-3 Nuclear control panel:
+			Emergency jettison toggle
+			Emergency jettison arming toggle
+			Tactical drop arming toggle
+			Weapon select toggle
+			Braking chute toggle
+			Air/ground burst toggle
+		SPS 141-100 countermeasures pod control panel:
+			Power switch
+			ECM transmit/receive toggle
+			ECM program I/II toggle
+			ECM continuous/pulse toggle
+			Test button
+			Countermeasures auto/manual toggle
+			Countermeasures release mode toggle
+			Countermeasures manual release button and its cover
+		UPK-23-250-2 gunpot control panel:
+			Gunpod power switch
+			Gun selection toggle
+			Gunpod loading pyro charge buttons (x3)
+	Seat:
+		G-suit valve (no effect in-game)
+		Eject handle (No effect in-game; Control must be mapped as a joystick button or keystroke)
+		Seat harness separation lever (No effect in-game)
+		Seat harness loosen/tighten control (No effect in-game)
+
 5 March 2015
 
 - Continued adding clickable controls in order of presentation in clickabledata.lua, as before. Controls by panel are:
