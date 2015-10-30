@@ -13,6 +13,7 @@ local parse_indication = BIOS.util.parse_indication
 
 local defineFloat = BIOS.util.defineFloat
 local defineIndicatorLight = BIOS.util.defineIndicatorLight
+local defineIndicatorLightInverted = BIOS.util.defineIndicatorLightInverted
 local definePushButton = BIOS.util.definePushButton
 local definePotentiometer = BIOS.util.definePotentiometer
 local defineRotary = BIOS.util.defineRotary
@@ -390,11 +391,11 @@ defineIndicatorLight("GEAR_OXY_LUNG", 60, "Left Vertical Forward Panel", "Oxygen
 defineFloat("O2_PRES", 58, {0, 1}, "Left Vertical Forward Panel", "Oxygen Pressure")
 
 --Gear Lights
-defineIndicatorLight("GEAR_NOSE_UP", 9, "Landing Gear Control", "Nose Gear Up Light")
+defineIndicatorLightInverted("GEAR_NOSE_UP", 9, "Landing Gear Control", "Nose Gear Up Light")
 defineIndicatorLight("GEAR_NOSE_DOWN", 12, "Landing Gear Control", "Nose Gear Down Light")
-defineIndicatorLight("GEAR_LEFT_UP", 10, "Landing Gear Control", "Gear Left Up Light")
+defineIndicatorLightInverted("GEAR_LEFT_UP", 10, "Landing Gear Control", "Gear Left Up Light")
 defineIndicatorLight("GEAR_LEFT_DOWN", 13, "Landing Gear Control", "Gear Left Down Light")
-defineIndicatorLight("GEAR_RIGHT_UP", 11, "Landing Gear Control", "Gear Right Up Light")
+defineIndicatorLightInverted("GEAR_RIGHT_UP", 11, "Landing Gear Control", "Gear Right Up Light")
 defineIndicatorLight("GEAR_RIGHT_DOWN", 14, "Landing Gear Control", "Gear Right Down Light")
 
 --Airspeed Gauges
@@ -407,6 +408,7 @@ defineFloat("M_IND", 102, {0, 1}, "Flight Status/Navigation Panel", "Airspeed Ga
 
 defineFloat("BARO_ALT_M", 104, {0, 1}, "Flight Status/Navigation Panel", "Barometric Altimeter Meters")
 defineFloat("BARO_ALT_KM", 112, {0, 1}, "Flight Status/Navigation Panel", "Barometric Altimeter Kilometers")
+defineFloat("BARO_ALT_QFE", 262, {-1, 1}, "Flight Status/Navigation Panel", "Barometric Altimeter QFE card") --Same argument as the adjustment knob
 
 --NPP course indicator, course set needle
 defineFloat("NPP_CRS_IND", 111, {0, 1}, "Flight Status/Navigation Panel", "NPP Course Indicator")
@@ -421,8 +423,8 @@ defineFloat("RSBN_DIST_TENS", 356, {0, 1}, "Engine Status Panel", "RSBN Distance
 defineFloat("RSBN_DIST_ONES", 357, {0, 1}, "Engine Status Panel", "RSBN Distance Gauge Ones")
 defineIndicatorLight("RSBN_CRS_BL", 587, "Flight Status/Navigation Panel", "NPP PRMG Course Guidance Signal Window")
 defineIndicatorLight("RSBN_GLD_BL", 588, "Flight Status/Navigation Panel", "NPP PRMG Glideslope Guidance Signal Window")
-defineFloat("RSBN_CRS_ND_NPP", 590, {-1, 1}, "Flight Status/Navigation Panel", "NPP PRMG Course Needle")
-defineFloat("RSBN_GLD_ND_NPP", 589, {-1, 1}, "Flight Status/Navigation Panel", "NPP PRMG Glideslope Needle")
+defineFloat("RSBN_CRS_ND_NPP", 590, {-1, 1}, "Flight Status/Navigation Panel", "NPP PRMG Course Needle") --Also drives the KPP aux PRMG needle
+defineFloat("RSBN_GLD_ND_NPP", 589, {-1, 1}, "Flight Status/Navigation Panel", "NPP PRMG Glideslope Needle") --Also drives the KPP aux PRMG needle
 defineIndicatorLight("RSBN_KR_BL", 567, "Flight Status/Navigation Panel", "KPP 'K' Flag Indicator")
 defineIndicatorLight("RSBN_TE_BL", 568, "Flight Status/Navigation Panel", "KPP 'T' Flag Indicator")
 defineFloat("RSBN_CRS_ND_KPP", 565, {-1, 1}, "Flight Status/Navigation Panel", "KPP PRMG Course Needle")
@@ -564,6 +566,7 @@ defineFloat("ARU_ND", 64, {0, 1}, "ARU/Nosecone Panel", "ARU Needle")
 
 --Nosecone
 defineFloat("CONE_ND", 66, {0, 1}, "ARU/Nosecone Panel", "Nosecone Position Needle")
+defineFloat("CONE_ADJ_ND", 236, {0, 1}, "ARU/Nosecone Panel", "Nosecone Manual Adjustment Needle")--Uses the same arguement/value as the adjustment knob input. May still be easier to do mechanically in-pit
 
 --Gun Arming (listed in mainpanel_init under the drag chute heading)
 defineIndicatorLight("GUN_GOTOVN", 550, "Weapon Select Panel", "Gun Loaded Light")
@@ -603,8 +606,6 @@ defineFloat("PIT_PRES_ALT", 655, {0, 1}, "Center Pedestal Panel", "Cockpit Press
 defineFloat("H_TRI_M", 656, {0, 1}, "Center Pedestal Panel", "Cockpit Pressure Gauge")
 
 --INSTRUMENTS NOT REPRESENTED:
---Baro Alt pressure value window (mechanical?)
---KPP Aux PRMG needles (Driven by NPP PRMG needle guidance values?)
 --Airspeed > 1000 kph warn window (may be possible do drive mechanically based on the needle position)
 --Clock needles
 -- "ARC to landing NDB frequency self adjustment indication light" (User manual page 47, item 96)
@@ -613,7 +614,6 @@ defineFloat("H_TRI_M", 656, {0, 1}, "Center Pedestal Panel", "Cockpit Pressure G
 --Radio channel display
 --SRZO channel display
 --PRMG/RSBN channel displays
---ARU manual arrow (mechanical?)
 
 devices = nil
 device_commands = nil
