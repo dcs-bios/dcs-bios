@@ -22,7 +22,7 @@ local defineVariableStepTumb = BIOS.util.defineVariableStepTumb
 local defineString = BIOS.util.defineString
 local defineRockerSwitch = BIOS.util.defineRockerSwitch
 local defineMultipositionSwitch = BIOS.util.defineMultipositionSwitch
-
+local defineIntegerFromGetter = BIOS.util.defineIntegerFromGetter
 
 defineTumb("BAT_START",1, 3001, 653, 1, {-1,1}, nil, false, "Electrics", "Battery-Starter Switch, BATTERY/OFF/STARTER")
 defineTumb("INSTR_PWR",1, 3002, 643, 1, {0,1}, nil, false, "Electrics", "Instrument Power Switch, ALTERNATE/NORMAL")
@@ -277,5 +277,30 @@ defineFloat("LABS_ROLL_NEEDLE", 603, {-1.0, 1.0}, "Indicator", "LABS_roll_needle
 defineFloat("LABS_PITCH_NEEDLE", 604, {-1.0, 1.0}, "Indicator", "LABS_pitch_needle")
 defineFloat("EMERGENCYJETTISONHANDLEPOS", 818, {0.0, 1.0}, "Indicator", "EmergencyJettisonHandlePos")
 defineFloat("EMERGENCYJETTISONHANDLEROT", 221, {0.0, 1.0}, "Indicator", "EmergencyJettisonHandleRot")
+
+--[[--Gauge Values--]]--
+
+local function getBand()
+     local returnValue = (((GetDevice(0):get_argument_value(804))*3)+1)
+     return returnValue
+end
+defineIntegerFromGetter("ARN6_BAND", getBand, 65000, 
+"Gauge Values", "ARN-6 Band")
+
+local function getARN6Freq()
+   local returnValue = (GetDevice(0):get_argument_value(830))
+   if (GetDevice(0):get_argument_value(830)) >= 0 and (GetDevice(0):get_argument_value(830)) < 0.25 then
+     returnValue = (((GetDevice(0):get_argument_value(830))*400)+100)
+   elseif (GetDevice(0):get_argument_value(830)) >= 0.25 and (GetDevice(0):get_argument_value(830)) < 0.5 then
+     returnValue = (((GetDevice(0):get_argument_value(830))*840)-10)
+   elseif (GetDevice(0):get_argument_value(830)) >= 0.5 and (GetDevice(0):get_argument_value(830)) < 0.75  then
+     returnValue = (((GetDevice(0):get_argument_value(830))*1760)-470)
+   elseif (GetDevice(0):get_argument_value(830)) >= 0.75  then
+     returnValue = (((GetDevice(0):get_argument_value(830))*3600)-1850)
+   end
+   return returnValue
+end
+defineIntegerFromGetter("ARN6_FREQUENCY", getARN6Freq, 65000, 
+"Gauge Values", "ARN-6 Frequency")
 
 BIOS.protocol.endModule()
