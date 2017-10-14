@@ -303,4 +303,18 @@ end
 defineIntegerFromGetter("ARN6_FREQUENCY", getARN6Freq, 65000, 
 "Gauge Values", "ARN-6 Frequency")
 
+local function getBearing()
+     local returnValue = (GetDevice(0):get_argument_value(600))*360
+     return returnValue
+end
+defineIntegerFromGetter("ARN6_BEARING", getBearing, 65000, 
+"Gauge Values", "ARN-6 Bearing")
+
+local function getScale()
+     local returnValue = (GetDevice(0):get_argument_value(814))*360
+     return returnValue
+end
+defineIntegerFromGetter("ARN6_SCALE", getScale, 65000, 
+"Gauge Values", "ARN-6 Scale")
+
 BIOS.protocol.endModule()
