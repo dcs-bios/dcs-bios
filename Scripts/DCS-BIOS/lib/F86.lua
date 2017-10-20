@@ -106,12 +106,12 @@ defineTumb("LONG_ALT_TRM_CVR",13, 3011, 738, 1, {0,1}, nil, false, "Steering", "
 defineTumb("TO_TRIM_LGHT_TEST",13, 3012, 683, 1, {0,1}, nil, false, "Steering", "Take-off (Trim) Position Indicator Light (Push to test)")
 defineTumb("N_WHEEL_STEER",2, 3016, 209, 1, {0,1}, nil, false, "Hydraulics", "Nose Wheel Steering Button")
 defineTumb("MIC_BUT",26, 3004, 213, 1, {0,1}, nil, false, "Radio", "Microphone Button")
-defineTumb("ARN_6_LGHT",27, 3007, 657, 1, {-1,1}, nil, false, "Radio Compass", "AN/ARN-6 Scale Light Switch, HI/OFF/LO")
-defineTumb("ARN_6_CW",27, 3006, 658, 1, {0,1}, nil, false, "Radio Compass", "AN/ARN-6 CW-VOICE Switch, CW/VOICE")
-defineTumb("APX_6_IFF_2",29, 3002, 659, 1, {-1,1}, nil, false, "IFF", "AN/APX-6 IFF Mode 2 Switch, MODE 2/OUT/I/P")
-defineTumb("APX_6_IFF_3",29, 3003, 660, 1, {0,1}, nil, false, "IFF", "AN/APX-6 IFF Mode 3 Switch, MODE 3/OUT")
-defineTumb("APX_6_DESTR_CVR",29, 3005, 808, 1, {0,1}, nil, false, "IFF", "AN/APX-6 IFF Destruct Switch Cover")
-defineTumb("APX_6_IFF_DIAL_STOP",29, 3010, 203, 1, {0,1}, nil, false, "IFF", "AN/APX-6 IFF Dial Stop Button")
+defineTumb("ARN_6_LGHT",27, 3007, 657, 1, {-1,1}, nil, false, "Radio", "AN/ARN-6 Scale Light Switch, HI/OFF/LO")
+defineTumb("ARN_6_CW",27, 3006, 658, 1, {0,1}, nil, false, "Radio", "AN/ARN-6 CW-VOICE Switch, CW/VOICE")
+defineTumb("APX_6_IFF_2",29, 3002, 659, 1, {-1,1}, nil, false, "Radio", "AN/APX-6 IFF Mode 2 Switch, MODE 2/OUT/I/P")
+defineTumb("APX_6_IFF_3",29, 3003, 660, 1, {0,1}, nil, false, "Radio", "AN/APX-6 IFF Mode 3 Switch, MODE 3/OUT")
+defineTumb("APX_6_DESTR_CVR",29, 3005, 808, 1, {0,1}, nil, false, "Radio", "AN/APX-6 IFF Destruct Switch Cover")
+defineTumb("APX_6_IFF_DIAL_STOP",29, 3010, 203, 1, {0,1}, nil, false, "Radio", "AN/APX-6 IFF Dial Stop Button")
 defineTumb("SLAVE_FAST",20, 3003, 598, 1, {0,1}, nil, false, "Gyro Compass", "Directional Indicator Fast Slaving Button - Push for fast slaving")
 defineTumb("J8_ATT_CAGE",24, 3001, 714, 1, {0,1}, nil, false, "Attitude Indicator", "J-8 Attitude Indicator Cage Knob - Pull to cage")
 defineTumb("ACC_RST",12, 3001, 1004, 1, {0,1}, nil, false, "Cockpit", "Accelerometer Reset Button - Push to reset")
@@ -132,10 +132,10 @@ definePotentiometer("IN_PNL_LGHT",17,3002, 813, {0, 1},"Lights", "Instrument Pan
 definePotentiometer("IN_PNL_AUX_LGHT",17,3003, 811, {0, 1},"Lights", "Instrument Panel Auxiliary Light Rheostat")
 definePotentiometer("CONS_LGTH",17,3001, 812, {0, 1},"Lights", "Console and Panel Light Rheostat")
 definePotentiometer("ARC_27_VOL",26,3002, 806, {0.1, 0.9},"Radio", "AN/ARC-27 UHF Audio Volume Knob")
-definePotentiometer("ARN_6_VOL",27,3004, 802, {0.1, 0.9},"Radio Compass", "AN/ARN-6 Audio Volume Control")
+definePotentiometer("ARN_6_VOL",27,3004, 802, {0.1, 0.9},"Radio", "AN/ARN-6 Audio Volume Control")
 definePotentiometer("J8_ATT_PTC_TRIM",24,3002, 200, {0.0, 1.0},"Attitude Indicator", "J-8 Attitude Indicator Pitch Trim Knob")
-defineRotary("ARN_6_TUNE",27, 3003, nil, "Radio Compass", "AN/ARN-6 Tuning Crank")
-defineRotary("ARN_6_E_W_VAR",27, 3008, 826, "Radio Compass", "AN/ARN-6 East/West Variation Knob")
+defineRotary("ARN_6_TUNE",27, 3003, nil, "Radio", "AN/ARN-6 Tuning Crank")
+defineRotary("ARN_6_E_W_VAR",27, 3008, 826, "Radio", "AN/ARN-6 East/West Variation Knob")
 defineRotary("ALT_MET_REF_PRESS",7, 3001, 218, "Cockpit", "Altimeter reference pressure adjusting knob")
 defineRotary("COMP_DIRECTION",20, 3001, nil, "Gyro Compass", "Compass Correction")
 
@@ -161,13 +161,13 @@ defineTumb("TRIM_LEFT_OFF",13, 3004, 205, 1, {-1,0}, nil, false, "Cockpit", "Lef
 defineTumb("TRIM_RIGHT_OFF",13, 3005, 205, 1, {0,1}, nil, false, "Cockpit", "Right Trim Switch, LEFT/OFF")
 defineTumb("TRIM_UP_OFF",13, 3007, 204, 1, {-1,0}, nil, false, "Cockpit", "Up Trim Switch, LEFT/OFF")
 defineTumb("TRIM_DOWN_OFF",13, 3006, 204, 1, {0,1}, nil, false, "Cockpit", "Down Trim Switch, LEFT/OFF")
-defineTumb("ARC27_CHAN_SEL",26, 3001, 807,0.01, {0,0.18}, nil, false, "Radios", "AN/ARC-27 UHF Preset Channel Selector")
-defineTumb("ARC27_PWR_SEL",26, 3003, 805,0.1, {0,0.3}, nil, false, "Radios", "AN/ARC-27 UHF Power Switch, OFF/T/R/T/R + G REC/ADF")
-defineTumb("ARN6_CHAN_SEL",27, 3002, 803, 0.1, {0,0.3}, nil, false, "Radios", "AN/ARN-6 Frequency Band Switch")
-defineTumb("ARN6_FUNC_SEL",27, 3001, 667, 0.1, {0,0.4}, nil, false, "Radios", "AN/ARN-6 Function Selector Switch, OFF/COMP/ANT./LOOP/CONT.")
-defineTumb("ARN6_LOOP_SEL",27, 3005, 666, 1, {-1,1}, nil, false, "Radios", "AN/ARN-6 LOOP L-R Switch")
-defineTumb("APX6_MASTER",29, 3001, 810, 0.1, {0,0.4}, nil, false, "Radios", "AN/APX-6 IFF Master Switch, EMERGENCY/NORM/LOW/STDBY/OFF")
-defineTumb("APX6_DESTRUCT",29, 3004, 809, 1, {-1,1}, nil, false, "Radios", "AN/APX-6 IFF Destruct Switch, OFF/ON")
+defineTumb("ARC27_CHAN_SEL",26, 3001, 807,0.01, {0,0.18}, nil, false, "Radio", "AN/ARC-27 UHF Preset Channel Selector")
+defineTumb("ARC27_PWR_SEL",26, 3003, 805,0.1, {0,0.3}, nil, false, "Radio", "AN/ARC-27 UHF Power Switch, OFF/T/R/T/R + G REC/ADF")
+defineTumb("ARN6_CHAN_SEL",27, 3002, 803, 0.1, {0,0.3}, nil, false, "Radio", "AN/ARN-6 Frequency Band Switch")
+defineTumb("ARN6_FUNC_SEL",27, 3001, 667, 0.1, {0,0.4}, nil, false, "Radio", "AN/ARN-6 Function Selector Switch, OFF/COMP/ANT./LOOP/CONT.")
+defineTumb("ARN6_LOOP_SEL",27, 3005, 666, 1, {-1,1}, nil, false, "Radio", "AN/ARN-6 LOOP L-R Switch")
+defineTumb("APX6_MASTER",29, 3001, 810, 0.1, {0,0.4}, nil, false, "Radio", "AN/APX-6 IFF Master Switch, EMERGENCY/NORM/LOW/STDBY/OFF")
+defineTumb("APX6_DESTRUCT",29, 3004, 809, 1, {-1,1}, nil, false, "Radio", "AN/APX-6 IFF Destruct Switch, OFF/ON")
 definePushButton("CLOCK_SET_ENABLE", 10, 3002, 227, "Cockpit", "Press to set clock")
 defineRotary("CLOCK_SET", 10, 3003, 228, "Cockpit", "Set Clock Knob")
 definePushButton("CLOCK_TIMER", 10, 3004, 831, "Cockpit", "Elapsed Time Mechanism Button")
@@ -307,14 +307,116 @@ local function getBearing()
      local returnValue = (GetDevice(0):get_argument_value(600))*360
      return returnValue
 end
-defineIntegerFromGetter("ARN6_BEARING", getBearing, 65000, 
-"Gauge Values", "ARN-6 Bearing")
+defineIntegerFromGetter("ARN6_BEARING_VALUE", getBearing, 65000, 
+"Gauge Values", "ARN-6 Bearing Value")
 
 local function getScale()
      local returnValue = (GetDevice(0):get_argument_value(814))*360
      return returnValue
 end
-defineIntegerFromGetter("ARN6_SCALE", getScale, 65000, 
-"Gauge Values", "ARN-6 Scale")
+defineIntegerFromGetter("ARN6_SCALE_VALUE", getScale, 65000, 
+"Gauge Values", "ARN-6 Scale Value")
+
+local function getMach()
+     local returnValue = (((-0.1871*(GetDevice(0):get_argument_value(179))^4)+(1.0314*(GetDevice(0):get_argument_value(179))^3)-(1.3069*(GetDevice(0):get_argument_value(179))^2)+(1.5846*(GetDevice(0):get_argument_value(179)))+0.4231)*100)
+     return returnValue
+end
+defineIntegerFromGetter("MACH_NUMBER_VALUE_X.XX", getMach, 65000, 
+"Gauge Values", "Mach Number Value Read As X.XX")
+
+local function getAirspeed()
+     local returnValue = (((GetDevice(0):get_argument_value(178))*625)+40)
+     return returnValue
+end
+defineIntegerFromGetter("AIRSPEED_VALUE", getAirspeed, 65000, 
+"Gauge Values", "Airspeed Value")
+
+local function getAlt()
+     local returnValue = (GetDevice(0):get_argument_value(707))*100000
+     return returnValue
+end
+defineIntegerFromGetter("ALTITUDE_VALUE", getAlt, 65000, 
+"Gauge Values", "Altitude Value")
+
+local function getExhTemp()
+     local returnValue = (GetDevice(0):get_argument_value(12))*1000
+     return returnValue
+end
+defineIntegerFromGetter("EXHAUST_TEMP_VALUE", getExhTemp, 65000, 
+"Gauge Values", "Exhaust Temperature Value")
+
+local function getOilPres()
+     local returnValue = (GetDevice(0):get_argument_value(112))*100
+     return returnValue
+end
+defineIntegerFromGetter("OIL_PRESSURE_VALUE", getOilPres, 65000, 
+"Gauge Values", "Oil Pressure Value")
+
+local function getFuelFlow()
+     local returnValue = (GetDevice(0):get_argument_value(531))*10000
+     return returnValue
+end
+defineIntegerFromGetter("FUEL_FLOW_VALUE", getFuelFlow, 65000, 
+"Gauge Values", "Fuel Flow Value")
+
+local function getVolt()
+     local returnValue = (GetDevice(0):get_argument_value(601))*100
+     return returnValue
+end
+defineIntegerFromGetter("DC_VOLTAGE_VALUE", getVolt, 65000, 
+"Gauge Values", "DC Voltage Value")
+
+local function getLoad()
+     local returnValue = (GetDevice(0):get_argument_value(602))*100
+     return returnValue
+end
+defineIntegerFromGetter("LOADMETER_VALUE", getLoad, 65000, 
+"Gauge Values", "Loadmeter Value")
+
+local function getTach()
+     local returnValue = (GetDevice(0):get_argument_value(16))*110
+     return returnValue
+end
+defineIntegerFromGetter("TACHOMETER_VALUE", getTach, 65000, 
+"Gauge Values", "Tachometer Value")
+
+local function getHydPres()
+     local returnValue = (GetDevice(0):get_argument_value(109))*4000
+     return returnValue
+end
+defineIntegerFromGetter("HYDRAULIC_PRES_VALUE", getHydPres, 65000, 
+"Gauge Values", "Hydraulic Pressure Value")
+
+local function getFuelQuant()
+     local returnValue = (GetDevice(0):get_argument_value(22))*3200
+     return returnValue
+end
+defineIntegerFromGetter("FUEL_QUANTITY_VALUE", getFuelQuant, 65000, 
+"Gauge Values", "Fuel Quantity Value")
+
+local function getOxyPres()
+     local returnValue = (GetDevice(0):get_argument_value(353))*500
+     return returnValue
+end
+defineIntegerFromGetter("OXYGEN_PRESSURE_VALUE", getOxyPres, 65000, 
+"Gauge Values", "Oxygen Pressure Value")
+
+local function getCockpitAlt()
+     local returnValue = (GetDevice(0):get_argument_value(114))*50000
+     return returnValue
+end
+defineIntegerFromGetter("COCKPIT_ALT_VALUE", getCockpitAlt, 65000, 
+"Gauge Values", "Cockpit Altitude Value")
+
+function getHDG()
+     if ((360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.002778))) < 360 then
+	 heading = (360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.002778))
+	 else
+	 heading = ((360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.00278))) - 360
+	 end
+     return heading
+end
+defineIntegerFromGetter("HEADING_VALUE", getHDG, 65000, 
+"Gauge Values", "Heading Value")
 
 BIOS.protocol.endModule()
