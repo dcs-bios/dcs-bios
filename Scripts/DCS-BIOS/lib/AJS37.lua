@@ -296,4 +296,22 @@ end
 defineIntegerFromGetter("FUEL_NEEDED", getFuelNeed, 65000, 
 "Gauge Values", "Fuel Needed")
 
+function getCIHDG()
+	 if (GetDevice(0):get_argument_value(128)) <= 0 then
+	 heading = ((180 * (GetDevice(0):get_argument_value(128))) + 360)
+	 else
+     heading = (180 * (GetDevice(0):get_argument_value(128)))
+	 end
+     return heading
+end
+defineIntegerFromGetter("CI_HEADING", getCIHDG, 65000, 
+"Gauge Values", "CI Heading")
+
+local function getCICMDHDG()
+     local returnValue = ((GetDevice(0):get_argument_value(129)) * 360)
+     return returnValue
+end
+defineIntegerFromGetter("CI_COMMAND_HEADING_VALUE", getCICMDHDG, 65000, 
+"Gauge Values", "CI Commanded Heading Value")
+
 BIOS.protocol.endModule()
