@@ -145,7 +145,7 @@ defineTumb("EMG_JETT_HANDLE_CVR",25, 3016, 220, 1, {0,1}, nil, false, "Cockpit",
 
 defineTumb("EMG_ALT_JETT_HANDLE",25, 3009, 817, 1, {0,1}, nil, false, "Cockpit", "Canopy Alternate Emergency Jettison Handle, IN/OUT")
 defineTumb("CANOPY_DECLUTCH",25, 3010, 816, 1, {0,1}, nil, false, "Cockpit", "Canopy Declutch Handle, IN/OUT")
-defineTumb("LG_HANDLE",2, 3001, 599, 1, {0,1}, nil, false, "Cockpit", "Canopy Declutch Handle, IN/OUT")
+defineTumb("LANDING_GEAR_HANDLE",2, 3001, 599, 1, {0,1}, nil, false, "Cockpit", "Landing Geat Up/Down")
 defineTumb("LG_EMG_HANDLE",2, 3010, 819, 1, {0,1}, nil, false, "Cockpit", "Landing Gear Emergency Release Handle")
 defineTumb("DRP_TANK_SEL",3, 3003, 662, 1, {0,1}, nil, false, "Cockpit", "Drop Tank Selector Switch")
 defineTumb("OXY_EMG_LEVER",14, 3010, 229, 1, {0,1}, nil, false, "Cockpit", "Oxygen Regulator Emergency Lever")
