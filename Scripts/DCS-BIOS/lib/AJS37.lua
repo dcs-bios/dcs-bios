@@ -258,45 +258,40 @@ local function getRPM()
      local returnValue = ((GetDevice(0):get_argument_value(139))*55+55)
      return returnValue
 end
-defineIntegerFromGetter("ENGINE_RPM", getRPM, 65000, 
-"Gauge Values", "Engine RPM")
+defineIntegerFromGetter("ENGINE_RPM", getRPM, 65000, "Gauge Values", "Engine RPM")
 
 local function getEngineTemp()
      local returnValue = ((GetDevice(0):get_argument_value(146))*700+100)
      return returnValue
 end
-defineIntegerFromGetter("ENGINE_TEMP", getEngineTemp, 65000, 
-"Gauge Values", "Engine Temp")
+defineIntegerFromGetter("ENGINE_TEMP", getEngineTemp, 65000, "Gauge Values", "Engine Temp")
 
 local function getAirspeed()
      local returnValue = ((-707.23*(GetDevice(0):get_argument_value(100))^4)+(1843.8*(GetDevice(0):get_argument_value(100))^3)-(647.84*(GetDevice(0):get_argument_value(100))^2)+(810.63*(GetDevice(0):get_argument_value(100)))+100.03)
      return returnValue
 end
-defineIntegerFromGetter("Airspeed", getAirspeed, 65000, 
-"Gauge Values", "Airspeed")
+defineIntegerFromGetter("Airspeed", getAirspeed, 65000, "Gauge Values", "Airspeed")
 
 local function getAlt()
      local returnValue = ((GetDevice(0):get_argument_value(114))*10000)
      return returnValue
 end
-defineIntegerFromGetter("ALTITUDE", getAlt, 65000, 
-"Gauge Values", "Altitude Meters")
+defineIntegerFromGetter("ALTITUDE", getAlt, 65000, "Gauge Values", "Altitude Meters")
 
 local function getFuelLev()
      local returnValue = ((GetDevice(0):get_argument_value(144))*135)
      return returnValue
 end
-defineIntegerFromGetter("FUEL_LEVEL", getFuelLev, 65000, 
-"Gauge Values", "Fuel Level")
+defineIntegerFromGetter("FUEL_LEVEL", getFuelLev, 65000, "Gauge Values", "Fuel Level")
 
 local function getFuelNeed()
      local returnValue = ((GetDevice(0):get_argument_value(145))*135)
      return returnValue
 end
-defineIntegerFromGetter("FUEL_NEEDED", getFuelNeed, 65000, 
-"Gauge Values", "Fuel Needed")
+defineIntegerFromGetter("FUEL_NEEDED", getFuelNeed, 65000, "Gauge Values", "Fuel Needed")
 
-function getCIHDG()
+local function getCIHDG()
+	 local heading = 0
 	 if (GetDevice(0):get_argument_value(128)) <= 0 then
 	 heading = ((180 * (GetDevice(0):get_argument_value(128))) + 360)
 	 else
@@ -304,14 +299,12 @@ function getCIHDG()
 	 end
      return heading
 end
-defineIntegerFromGetter("CI_HEADING", getCIHDG, 65000, 
-"Gauge Values", "CI Heading")
+defineIntegerFromGetter("CI_HEADING", getCIHDG, 65000, "Gauge Values", "CI Heading")
 
 local function getCICMDHDG()
      local returnValue = ((GetDevice(0):get_argument_value(129)) * 360)
      return returnValue
 end
-defineIntegerFromGetter("CI_COMMAND_HEADING_VALUE", getCICMDHDG, 65000, 
-"Gauge Values", "CI Commanded Heading Value")
+defineIntegerFromGetter("CI_COMMAND_HEADING_VALUE", getCICMDHDG, 65000, "Gauge Values", "CI Commanded Heading Value")
 
 BIOS.protocol.endModule()
