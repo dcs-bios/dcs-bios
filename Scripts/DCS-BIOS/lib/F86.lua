@@ -408,15 +408,23 @@ end
 defineIntegerFromGetter("COCKPIT_ALT_VALUE", getCockpitAlt, 65000, 
 "Gauge Values", "Cockpit Altitude Value")
 
-function getHDG()
+local function getHDG()
+     local heading = 0
      if ((360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.002778))) < 360 then
-	 heading = (360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.002778))
-	 else
-	 heading = ((360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.00278))) - 360
-	 end
+     heading = (360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.002778))
+     else
+     heading = ((360-((GetDevice(0):get_argument_value(711))/0.002778)) + (360-((GetDevice(0):get_argument_value(712))/0.00278))) - 360
+     end
      return heading
 end
-defineIntegerFromGetter("HEADING_VALUE", getHDG, 65000, 
-"Gauge Values", "Heading Value")
+defineIntegerFromGetter("HEADING_VALUE", getHDG, 65000,"Gauge Values", 
+"Heading Value")
+
+local function getVVI()
+     local returnValue = (-1319.8*(GetDevice(0):get_argument_value(24))^5)+(0.00000005*(GetDevice(0):get_argument_value(24))^4)+(4334.8*(GetDevice(0):get_argument_value(24))^3)+(0.0000002*(GetDevice(0):get_argument_value(24))^2)+(2988.1*(GetDevice(0):get_argument_value(24)))+0.0000001
+     return returnValue
+end
+defineIntegerFromGetter("VVI_VALUE", getVVI, 65000, 
+"Gauge Values", "Verticl Velocity VVI")
 
 BIOS.protocol.endModule()
