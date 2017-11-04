@@ -7689,6 +7689,24 @@
                                                                              "physical_variant": "toggle_switch"
                                                                       }
                                            },
+                           "Gauge Values": {
+                                               "CRS_COURSE": {
+                                                                     "category": "Gauge Values",
+                                                                 "control_type": "metadata",
+                                                                  "description": "CRS Course Value",
+                                                                   "identifier": "CRS_COURSE",
+                                                                       "inputs": [  ],
+                                                                      "outputs": [ {
+                                                                                         "address": 4810,
+                                                                                     "description": "CRS Course Value",
+                                                                                            "mask": 65535,
+                                                                                       "max_value": 65000,
+                                                                                        "shift_by": 0,
+                                                                                          "suffix": "",
+                                                                                            "type": "integer"
+                                                                                 } ]
+                                                             }
+                                           },
                            "Glare Shield": {
                                                           "APU_FIRE": {
                                                                               "category": "Glare Shield",

@@ -383,38 +383,40 @@ end
 defineIntegerFromGetter("HEADING_VALUE", getHDG, 65000, "Gauge Values", "Heading Value")
 
 local function getNADIR()
-	 local returnValue = c
 	 local a = (GetDevice(0):get_argument_value(26))*360
      local b = 0
-	 if (GetDevice(0):get_argument_value(102)) < 0 then
-	 b = 360 - ((GetDevice(0):get_argument_value(102)) * (-360))
+	 local c = 0
+	 local d = (GetDevice(0):get_argument_value(102))
+	 if d < 0 then
+	 b = 360 - (d * (-360))
 	 else
-     b = (GetDevice(0):get_argument_value(102)) * 360
+     b = d * 360
 	 end
 	 if a + b < 360 then
 	 c = a + b
 	 else
 	 c = (a + b) - 360
 	 end
-	 return returnValue
+	 return c
 end
 defineIntegerFromGetter("NADIR_HEADING_VALUE", getNADIR, 65000, "Gauge Values", "NADIR Heading Value")
 
 local function getADFHDG()
-	 local returnValue = f
-	 local d = (GetDevice(0):get_argument_value(26))*360
      local e = 0
-	 if (GetDevice(0):get_argument_value(103)) < 0 then
-	 e = 360 - ((GetDevice(0):get_argument_value(103)) * (-360))
+	 local f = 0
+	 local g = (GetDevice(0):get_argument_value(26))*360
+	 local h = (GetDevice(0):get_argument_value(103))
+	 if h < 0 then
+	 e = 360 - (h * (-360))
 	 else
-     e = (GetDevice(0):get_argument_value(103)) * 360
+     e = h * 360
 	 end
-	 if d + e < 360 then
-	 f = d + e
+	 if g + e < 360 then
+	 f = g + e
 	 else
-	 f = (d + e) - 360
+	 f = (g + e) - 360
 	 end
-	 return returnValue
+	 return f
 end
 defineIntegerFromGetter("ADF_HEADING_VALUE", getADFHDG, 65000, "Gauge Values", "ADF Heading Value")
 
