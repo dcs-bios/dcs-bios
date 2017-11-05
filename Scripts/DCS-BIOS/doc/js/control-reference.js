@@ -68,6 +68,7 @@ $(function() {
 		"Switch2Pos",
 		"Switch3Pos",
 		"SwitchMultiPos",
+		"BcdWheel",
 		"RotaryEncoder_variable_step",
 		"RotaryEncoder_fixed_step",
 		"ActionButton",
@@ -124,6 +125,9 @@ $(function() {
 				break;
 			case "action":
 				add_snippet("ActionButton");
+				break;
+			case "BcdWheel":
+				add_snippet("BcdWheel");
 				break;
 			}
 		});
@@ -306,6 +310,18 @@ $(function() {
 			code.append($("<span>").text("};"));
 			code.append($("<br>"));
 			code.append($("<span>").text('DcsBios::SwitchMultiPos '+idCamelCase(cid)+'("'+cid+'", '+idCamelCase(cid+'_PINS')+', '+(io.max_value+1).toString()+');'));
+			break;
+			
+			case "BcdWheel":
+			code.append($("<span>").text('DcsBios::BcdWheel '+idCamelCase(cid)+'("'+cid+'", '));
+			code.append($("<i>").attr("style", "color: red;").text("PIN_A"));
+			code.append($("<span>").text(", "));
+			code.append($("<i>").attr("style", "color: red;").text("PIN_B"));
+			code.append($("<span>").text(', '));
+			code.append($("<i>").attr("style", "color: red;").text("PIN_C"));
+			code.append($("<span>").text(', '));
+			code.append($("<i>").attr("style", "color: red;").text("PIN_D"));
+			code.append($("<span>").text(');'));
 			break;
 			
 			case "generic_integer_output":
