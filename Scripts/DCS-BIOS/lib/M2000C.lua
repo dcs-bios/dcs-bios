@@ -1062,7 +1062,7 @@ defineBcdWheel("UVHF_10_M_SEL", 19, 441, nil, "U/VHF RADIO", "I - UVHF - 10 MHz 
 defineBcdWheel("UVHF_1_M_SEL", 19, 442, nil, "U/VHF RADIO", "I - UVHF - 1 MHz Selector")
 defineBcdWheel("UVHF_100_K_SEL", 19, 443, nil, "U/VHF RADIO", "I - UVHF - 100 KHz Selector")
 defineBcdWheel("UVHF_25_K_SEL", 19, 444, nil, "U/VHF RADIO", "I - UVHF - 25 KHz Selector")
-defineSetCommandTumb("UVHF_PRESET_KNOB", 19, 3445, 445, 0.05, {0.05, 1}, nil, true, "UVHF RADIO", "Preset Knob UVHF")
+defineSetCommandTumb("UVHF_PRESET_KNOB", 19, 3445, 445, 0.05, {0.05, 1}, nil, true, "U/VHF RADIO", "Preset Knob UVHF")
 defineToggleSwitch("UVHF_PWR_5W_25W_SW", 19, 3447, 447, "U/VHF RADIO", "I - UVHF - Power 5W/25W Switch")
 defineTumb("UVHF_E+A2_SW", 19, 3438, 438, 1, {-1, 1}, nil, false, "U/VHF RADIO", "I - UVHF - E+A2 Switch")
 defineFloat("UVHF_PRESET", 446, {0, 1}, "U/VHF RADIO", "O - UVHF - PRESET Display")
