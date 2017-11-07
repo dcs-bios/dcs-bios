@@ -31,6 +31,7 @@ dofile(lfs.writedir()..[[scripts\dcs-bios\lib\FW190D9.lua]])
 dofile(lfs.writedir()..[[scripts\dcs-bios\lib\Bf109k4.lua]])
 dofile(lfs.writedir()..[[scripts\dcs-bios\lib\P-51D.lua]])
 dofile(lfs.writedir()..[[scripts\dcs-bios\lib\L-39ZA.lua]])
+dofile(lfs.writedir()..[[scripts\dcs-bios\lib\SpitfireLFMkIX.lua]])
 
 dofile(lfs.writedir()..[[Scripts\DCS-BIOS\BIOSConfig.lua]])
 
