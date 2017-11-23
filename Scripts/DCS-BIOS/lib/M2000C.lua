@@ -8,7 +8,7 @@
 --     LIBRARY     	:    Mirage 2000C RAZBAM
 --     CONTIBUTORS 	:    Exo7, Ergo 
 --     LINK        	:    https://github.com/Exo7/DCS_BIOS-M2000C_Library/releases/latest
---     VERSION     	:    v1.19
+--     VERSION     	:    v1.20
 --
 -----------------------------------------------------------
 -- Release log : 
@@ -47,6 +47,10 @@
 --
 -- v1.19 by Exo7
 --		Bug Fixes empty buffer block export
+--
+-- v1.20 by Exo7
+-- 		Bug Fixes : Export displays functions
+--					New Arg Numbers
 --
 -----------------------------------------------------------
 
@@ -115,8 +119,8 @@ return "         "
         if not name then break end
 		if name == "txt_fuel_g"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -131,8 +135,8 @@ local function getEMDisp()
         if not name then break end
 		if name == "text_ECM_CHF"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -147,8 +151,8 @@ local function getIRDisp()
         if not name then break end
 		if name == "text_ECM_FLR"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -162,8 +166,8 @@ local function getPCAUR1Disp()
         if not name then break end
 		if name == "text_PCA_UR1"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -177,8 +181,8 @@ local function getPCAUR2Disp()
         if not name then break end
 		if name == "text_PCA_UR2"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -192,8 +196,8 @@ local function getPCAUR3Disp()
         if not name then break end
 		if name == "text_PCA_UR3"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -207,8 +211,8 @@ local function getPCAUR4Disp()
         if not name then break end
 		if name == "text_PCA_UR4"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -222,8 +226,8 @@ local function getPCAUR5Disp()
         if not name then break end
 		if name == "text_PCA_UR5"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -238,8 +242,8 @@ local function getPCABR1Disp()
         if not name then break end
 		if name == "text_PCA_BR1"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -253,8 +257,8 @@ local function getPCABR2Disp()
         if not name then break end
 		if name == "text_PCA_BR2"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -268,8 +272,8 @@ local function getPCABR3Disp()
         if not name then break end
 		if name == "text_PCA_BR3"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -283,8 +287,8 @@ local function getPCABR4Disp()
         if not name then break end
 		if name == "text_PCA_BR4"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -298,8 +302,8 @@ local function getPCABR5Disp()
         if not name then break end
 		if name == "text_PCA_BR5"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "   "..value
+        return value:sub(-3)
       end
     end
 return "         "
@@ -313,8 +317,8 @@ local function getPPAQtyDisp()
         if not name then break end
 		if name == "text_PPA_QTY"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "  "..value
+        return value:sub(-2)
       end
     end
 return "         "	
@@ -328,8 +332,8 @@ local function getPPAIntDisp()
         if not name then break end
 		if name == "text_PPA_INT"
         then
-        value = "        "..value
-        return value:sub(-9)
+        value = "  "..value
+        return value:sub(-2)
       end
     end
 return "         "	
@@ -678,7 +682,7 @@ defineToggleSwitch("ECM_BOX_SW", 13, 3195, 195, "ECM BOX", "I - ECM Box Switch")
 defineToggleSwitch("ECM_BOX_LGT_SW", 13, 3196, 196, "ECM BOX", "I - ECM Box Lights Switch")
 defineTumb("ECM_BOX_MODE_SW", 13, 3194, 194, 0.5, {0, 1}, nil, false, "ECM BOX", "I - ECM Box Mode Switch")
 defineTumb("ECM_BOX_LCD_BRIGHT", 13, 3197, 197, 0.2, {0, 1}, nil, false, "ECM BOX", "I - ECM Box LCD Display Brightness")
-defineString("ECM_FLR_DISP", getIRDisp, 2, "ECM BOX", "O - ECM Box FLR Display")
+defineString("ECM_FLR_DISP", getIRDisp, 3, "ECM BOX", "O - ECM Box FLR Display")
 defineString("ECM_EM_DISP", getEMDisp, 3, "ECM BOX", "O - ECM Box EM Display")
 
 --ENVIRONMENT CONTROL PANEL
@@ -945,11 +949,12 @@ defineIndicatorLight("PCN_UNI", 569, "PCN", "O - PCN - UNI Indicator Light")
 defineIndicatorLight("INS_PREP_SW_LIGHT", 571, "PCN", "O - PCN - PREP Button Light")
 defineIndicatorLight("INS_DEST_SW_LIGHT", 573, "PCN", "O - PCN - DEST Button Light")
 defineIndicatorLight("PCN_BAD", 577, "PCN", "O - PCN - BAD Button Light")
-defineIndicatorLight("PCN_REC", 578, "PCN", "O - PCN - REC Button Light")
-defineIndicatorLight("PCN_VAL", 579, "PCN", "O - PCN - VAL Button Light")
-defineIndicatorLight("PCN_MRC", 580, "PCN", "O - PCN - MRC Button Light")
+defineIndicatorLight("PCN_REC", 579, "PCN", "O - PCN - REC Button Light")
 defineIndicatorLight("INS_EFF_SW_LIGHT", 595, "PCN", "O - PCN - EFF Button Light")
 defineIndicatorLight("INS_INS_SW_LIGHT", 597, "PCN", "O - PCN - INS Button Light")
+defineIndicatorLight("PCN_VAL_SW_LIGHT", 581, "PCN", "O - PCN - VAL Button Light")
+defineIndicatorLight("PCN_MRQ_SW_LIGHT", 583, "PCN", "O - PCN - MRQ Button Light")
+
 
 -- PPA
 defineTumb("BOMB_FUZE_SEL_SW", 6, 3276, 276, 0.5, {0, 1}, nil, false, "PPA", "I - PPA - Bomb Fuze Selector Switch")
@@ -1065,7 +1070,8 @@ defineBcdWheel("UVHF_25_K_SEL", 19, 444, nil, "U/VHF RADIO", "I - UVHF - 25 KHz 
 defineSetCommandTumb("UVHF_PRESET_KNOB", 19, 3445, 445, 0.05, {0.05, 1}, nil, true, "U/VHF RADIO", "Preset Knob UVHF")
 defineToggleSwitch("UVHF_PWR_5W_25W_SW", 19, 3447, 447, "U/VHF RADIO", "I - UVHF - Power 5W/25W Switch")
 defineTumb("UVHF_E+A2_SW", 19, 3438, 438, 1, {-1, 1}, nil, false, "U/VHF RADIO", "I - UVHF - E+A2 Switch")
-defineFloat("UVHF_PRESET", 446, {0, 1}, "U/VHF RADIO", "O - UVHF - PRESET Display")
+defineFloat	("UVHF_ONES_PRESET", 189, {0, 1}, "U/VHF RADIO", "O - UVHF - Preset Display ONES")
+defineFloat	("UVHF_TENS_PRESET", 190, {0, 1}, "U/VHF RADIO", "O - UVHF - Preset Display TENS")
 defineString("VHF_FREQUENCY", getVHFFrequency, 5, "U/VHF RADIO", "O - UVHF - Frequency Report Display")
 
 -- UHF RADIO
