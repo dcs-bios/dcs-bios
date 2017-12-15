@@ -47,7 +47,6 @@ defineTumb("NAV_LIGHTS",1, 3007, 46, 1, {0,1}, nil, false, "Lights", "Nav. Light
 defineTumb("FLAPS", 1, 3009, 47, 1, {0,1}, nil, false, "Cockpit", "Landing Flaps Up/Down")  
 -- U/C Indicator Blind
 defineTumb("UC_BLIND", 1, 3011, 50, 1, {0,1}, nil, false, "Cockpit", "U/C Indicator Blind Up/Down")  
-defineTumb("UC_BLIND", 1, 3011, 50, 1, {0,1}, nil, false, "Undercarriage", "Undercarriage Raise/Lower_blind")  
 -- Clock Setter Pinion
 defineTumb("CLK_PINION_PULL", 1, 3013, 54, 1, {0,1}, nil, false, "Cockpit", "Winding/Adjustment Clock Pull out.")  
 defineRotary("CLK_PINION", 1, 3014, 55, "Cockpit", "Winding/Adjustment Clock")  
@@ -61,12 +60,10 @@ definePotentiometer("PITLITE_LH",4, 3001, 60, {0,1}, "Lights", "Port Flood Lamp 
 definePotentiometer("PITLITE_RH",4, 3004, 61, {0,1}, "Lights", "Stbd. Flood Lamp Brightness")
 -- Starter Button Cover
 defineTumb("STARTER_COVER",2, 3021, 64, 1, {0,1}, nil, false, "Engine", "Starter Button Cover")
-defineTumb("STARTER_COVER",2, 3021, 64, 1, {0,1}, nil, false, "Engine", "Starter_cover")
 -- Starter Button
 defineTumb("STARTER",2, 3023, 65, 1, {0,1}, nil, false, "Engine", "Starter")
 -- Booster Coil Button Cover
 defineTumb("BOOSTER_COVER",2, 3025, 66, 1, {0,1}, nil, false, "Engine", "Booster Coil Button Cover")
-defineTumb("BOOSTER_COVER",2, 3025, 66, 1, {0,1}, nil, false, "Engine", "Booster Coil_cover")
 -- Booster Coil Button
 defineTumb("BOOSTER",2, 3027, 67, 1, {0,1}, nil, false, "Engine", "Booster Coil")
 -- Primer Pump
@@ -103,7 +100,6 @@ defineTumb("RCTRL_C", 15, 3004, 118, 1, {0,1}, nil, false, "Radio", "Radio Chann
 defineTumb("RCTRL_D", 15, 3005, 119, 1, {0,1}, nil, false, "Radio", "Radio Channel D")
 -- Dimmer Toggle
 defineTumb("RCTRL_DIM",15, 3006, 125, 1, {0,1}, nil, false, "Radio", "Radio Channel Dimmer")
-defineTumb("RCTRL_DIM",15, 3006, 125, 1, {0,1}, nil, false, "Radio", "Radio Lights Dimmer")
 -- Transmit Lock Toggle
 defineTumb("RCTRL_TLOCK",15, 3017, 155, 1, {0,1}, nil, false, "Radio", "Switch Locking Lever")
 -- Mode Selector
@@ -130,11 +126,8 @@ defineTumb("FUEL_PUMP",2, 3043, 135, 1, {0,1}, nil, false, "Engine", "Fuel Pump 
 -- Carb. Air Control Lever
 defineTumb("CARB_AIR", 2, 3045, 137, 1, {0,1}, nil, false, "Engine", "Carburettor Air Control")
 -- Oil Diluter Button Cover
-defineTumb("DILUTER_COVER",2, 3051, 157, 1, {0,1}, nil, false, "Cockpit", "Directional Gyro Adjustlution_cover")
 defineTumb("DILUTER_COVER",2, 3051, 157, 1, {0,1}, nil, false, "Engine", "Oil Dilution Button Cover")
-defineTumb("DILUTER_COVER",2, 3051, 157, 1, {0,1}, nil, false, "Engine", "Oil Dilution_cover")
 -- Oil Diluter Button
-defineTumb("DILUTER",2, 3053, 158, 1, {0,1}, nil, false, "Cockpit", "Directional Gyro Adjustlution")
 defineTumb("DILUTER",2, 3053, 158, 1, {0,1}, nil, false, "Engine", "Oil Dilution")
 -- Supercharger Mode Test Button Cover
 defineTumb("MS_TEST_COVER",2, 3055, 159, 1, {0,1}, nil, false, "Engine", "Supercharger Test Button Cover")
@@ -149,7 +142,6 @@ defineTumb("RAD_TEST",2, 3061, 162, 1, {0,1}, nil, false, "Engine", "Radiator Te
 defineTumb("DEICER", 1, 3021, 87, 1, {0,1}, nil, false, "Cockpit", "Windscreen De-Icer On/Off")
 -- U/C Emergency Release Lever
 defineTumb("UC_EMER", 1, 3023, 88, 1, {0,1}, nil, false, "Undercarriage", "Undercarriage Emergency Release")
-defineTumb("UC_EMER", 1, 3023, 88, 1, {0,1}, nil, false, "Undercarriage", "Undercarriage Raise/Lower_emergency")
 -- Wobble Type Fuel Pump
 defineTumb("WOBBLE_PUMP", 2, 3035, 90, 1, {0,1}, nil, false, "Engine", "Wobble Type Fuel Pump")
 -- Morse Key & Apparatus
