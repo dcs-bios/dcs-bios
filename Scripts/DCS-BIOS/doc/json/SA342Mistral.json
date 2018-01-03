@@ -5020,11 +5020,11 @@
                                    "ADF_NAV1_FREQ_10s": {
                                                                 "category": "Raw Gauge Values",
                                                             "control_type": "analog_gauge",
-                                                             "description": "ADF NAV2 Frequency 1s",
+                                                             "description": "ADF NAV1 Frequency 10s",
                                                               "identifier": "ADF_NAV1_FREQ_10s",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
-                                                                                    "address": 26230,
+                                                                                    "address": 26220,
                                                                                 "description": "gauge position",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65535,
@@ -5089,6 +5089,22 @@
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 26228,
+                                                                                "description": "gauge position",
+                                                                                       "mask": 65535,
+                                                                                  "max_value": 65535,
+                                                                                   "shift_by": 0,
+                                                                                     "suffix": "",
+                                                                                       "type": "integer"
+                                                                            } ]
+                                                        },
+                                    "ADF_NAV2_FREQ_1s": {
+                                                                "category": "Raw Gauge Values",
+                                                            "control_type": "analog_gauge",
+                                                             "description": "ADF NAV2 Frequency 1s",
+                                                              "identifier": "ADF_NAV2_FREQ_1s",
+                                                                  "inputs": [  ],
+                                                                 "outputs": [ {
+                                                                                    "address": 26230,
                                                                                 "description": "gauge position",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65535,
@@ -5977,11 +5993,11 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                       "TV_BRIGHTNESS": {
+                                 "TV_BRIGHTNESS_VALUE": {
                                                                 "category": "Raw Gauge Values",
                                                             "control_type": "analog_gauge",
                                                              "description": "TV Brightness",
-                                                              "identifier": "TV_BRIGHTNESS",
+                                                              "identifier": "TV_BRIGHTNESS_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 26214,
@@ -6725,11 +6741,11 @@
                                                                                    "type": "integer"
                                                                         } ]
                                                     },
-                                      "ALTERNATOR": {
+                              "ALTERNATOR_WARNING": {
                                                             "category": "Warning Panel",
                                                         "control_type": "led",
                                                          "description": "Alternator Warning",
-                                                          "identifier": "ALTERNATOR",
+                                                          "identifier": "ALTERNATOR_WARNING",
                                                               "inputs": [  ],
                                                              "outputs": [ {
                                                                                 "address": 26204,
@@ -6757,11 +6773,11 @@
                                                                                    "type": "integer"
                                                                         } ]
                                                     },
-                                         "BATTERY": {
+                                 "BATTERY_WARNING": {
                                                             "category": "Warning Panel",
                                                         "control_type": "led",
                                                          "description": "Battery Warning",
-                                                          "identifier": "BATTERY",
+                                                          "identifier": "BATTERY_WARNING",
                                                               "inputs": [  ],
                                                              "outputs": [ {
                                                                                 "address": 26204,
@@ -6789,11 +6805,11 @@
                                                                                    "type": "integer"
                                                                         } ]
                                                     },
-                                       "GENERATOR": {
+                               "GENERATOR_WARNING": {
                                                             "category": "Warning Panel",
                                                         "control_type": "led",
                                                          "description": "Generator Warning",
-                                                          "identifier": "GENERATOR",
+                                                          "identifier": "GENERATOR_WARNING",
                                                               "inputs": [  ],
                                                              "outputs": [ {
                                                                                 "address": 26204,
@@ -6853,11 +6869,11 @@
                                                                                    "type": "integer"
                                                                         } ]
                                                     },
-                                           "PITOT": {
+                              "PITOT_TUBE_WARNING": {
                                                             "category": "Warning Panel",
                                                         "control_type": "led",
                                                          "description": "Pitot Tube Warning",
-                                                          "identifier": "PITOT",
+                                                          "identifier": "PITOT_TUBE_WARNING",
                                                               "inputs": [  ],
                                                              "outputs": [ {
                                                                                 "address": 26204,
@@ -6885,11 +6901,11 @@
                                                                                    "type": "integer"
                                                                         } ]
                                                     },
-                                     "SAND_FILTER": {
+                             "SAND_FILTER_WARNING": {
                                                             "category": "Warning Panel",
                                                         "control_type": "led",
                                                          "description": "Sand Filter Warning",
-                                                          "identifier": "SAND_FILTER",
+                                                          "identifier": "SAND_FILTER_WARNING",
                                                               "inputs": [  ],
                                                              "outputs": [ {
                                                                                 "address": 26204,
