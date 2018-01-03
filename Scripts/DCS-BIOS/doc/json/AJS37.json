@@ -1342,11 +1342,11 @@
                                                                          "type": "integer"
                                                               } ]
                                           },
-                                  "SPAK": {
+                            "SPAK_ERROR": {
                                                   "category": "Error Panel",
                                               "control_type": "led",
-                                               "description": "SPAK",
-                                                "identifier": "SPAK",
+                                               "description": "SPAK Error",
+                                                "identifier": "SPAK_ERROR",
                                                     "inputs": [  ],
                                                    "outputs": [ {
                                                                       "address": 18028,
@@ -2288,15 +2288,15 @@
                                                            }
                         },
         "Gauge Values": {
-                                            "ALTITUDE": {
+                                      "AIRSPEED_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "Altitude Meters",
-                                                              "identifier": "ALTITUDE",
+                                                             "description": "Airspeed Value",
+                                                              "identifier": "AIRSPEED_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
-                                                                                    "address": 18040,
-                                                                                "description": "Altitude Meters",
+                                                                                    "address": 18038,
+                                                                                "description": "Airspeed Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
@@ -2304,15 +2304,15 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                            "Airspeed": {
+                                      "ALTITUDE_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "Airspeed",
-                                                              "identifier": "Airspeed",
+                                                             "description": "Altitude Value",
+                                                              "identifier": "ALTITUDE_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
-                                                                                    "address": 18038,
-                                                                                "description": "Airspeed",
+                                                                                    "address": 18040,
+                                                                                "description": "Altitude Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
@@ -2336,15 +2336,15 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                          "CI_HEADING": {
+                                    "CI_HEADING_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "CI Heading",
-                                                              "identifier": "CI_HEADING",
+                                                             "description": "CI Heading Value",
+                                                              "identifier": "CI_HEADING_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 18046,
-                                                                                "description": "CI Heading",
+                                                                                "description": "CI Heading Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
@@ -2352,15 +2352,15 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                          "ENGINE_RPM": {
+                                    "ENGINE_RPM_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "Engine RPM",
-                                                              "identifier": "ENGINE_RPM",
+                                                             "description": "Engine RPM Value",
+                                                              "identifier": "ENGINE_RPM_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 18034,
-                                                                                "description": "Engine RPM",
+                                                                                "description": "Engine RPM Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
@@ -2368,15 +2368,15 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                         "ENGINE_TEMP": {
+                                   "ENGINE_TEMP_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "Engine Temp",
-                                                              "identifier": "ENGINE_TEMP",
+                                                             "description": "Engine Temp Value",
+                                                              "identifier": "ENGINE_TEMP_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 18036,
-                                                                                "description": "Engine Temp",
+                                                                                "description": "Engine Temp Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
@@ -2384,15 +2384,15 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                          "FUEL_LEVEL": {
+                                    "FUEL_LEVEL_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "Fuel Level",
-                                                              "identifier": "FUEL_LEVEL",
+                                                             "description": "Fuel Level Value",
+                                                              "identifier": "FUEL_LEVEL_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 18042,
-                                                                                "description": "Fuel Level",
+                                                                                "description": "Fuel Level Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
@@ -2400,15 +2400,15 @@
                                                                                        "type": "integer"
                                                                             } ]
                                                         },
-                                         "FUEL_NEEDED": {
+                                   "FUEL_NEEDED_VALUE": {
                                                                 "category": "Gauge Values",
                                                             "control_type": "metadata",
-                                                             "description": "Fuel Needed",
-                                                              "identifier": "FUEL_NEEDED",
+                                                             "description": "Fuel Needed Value",
+                                                              "identifier": "FUEL_NEEDED_VALUE",
                                                                   "inputs": [  ],
                                                                  "outputs": [ {
                                                                                     "address": 18044,
-                                                                                "description": "Fuel Needed",
+                                                                                "description": "Fuel Needed Value",
                                                                                        "mask": 65535,
                                                                                   "max_value": 65000,
                                                                                    "shift_by": 0,
