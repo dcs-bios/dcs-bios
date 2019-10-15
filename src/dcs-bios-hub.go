@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
+	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
 	"dcs-bios.a10c.de/dcs-bios-hub/dcsconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
+	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
+	"dcs-bios.a10c.de/dcs-bios-hub/luaconsole"
 	"dcs-bios.a10c.de/dcs-bios-hub/serialconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/webappserver"
 	"dcs-bios.a10c.de/dcs-bios-hub/websocketapi"
@@ -28,34 +32,47 @@ func runHttpServer(listenURI string) {
 }
 
 func startServices() {
-	fmt.Println("starting services")
+	// create configuration directory
+	if err := configstore.MakeDirs(); err != nil {
+		fmt.Println("failed to create configuration directory:", err.Error())
+		os.Exit(1)
+	}
 
-	// serve web apps and WebSocket API via HTTP on port 5010
+	// create jsonAPI instance
+	// this is passed to the other services to make their API calls available
+	jsonAPI := jsonapi.NewJsonApi()
+
+	// run a web server on port 5010
+	// the jsonAPI will be available via websockets at /api/websocket
+	// Web pages will be served from /apps/appname.
 	webappserver.AddHandler("apps")
+
+	websocketapi.JsonApi = jsonAPI
 	websocketapi.AddHandler()
-	go runHttpServer("localhost:5010")
+	go runHttpServer(":5010")
+
+	// Lua console TCP server
+	luaConsole := luaconsole.NewServer(jsonAPI)
+	go luaConsole.Run()
 
 	// connection to DCS-BIOS Lua Script via TCP port 7778
 	dcsConn := dcsconnection.New()
 	go dcsConn.Run()
 
-	// connection to zero to many serial ports
-	portMan := serialconnection.NewPortManager()
-	go portMan.Run()
+	// serial port connections
+	portManager := serialconnection.NewPortManager()
+	portManager.SetupJSONApi(jsonAPI)
+	go portManager.Run()
 
-	var portsToConnect []string = []string{"COM4", "COM6", "COM7", "COM9"}
-	for _, portName := range portsToConnect {
-		portMan.SetPortPreference(portName, serialconnection.PortPreference{DesiredConnectionState: true})
-	}
-
+	// transmit data between DCS and the serial ports
 	go func() {
 		for {
 			select {
-			case ic := <-portMan.InputCommands:
+			case ic := <-portManager.InputCommands:
 				cmd := append(ic.Command, byte('\n'))
 				dcsConn.TrySend(cmd)
 			case data := <-dcsConn.ExportData:
-				portMan.Write(data)
+				portManager.Write(data)
 			}
 		}
 	}()

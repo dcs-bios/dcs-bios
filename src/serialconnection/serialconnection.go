@@ -55,22 +55,15 @@ func (sc *SerialConnection) GetPortName() string {
 // New connects to a COM port and returns a new SerialConnection object.
 // A SerialConnection object starts out in the Connecting state and will
 // try to connect to the given COM port.
-func NewSerialConnection(portName string) (conn *SerialConnection, err error) {
+func NewSerialConnection(portName string) (conn *SerialConnection) {
 	sc := &SerialConnection{
 		portName:      portName,
 		InputCommands: make(chan []byte),
 		done:          make(chan struct{}),
 		state:         StateConnecting,
 	}
-	// open serial port at 250000 bits per second
-	config := &serial.Config{Name: sc.portName, Baud: 250000}
-	sc.port, err = serial.OpenPort(config)
-	if err != nil {
-		return nil, err
-	}
-	sc.setState(StateOpen)
 	go sc.run()
-	return sc, nil
+	return sc
 }
 
 // Close closes the underlying serial port.
@@ -90,6 +83,16 @@ func (sc *SerialConnection) setState(newState uint32) {
 // StartSerialPortConnector spawns a goroutine that connects to a COM port and transfers data
 // between the port and the inputCommands and newExportData channels, which are passed as arguments.
 func (sc *SerialConnection) run() {
+	// open serial port at 250000 bits per second
+	var err error
+	config := &serial.Config{Name: sc.portName, Baud: 250000}
+	sc.port, err = serial.OpenPort(config)
+	if err != nil {
+		sc.setState(StateClosed)
+		return
+	}
+	sc.setState(StateOpen)
+
 	// spawn a goroutine to read lines from the port
 	// and write them to the InputCommands channel
 	go func() {
@@ -102,7 +105,7 @@ func (sc *SerialConnection) run() {
 
 	<-sc.done
 
-	err := sc.port.Close()
+	err = sc.port.Close()
 	if err != nil {
 		fmt.Printf("failed to close port %s: %s\n", sc.portName, err)
 	}

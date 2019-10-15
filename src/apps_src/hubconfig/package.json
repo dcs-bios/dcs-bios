@@ -1,11 +1,21 @@
 {
   "name": "hubconfig",
+  "homepage": "/app/hubconfig",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/jest": "^24.0.19",
+    "@types/node": "^12.7.12",
+    "@types/react": "^16.9.5",
+    "@types/react-dom": "^16.9.2",
+    "@types/websocket": "0.0.40",
+    "codemirror": "^5.49.0",
     "react": "^16.10.2",
+    "react-codemirror2": "^6.0.0",
     "react-dom": "^16.10.2",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "typescript": "^3.6.4",
+    "websocket": "^1.0.30"
   },
   "scripts": {
     "start": "react-scripts start",
