@@ -1,6 +1,6 @@
 {
   "name": "hubconfig",
-  "homepage": "/app/hubconfig",
+  "homepage": "http://localhost/app/hubconfig",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -8,11 +8,13 @@
     "@types/node": "^12.7.12",
     "@types/react": "^16.9.5",
     "@types/react-dom": "^16.9.2",
+    "@types/react-router-dom": "^5.1.0",
     "@types/websocket": "0.0.40",
     "codemirror": "^5.49.0",
     "react": "^16.10.2",
     "react-codemirror2": "^6.0.0",
     "react-dom": "^16.10.2",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "typescript": "^3.6.4",
     "websocket": "^1.0.30"

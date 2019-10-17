@@ -5,7 +5,7 @@ import 'codemirror/mode/javascript/javascript'
 
 import React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import getApiConnection from './ApiConnection';
+import { getApiConnection } from './ApiConnection';
 
 type LuaSnippetState = {
     luaEnvironment: string
@@ -51,6 +51,15 @@ class LuaSnippet extends React.Component<{}, LuaSnippetState> {
         conn.onmessage = (result) => {
             let msg = JSON.parse(result.data)
             conn.close()
+            console.log(result, "ready to exec again")
+            if (msg.datatype === "error") {
+                this.setState({
+                    responseStatus: "error",
+                    responseText: msg.data.message,
+                    readyToExecute: true
+                })
+                return
+            }
             this.setState({
                 responseStatus: msg.data.status,
                 responseText: msg.data.result,

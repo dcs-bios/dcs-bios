@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import getApiConnection from './ApiConnection'
+import { getApiConnection } from './ApiConnection'
 
 type PortState = {
     shouldBeConnected: boolean,

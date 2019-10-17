@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
+	"dcs-bios.a10c.de/dcs-bios-hub/controlreference"
 	"dcs-bios.a10c.de/dcs-bios-hub/dcsconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
@@ -45,11 +46,16 @@ func startServices() {
 	// run a web server on port 5010
 	// the jsonAPI will be available via websockets at /api/websocket
 	// Web pages will be served from /apps/appname.
+	webappserver.JsonApi = jsonAPI
 	webappserver.AddHandler("apps")
 
 	websocketapi.JsonApi = jsonAPI
 	websocketapi.AddHandler()
 	go runHttpServer(":5010")
+
+	// Control Reference Documentation
+	cref := controlreference.NewControlReferenceStore(jsonAPI)
+	go cref.LoadData()
 
 	// Lua console TCP server
 	luaConsole := luaconsole.NewServer(jsonAPI)

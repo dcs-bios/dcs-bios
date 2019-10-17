@@ -32,6 +32,11 @@ type JsonMessageEnvelope struct {
 	Data     interface{} `json:"data"`
 }
 
+// TODO:
+// type BinaryMessage []byte
+// special-case this to send binary instead of text web socket messages
+// will come in useful to send export data
+
 type SuccessResult struct {
 	Message string `json:"message"`
 }
@@ -106,16 +111,26 @@ func (api *JsonApi) decodeJson(envelopeJson []byte) (*JsonMessageEnvelope, error
 }
 
 func (api *JsonApi) encodeJson(data interface{}) ([]byte, error) {
-	t := reflect.ValueOf(data).Type()
+	v := reflect.ValueOf(data)
+	t := v.Type()
+	// fmt.Printf("encodeJson: 1: %v\n", t)
+	// if t.Kind() == reflect.Ptr {
+	// 	t = t.Elem()
+	// 	v = v.Elem()
+	// }
+	// fmt.Printf("encodeJson: looking up: %v\n", t)
 	msgtype, ok := api.goTypeToMsgtype[t]
 	if !ok {
 		return nil, errors.New("jsonapi.encodeJson(): unknown type:" + t.Name())
 	}
+	// fmt.Printf("encodeJson: serializing: %v\n", v)
 	envelope := JsonMessageEnvelope{
 		DataType: msgtype,
 		Data:     data,
 	}
-	return json.Marshal(envelope)
+	ret, err := json.Marshal(envelope)
+	// fmt.Printf("encodeJson: returning: %v\n", string(ret))
+	return ret, err
 }
 
 func NewJsonApi() *JsonApi {
