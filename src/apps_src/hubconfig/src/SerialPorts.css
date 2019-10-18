@@ -1,0 +1,59 @@
+.serial-port {
+    display: block;
+    float: left;
+    padding: 0.5em;
+    border: 3px solid #eee;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.serial-port.autoconnect-enabled {
+    border: 3px solid black;
+}
+
+.serial-port.state-missing {
+    color: gray;
+}
+
+
+.serial-port-name {
+    font-size: 28px;
+    margin-bottom: 0.5em;
+}
+
+.serial-port-state {
+    border-radius: 3px;
+    padding: 3px;
+    width: 8em;
+    display: block;
+    text-align: center;
+}
+
+.autoconnect-checkbox {
+    color: black;
+    background-color: white;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.autoconnect-checkbox {
+    
+}
+
+.autoconnect-enabled .autoconnect-checkbox {
+}
+
+.serial-port.state-connected {
+    background-color: lightgreen;
+}
+
+.serial-port-state.state-connected {
+    background-color: white;
+    color: black;
+}
+
+.serial-port-connect-disconnect-button {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-bottom: 0.5em;
+}

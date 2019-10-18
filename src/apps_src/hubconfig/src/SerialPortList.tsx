@@ -3,6 +3,8 @@ import React from 'react';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { getApiConnection } from './ApiConnection'
 
+import './SerialPorts.css';
+
 type PortState = {
     shouldBeConnected: boolean,
     autoConnect: boolean,
@@ -37,47 +39,61 @@ class SerialPort extends React.Component<SerialPortProps, {}> {
     }
   
     render() {
-      let toggleConnectButton = (<button onClick={(e) => this.updatePortPref({
-        shouldBeConnected: !this.props.portState.shouldBeConnected,
-        autoConnect: this.props.portState.autoConnect
-      })}>{this.props.portState.shouldBeConnected ? "Disconnect" : "Connect"} {this.props.portName}</button>)
+      let toggleConnectButton = (
+      <button onClick={(e) => this.updatePortPref({
+                  shouldBeConnected: !this.props.portState.shouldBeConnected,
+                  autoConnect: this.props.portState.autoConnect
+                  })}
+              className="serial-port-connect-disconnect-button"
+          >{this.props.portState.shouldBeConnected ? "Disconnect" : "Connect"} {this.props.portName}</button>)
   
       let connectOnStartupCheckbox = (
-        <input type="checkbox" 
+        <span className="autoconnect-checkbox"><input type="checkbox"
         checked={this.props.portState.autoConnect}
         onChange={(e) => {this.updatePortPref({
           shouldBeConnected: this.props.portState.shouldBeConnected,
           autoConnect: !this.props.portState.autoConnect
         }
         )}}
-        ></input>
+        ></input>connect automatically</span>
       )
   
-      var connectedState
+      let stateClasses = [];
+      if (this.props.portState.autoConnect) stateClasses.push("autoconnect-enabled");
+
+      var connectedState: any = ""
+      var connectedClass: string = ""
       let shouldBeConnected = this.props.portState.shouldBeConnected
       let isConnected = this.props.portState.isConnected
-  
+      
+      
       if (shouldBeConnected && isConnected) {
-        connectedState = <b>connected</b>
+        connectedState = <b>connected</b>;
+        stateClasses.push("state-connected");
       }
       if (shouldBeConnected && (!isConnected)) {
         connectedState = "connecting..."
+        stateClasses.push("state-connecting");
       }
       if ((!shouldBeConnected) && isConnected) {
         connectedState = "disconnecting..."
+        stateClasses.push("state-disconnecting");
       }
       if ((!shouldBeConnected) && (!isConnected)) {
         connectedState = "not connected"
+        stateClasses.push("state-disconnected");
       }
       if (!this.props.portState.isPresent) {
         connectedState = "missing"
+        stateClasses.push("state-missing");
       }
 
       return (
-        <div style={{border: "1px solid gray", padding: "3px"}}>
-        <b>{this.props.portName}</b> ({connectedState})<br/>
+        <div className={"serial-port "+stateClasses.join(' ')}>
+        <b className="serial-port-name">{this.props.portName}</b><br/>
+        <span className={"serial-port-state "+stateClasses.join(' ')}>{connectedState}</span><br/>
           {toggleConnectButton}<br/>
-          {connectOnStartupCheckbox}connect automatically<br/>
+          {connectOnStartupCheckbox}<br/>
         </div>
       )
     }
