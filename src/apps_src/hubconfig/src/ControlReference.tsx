@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { useState, useEffect, ReactElement, useRef } from 'react';
 
 import {
   Route,
@@ -11,6 +11,7 @@ import './ControlReference.css';
 
 import { apiPost } from './ApiConnection';
 import { stripTrailingSlash } from 'history/PathUtils';
+import { isTemplateElement } from '@babel/types';
 
 type TIOElement = {
   name: string
@@ -157,6 +158,15 @@ function ControlReferenceCategory(props: { controlReferenceUrl: string }) {
         category: params.categoryName
       }
     }).then((msg: any) => {
+      const compareByKey = (a: TIOElement, b: TIOElement) => {
+        if (a.description < b.description)
+          return -1;
+        else if (a.description > b.description)
+          return 1;
+        else
+          return 0;
+      }
+      msg.data.sort(compareByKey);
       setIOElements(msg.data);
     })
   }, [params.moduleName, params.categoryName])
@@ -166,15 +176,43 @@ function ControlReferenceCategory(props: { controlReferenceUrl: string }) {
     <div>
       <h3><Link to='/controlreference'>Control Reference:</Link> <Link to={'/controlreference/' + encodeURIComponent(params.moduleName)}>{params.moduleName}</Link>: {params.categoryName}</h3>
 
-      {ioElements.map((elem: any) => <IOElement key={elem.name} item={elem} />)}
+      {ioElements.map((elem: any) => <IOElementDocumentation key={elem.name} item={elem} />)}
 
     </div>
   )
 }
 
-function IOElement(props: { item: TIOElement }) {
-  let inputs = props.item.inputs.map((input, idx) => <InputCommand control={props.item} input={input} key={idx} />);
-  let outputs = props.item.outputs.map((output, idx) => <OutputElement control={props.item} output={output} key={idx} />);
+
+type SnippetDescriptionPair = { snippet: ReactElement, description: string }
+
+
+function IOElementDocumentation(props: { item: TIOElement }) {
+  const inputSnippetPrecedence = [
+    "Switch2Pos",
+    "Switch3Pos",
+    "SwitchMultiPos",
+    "RotaryEncoder_variable_step",
+    "RotaryEncoder_fixed_step",
+    "ActionButton",
+    "LED",
+    "StringBuffer",
+    "ServoOutput",
+    "IntegerBuffer",
+  ];
+  // take a list of inputs and transform it into a list of { CodeSnippet, Description } pairs
+  let inputSnippets: Array<SnippetDescriptionPair> = props.item.inputs.flatMap(input => getInputCodeSnippets(props.item, input).map(snippet => ({snippet, description: input.description})));
+  const compareByCodeSnippetPrecedence = (a: any, b: any) => {
+    let aIdx = inputSnippetPrecedence.indexOf(a.key) || 0;
+    let bIdx = inputSnippetPrecedence.indexOf(b.key) || 0;
+    return b - a;
+  }
+  inputSnippets.sort(compareByCodeSnippetPrecedence);
+
+  let integerOutputs = props.item.outputs.filter(o => o.type === "integer");
+  let stringOutputs = props.item.outputs.filter(o => o.type === "string");
+    
+  let integerOutputSnippets: Array<SnippetDescriptionPair> = integerOutputs.flatMap(output =>getOutputCodeSnippets(props.item, output).map(snippet => ({snippet, description: output.description})));
+  let stringOutputSnippets: Array<SnippetDescriptionPair> = stringOutputs.flatMap(output => getOutputCodeSnippets(props.item, output).map(snippet => ({snippet, description: output.description})));
   return (
     <div className="control">
       <div className="controlheader">
@@ -183,21 +221,22 @@ function IOElement(props: { item: TIOElement }) {
       </div>
       <div className="controlbody">
         <div className="inputs">
-          {inputs}
+          <CodeSnippetSelector descriptionPrefix={<b>Input: </b>} snippetDescriptionPairs={inputSnippets}/>
         </div>
         <div className="outputs">
-          {outputs}
+          <CodeSnippetSelector descriptionPrefix={<b>Integer Output: </b>} snippetDescriptionPairs={integerOutputSnippets} />
+        </div>
+        <div className="outputs">
+          <CodeSnippetSelector descriptionPrefix={<b>String Output: </b>} snippetDescriptionPairs={stringOutputSnippets} />
         </div>
       </div>
     </div>
   )
 }
 
-function InputCommand(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
-
+function getInputCodeSnippets(control: TIOElement, input: TInputElement) {
+  let props = { control, input };
   let codeSnippets: ReactElement[] = [];
-
 
   if (input.interface === "set_state" && input.max_value == 1) {
     codeSnippets.push(<Switch2PosSnippet key="Switch2Pos" {...props} />)
@@ -218,53 +257,79 @@ function InputCommand(props: { control: TIOElement, input: TInputElement }) {
     codeSnippets.push(<RotaryEncoderFixedStepSnippet key="RotaryEncoderFixedStep" {...props} />)
   }
 
-
-
-  return (
-    <div><CodeSnippetSelector snippets={codeSnippets} /></div>
-  )
+  return codeSnippets;
 }
 
 
 
-function OutputElement(props: { control: TIOElement, output: TOutputElement }) {
-  let { control, output } = props;
-
+function getOutputCodeSnippets(control: TIOElement, output: TOutputElement) {
+  let props = { control, output };
   let codeSnippets: ReactElement[] = [];
-
-  let x = output.type;
 
   if (output.type === "integer" && output.max_value === 1) {
     codeSnippets.push(<LEDSnippet key="LED" {...props} />);
   }
   if (output.type === "integer" && output.max_value === 65535) {
-    codeSnippets.push(<ServoOutputSnippet key="ServoOutput" {...props}/>);
+    codeSnippets.push(<ServoOutputSnippet key="ServoOutput" {...props} />);
   }
   if (output.type === "integer") {
-    codeSnippets.push(<IntegerBufferSnippet key="IntegerBuffer" {...props}/>);
+    codeSnippets.push(<IntegerBufferSnippet key="IntegerBuffer" {...props} />);
   }
   if (output.type == "string") {
-    codeSnippets.push(<StringBufferSnippet key="StringBuffer" {...props}/>);
+    codeSnippets.push(<StringBufferSnippet key="StringBuffer" {...props} />);
   }
 
-  return (
-    <div><CodeSnippetSelector snippets={codeSnippets} /></div>
-  )
+  return codeSnippets;
 }
 
 
 
-
-function CodeSnippetSelector(props: { snippets: ReactElement[] }) {
-  let { snippets } = props;
-  let initialSelectedTab = (snippets.length > 0) ? snippets[0].key : "";
+// Displays one or more code snippets in tabs.
+// Tabs are hidden if only one code snippet is available.
+// Includes a "copy to clipboard" button for the currently visible snippet.
+function CodeSnippetSelector(props: { snippetDescriptionPairs: Array<SnippetDescriptionPair>, descriptionPrefix: any }) {
+  let snippetDescriptionPairs = props.snippetDescriptionPairs;
+  let snippetRef = useRef<HTMLDivElement>(null);
+  let initialSelectedTab = (snippetDescriptionPairs.length > 0) ? snippetDescriptionPairs[0].snippet.key : "";
   let [activeTabKey, setActiveTab] = useState(initialSelectedTab)
-  if (snippets.length === 0) {
+  if (snippetDescriptionPairs.length === 0) {
     return null;
   }
 
+  const copyToClipboard = () => {
+    let element = snippetRef.current;
+
+    let currentSelection = document.getSelection();
+    let selectionType = currentSelection && currentSelection.type || null;
+    if (selectionType === "Range") return; // do not mess with the user's own selection
+
+    // http://stackoverflow.com/questions/11128130/select-text-in-javascript
+    var doc = document;
+    if ((doc.body as any).createTextRange) { // ms
+      var range = (doc.body as any).createTextRange();
+      range.moveToElementText(element);
+      if (!range.execCommand('copy')) {
+        range.select();
+      }
+    } else if (window.getSelection) { // moz, opera, webkit
+      let selection = window.getSelection();
+      let range = doc.createRange() as any;
+      range.selectNodeContents(element);
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+        if (document.execCommand('copy')) {
+          selection.removeAllRanges();
+        }
+      }
+    }
+    (snippetRef.current as HTMLDivElement).classList.add("copied");
+    setTimeout(() => {(snippetRef.current as HTMLDivElement).classList.remove("copied");}, 150)
+  }
+
   let tabSelectors: ReactElement[] = [];
-  for (let snippet of snippets) {
+  for (let st of snippetDescriptionPairs) {
+    let snippet = st.snippet
     let isSelected = snippet.key == activeTabKey;
     let style: React.CSSProperties = {
       cursor: "hand"
@@ -277,14 +342,18 @@ function CodeSnippetSelector(props: { snippets: ReactElement[] }) {
 
   if (tabSelectors.length === 1) tabSelectors = [];
 
+  let activeSnippetTuple = snippetDescriptionPairs.find(x => x.snippet.key == activeTabKey) as SnippetDescriptionPair; // type assertion to guarantee that this will not be null
+
   return (
     <React.Fragment>
-      <div>{tabSelectors}</div>
-      <div className="current-snippet">{snippets.find(x => x.key == activeTabKey)}</div>
+      <div>{tabSelectors} <span className="io-description">{props.descriptionPrefix}{activeSnippetTuple.description}</span></div>
+      <div className="current-snippet" ref={snippetRef} onClick={copyToClipboard}>{activeSnippetTuple.snippet}</div>
     </React.Fragment>
   )
 }
 
+// idCamelCase converts a control identifier of the form "UFC_BTN_CLEAR"
+// to camel case (ufcBtnClear) for use as an identifier in C++ code.
 const idCamelCase = function (input: string) {
   var ret = "";
   var capitalize = false;
@@ -352,6 +421,9 @@ function ActionButtonSnippet(props: { control: TIOElement, input: TInputElement 
 
 // output code snippets:
 
+// hex() converts a number into a four-digit
+// lower case hexadecimal representation, prefixed
+// by "0x".
 const hex = function (input: number) {
   if (input === 0)
     return "0x0000";
@@ -379,18 +451,18 @@ function ServoOutputSnippet(props: { control: TIOElement, output: TOutputElement
 
 function StringBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
   let { control, output } = props;
-  return <code>void on{idCamelCase(control.name)}Change(char* newValue) {'{'}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br/>
-  {'}'}<br/>
-    DcsBios::StringBuffer&lt;{output.length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>  
+  return <code>void on{idCamelCase(control.name)}Change(char* newValue) {'{'}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
+    {'}'}<br />
+    DcsBios::StringBuffer&lt;{output.length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
 }
 
 function IntegerBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
   let { control, output } = props;
-  return <code>void on{idCamelCase(control.name)}Change(unsigned int newValue) {'{'}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br/>
-  {'}'}<br/>
-    DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>  
+  return <code>void on{idCamelCase(control.name)}Change(unsigned int newValue) {'{'}<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
+    {'}'}<br />
+    DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
 }
 
 

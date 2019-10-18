@@ -1,6 +1,7 @@
 code {
 	color: black;
 	margin: 5px;
+	margin-bottom: 1em;
 	background-color: lightyellow;
 	border: 1px solid darkgrey;
 	padding: 5px;
@@ -12,8 +13,36 @@ code {
 code:hover {
 	border: 1px solid blue;
 	text-decoration: italic;
+	background-color: rgb(232, 253, 255);
+}
+code:hover::before {
+	content: 'click to copy to clipboard';
+	float: right;
+	background-color: blue;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
+	font-family: sans-serif;
+	font-weight: bold;
+	display: block;
 }
 
+.copied code:hover::before {
+	content: 'copied.';
+	float: right;
+	background-color: blue;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
+	font-family: sans-serif;
+	font-weight: bold;
+	display: block;
+}
+.copied code:hover {
+	background-color: lightyellow;
+}
 
 div.control {
 	margin-top: 20px;
@@ -76,3 +105,4 @@ b.pinNo {
     background-color: lightyellow;
     color: blue;
 }
+
