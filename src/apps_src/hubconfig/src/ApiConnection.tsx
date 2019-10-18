@@ -20,7 +20,6 @@ type ApiJsonMessage = {
 }
 
 export function apiPost(message: ApiJsonMessage): Promise<Response> {
-  console.log('http://'+getApiHostPart()+'/api/postjson', getApiHostPart())
   var request = {
     method: 'POST',
     body: JSON.stringify(message) as unknown as ReadableStream<Uint8Array>

@@ -10,8 +10,6 @@ import {
 import './ControlReference.css';
 
 import { apiPost } from './ApiConnection';
-import { stripTrailingSlash } from 'history/PathUtils';
-import { isTemplateElement } from '@babel/types';
 
 type TIOElement = {
   name: string
@@ -72,8 +70,8 @@ class ControlReference extends React.Component<{ match: any }, { moduleNames: st
     return (
       <div>
         <Route exact path={`${this.props.match.path}`} component={ControlReferenceIndex} />
-        <Route exact path={`${this.props.match.path}/:moduleName`} render={(props) => <ControlReferenceForModule parentUrl={this.props.match.url} moduleNameToCategoryList={this.state.moduleToCategory} />} />
-        <Route exact path={`${this.props.match.path}/:moduleName/:categoryName`} render={(props) => <ControlReferenceCategory controlReferenceUrl={this.props.match.url} />} />
+        <Route exact path={`${this.props.match.path}/:moduleName`} render={() => <ControlReferenceForModule parentUrl={this.props.match.url} moduleNameToCategoryList={this.state.moduleToCategory} />} />
+        <Route exact path={`${this.props.match.path}/:moduleName/:categoryName`} render={() => <ControlReferenceCategory />} />
       </div>
     )
   }
@@ -145,7 +143,7 @@ function ControlReferenceForModule(props: { moduleNameToCategoryList: any, paren
   )
 }
 
-function ControlReferenceCategory(props: { controlReferenceUrl: string }) {
+function ControlReferenceCategory() {
   let params = useParams<{ moduleName: string, categoryName: string }>()
   let [ioElements, setIOElements] = useState<any>([]);
 
@@ -201,10 +199,10 @@ function IOElementDocumentation(props: { item: TIOElement }) {
   ];
   // take a list of inputs and transform it into a list of { CodeSnippet, Description } pairs
   let inputSnippets: Array<SnippetDescriptionPair> = props.item.inputs.flatMap(input => getInputCodeSnippets(props.item, input).map(snippet => ({snippet, description: input.description})));
-  const compareByCodeSnippetPrecedence = (a: any, b: any) => {
-    let aIdx = inputSnippetPrecedence.indexOf(a.key) || 0;
-    let bIdx = inputSnippetPrecedence.indexOf(b.key) || 0;
-    return b - a;
+  const compareByCodeSnippetPrecedence = (a: SnippetDescriptionPair, b: SnippetDescriptionPair) => {
+    let aIdx = inputSnippetPrecedence.indexOf(a.snippet.key as string);
+    let bIdx = inputSnippetPrecedence.indexOf(b.snippet.key as string);
+    return bIdx - aIdx;
   }
   inputSnippets.sort(compareByCodeSnippetPrecedence);
 
@@ -238,10 +236,10 @@ function getInputCodeSnippets(control: TIOElement, input: TInputElement) {
   let props = { control, input };
   let codeSnippets: ReactElement[] = [];
 
-  if (input.interface === "set_state" && input.max_value == 1) {
+  if (input.interface === "set_state" && input.max_value === 1) {
     codeSnippets.push(<Switch2PosSnippet key="Switch2Pos" {...props} />)
   }
-  if (input.interface === "set_state" && input.max_value == 2) {
+  if (input.interface === "set_state" && input.max_value === 2) {
     codeSnippets.push(<Switch3PosSnippet key="Switch3Pos" {...props} />)
   }
   if (input.interface === "set_state" && input.max_value < 33) {
@@ -275,7 +273,7 @@ function getOutputCodeSnippets(control: TIOElement, output: TOutputElement) {
   if (output.type === "integer") {
     codeSnippets.push(<IntegerBufferSnippet key="IntegerBuffer" {...props} />);
   }
-  if (output.type == "string") {
+  if (output.type === "string") {
     codeSnippets.push(<StringBufferSnippet key="StringBuffer" {...props} />);
   }
 
@@ -300,7 +298,7 @@ function CodeSnippetSelector(props: { snippetDescriptionPairs: Array<SnippetDesc
     let element = snippetRef.current;
 
     let currentSelection = document.getSelection();
-    let selectionType = currentSelection && currentSelection.type || null;
+    let selectionType = currentSelection && currentSelection.type;
     if (selectionType === "Range") return; // do not mess with the user's own selection
 
     // http://stackoverflow.com/questions/11128130/select-text-in-javascript
@@ -330,19 +328,17 @@ function CodeSnippetSelector(props: { snippetDescriptionPairs: Array<SnippetDesc
   let tabSelectors: ReactElement[] = [];
   for (let st of snippetDescriptionPairs) {
     let snippet = st.snippet
-    let isSelected = snippet.key == activeTabKey;
+    let isSelected = snippet.key === activeTabKey;
     let style: React.CSSProperties = {
       cursor: "hand"
     }
-    if (isSelected) {
-      style.fontWeight = "bold";
-    }
-    tabSelectors.push(<a className="snippet-tab-handle" style={style} onClick={() => setActiveTab(snippet.key)}>{snippet.key}</a>)
+    let activeClass = isSelected ? " active-tab-handle" : "";
+    tabSelectors.push(<button className={"snippet-tab-handle"+activeClass} key={snippet.key as string} style={style} onClick={() => setActiveTab(snippet.key)}>{snippet.key}</button>)
   }
 
   if (tabSelectors.length === 1) tabSelectors = [];
 
-  let activeSnippetTuple = snippetDescriptionPairs.find(x => x.snippet.key == activeTabKey) as SnippetDescriptionPair; // type assertion to guarantee that this will not be null
+  let activeSnippetTuple = snippetDescriptionPairs.find(x => x.snippet.key === activeTabKey) as SnippetDescriptionPair; // type assertion to guarantee that this will not be null
 
   return (
     <React.Fragment>
@@ -358,7 +354,7 @@ const idCamelCase = function (input: string) {
   var ret = "";
   var capitalize = false;
   for (var i = 0; i < input.length; i++) {
-    if (input[i] == '_') {
+    if (input[i] === '_') {
       capitalize = true;
     } else {
       if (capitalize) {
@@ -375,12 +371,12 @@ const idCamelCase = function (input: string) {
 // input code snippets:
 
 function Switch2PosSnippet(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
+  let { control } = props;
   return <code>DcsBios::Switch2Pos {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN</b>);</code>;
 }
 
 function Switch3PosSnippet(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
+  let { control } = props;
   return <code>DcsBios::Switch3Pos {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN_A</b>, <b className="pinNo">PIN_B</b>);</code>;
 }
 
@@ -390,34 +386,28 @@ function SwitchMultiPosSnippet(props: { control: TIOElement, input: TInputElemen
   for (let i = 0; i <= input.max_value; i++) {
     let pinText = "PIN_" + i.toString();
     pins.push(<b className="pinNo" key={pinText}>{pinText}</b>);
-    console.log("pushed", pinText)
     if (i < input.max_value) {
       pins.push(<span key={"comma" + pinText}>, </span>)
     }
   }
-  console.log("number of pins:", pins.length, pins, input)
   return <code>const byte {idCamelCase(control.name)}Pins[{pins.length.toString()}] = {'{'}{pins.map(x => x)}{'}'}<br />DcsBios::SwitchMultiPos {idCamelCase(control.name)}("{control.name}", {idCamelCase(control.name)}Pins, {pins.length.toString()});</code>;
 }
 
 function RotaryEncoderVariableStepSnippet(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
+  let { control } = props;
   return <code>DcsBios::RotaryEncoder {idCamelCase(control.name)}("{control.name}", "-3200", "+3200", <b className="pinNo">PIN_A</b>, <b className="pinNo">PIN_B</b>);</code>;
 }
 
 function RotaryEncoderFixedStepSnippet(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
+  let { control } = props;
   return <code>DcsBios::RotaryEncoder {idCamelCase(control.name)}("{control.name}", "DEC", "INC", <b className="pinNo">PIN_A</b>, <b className="pinNo">PIN_B</b>);</code>;
 }
 
 function PotentiometerSnippet(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
+  let { control } = props;
   return <code>DcsBios::Potentiometer {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN</b>);</code>;
 }
 
-function ActionButtonSnippet(props: { control: TIOElement, input: TInputElement }) {
-  let { control, input } = props;
-  return <code>DcsBios::ActionButton {idCamelCase(control.name)}("{control.name}", "{input.argument}", <b className="pinNo">PIN</b>);</code>;
-}
 
 // output code snippets:
 

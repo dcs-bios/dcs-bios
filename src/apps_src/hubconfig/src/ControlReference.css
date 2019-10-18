@@ -1,6 +1,5 @@
 code {
 	color: black;
-	margin: 5px;
 	margin-bottom: 1em;
 	background-color: lightyellow;
 	border: 1px solid darkgrey;
@@ -14,6 +13,7 @@ code:hover {
 	border: 1px solid blue;
 	text-decoration: italic;
 	background-color: rgb(232, 253, 255);
+	transition: 0.1s;
 }
 code:hover::before {
 	content: 'click to copy to clipboard';
@@ -26,6 +26,7 @@ code:hover::before {
 	font-family: sans-serif;
 	font-weight: bold;
 	display: block;
+	
 }
 
 .copied code:hover::before {
@@ -98,7 +99,12 @@ b.pinNo {
     border-right: 1px solid;
     border-color: #999;
     padding: 3px;
-    margin: 3px;
+	margin-right: 7px;
+	border-bottom: none;
+}
+.snippet-tab-handle.active-tab-handle {
+	font-weight: bold;
+	background-color: lightyellow;
 }
 
 .snippet-tab-handle:hover {
