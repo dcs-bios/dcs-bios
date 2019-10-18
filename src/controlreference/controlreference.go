@@ -120,6 +120,30 @@ func (crs *ControlReferenceStore) LoadData() {
 		crs.loadFile(filename)
 	}
 	fmt.Printf("control reference: loaded data for %d modules.\n", len(files))
+
+	// verify that IOElements have at most one string output and at most one integer output
+	// the web UI control reference assumes this to make live data handling a bit easier
+	for moduleName, module := range crs.modules {
+		for categoryName, cat := range module {
+			for elementName, elem := range cat {
+				countStrOutputs := 0
+				countIntOutputs := 0
+				for _, out := range elem.Outputs {
+					if out.Type == "string" {
+						countStrOutputs++
+					} else if out.Type == "integer" {
+						countIntOutputs++
+					} else {
+						fmt.Println("unknown output type", out.Type)
+					}
+				}
+				if countStrOutputs > 1 || countIntOutputs > 1 {
+					fmt.Printf("warning: found element with more than one integer or string output: %s / %s / %s\n", moduleName, categoryName, elementName)
+				}
+			}
+		}
+	}
+	fmt.Println("control reference data check complete.")
 }
 
 func (crs *ControlReferenceStore) loadFile(filename string) {
