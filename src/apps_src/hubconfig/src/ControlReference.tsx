@@ -64,6 +64,7 @@ const LiveDataContext = React.createContext<TLiveDataContext>({
 function ControlReference() {
   let match = useRouteMatch() as any;
 
+
   let [moduleToCategory, setModuleToCategory] = useState<any>({});
   let exportDataParser = useState<ExportDataParser>(() => new ExportDataParser())[0]
   let liveDataWebsocket = useState<w3cwebsocket>(getApiConnection)[0]
@@ -137,11 +138,47 @@ function ControlReferenceIndex() {
     })
   }, [])
 
+
+  let [ installedModuleNamesApiResult, setInstalledModuleNamesApiResult ] = useState<string[]>([]);
+  useEffect(() => {
+    apiPost({
+      datatype: "get_installed_module_names",
+      data: {}
+    }).then(result => {
+      setInstalledModuleNamesApiResult(result.data)
+    })
+  }, [])
+
+  // The API gives us the list of installed modules in lower case.
+  // Look up the proper capitalization in the list of all available modules.
+  const installedModuleNames = []
+  let installedModulesElement: ReactElement | null = null
+  if (installedModuleNamesApiResult.length >0 && moduleNames.length >0) {
+    for (let moduleName of moduleNames) {
+      if (installedModuleNamesApiResult.indexOf(moduleName.toLowerCase()) >= 0) {
+        installedModuleNames.push(moduleName)
+      }
+    }
+
+    installedModulesElement = ( <div>
+      <h3>Installed Modules</h3>
+      {
+        installedModuleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
+      }
+    </div> );
+  }
+
   return (
     <div>
+      
+      {installedModulesElement}
+      <div style={{clear: "both"}}></div>
+      <div>
+      <h3>All Available Modules</h3>
       {
         moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
       }
+      </div>
     </div>
   )
 }
@@ -150,8 +187,8 @@ function ControlReferenceIndex() {
 function IndexCard(props: { moduleName: string, categories: string[] }) {
   const match = useRouteMatch() as any;
   return (
-    <div className="" style={{ display: "block", float: "left", padding: "1em" }}>
-      <Link to={match.path + '/' + encodeURIComponent(props.moduleName)}><h4>{props.moduleName}</h4></Link>
+    <div className="controlreference-index-module">
+      <Link to={match.path + '/' + encodeURIComponent(props.moduleName)}><b>{props.moduleName}</b></Link>
     </div>
   )
 }

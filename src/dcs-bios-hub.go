@@ -9,6 +9,7 @@ import (
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
 	"dcs-bios.a10c.de/dcs-bios-hub/controlreference"
 	"dcs-bios.a10c.de/dcs-bios-hub/dcsconnection"
+	"dcs-bios.a10c.de/dcs-bios-hub/dcsinstalledmodules"
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/livedataapi"
@@ -73,6 +74,9 @@ func startServices() {
 
 	// live data API endpoint
 	lda := livedataapi.NewLiveDataApi(jsonAPI)
+
+	dcsinstalledmodules.RegisterApi(jsonAPI)
+	dcsinstalledmodules.GetInstalledModulesList()
 
 	// transmit data between DCS and the serial ports
 	go func() {

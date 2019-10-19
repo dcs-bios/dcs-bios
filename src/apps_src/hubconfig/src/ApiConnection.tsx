@@ -19,7 +19,7 @@ type ApiJsonMessage = {
   data: any
 }
 
-export function apiPost(message: ApiJsonMessage): Promise<Response> {
+export function apiPost(message: ApiJsonMessage): Promise<any> {
   var request = {
     method: 'POST',
     body: JSON.stringify(message) as unknown as ReadableStream<Uint8Array>
