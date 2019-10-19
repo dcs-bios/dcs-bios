@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 )
@@ -47,7 +48,7 @@ type ControlReferenceStore struct {
 	jsonAPI *jsonapi.JsonApi
 }
 
-type IOElementCategoriesMap map[string]map[string]IOElement
+type IOElementCategoriesMap map[string]map[string]*IOElement
 
 func NewControlReferenceStore(jsonAPI *jsonapi.JsonApi) *ControlReferenceStore {
 	crs := &ControlReferenceStore{
@@ -83,8 +84,9 @@ func (crs *ControlReferenceStore) HandleGetModulesListRequest(req *GetModulesReq
 }
 
 type QueryIOElementsRequest struct {
-	Module   string `json:"module"`
-	Category string `json:"category"`
+	Module     string `json:"module"`
+	Category   string `json:"category"`
+	SearchTerm string `json:"searchTerm"`
 }
 type QueryIOElementsResult []IOElement
 
@@ -92,13 +94,35 @@ func (crs *ControlReferenceStore) HandleQueryIOElementsRequest(req *QueryIOEleme
 	defer close(responseCh)
 	var ret QueryIOElementsResult = make([]IOElement, 0)
 
-	module := crs.modules[req.Module]
-	category := module[req.Category]
+	module, ok := crs.modules[req.Module]
+	if !ok {
+		responseCh <- ret
+		return
+	}
 
-	for name, elem := range category {
-		elem.Name = name
-		elem.Module = req.Module
-		ret = append(ret, elem)
+	if req.Category == "" { // look up by search term
+		s := strings.ToLower(req.SearchTerm)
+		for _, category := range module {
+			for _, elem := range category {
+				if strings.Contains(strings.ToLower(elem.Name), s) ||
+					strings.Contains(strings.ToLower(elem.Description), s) {
+					ret = append(ret, *elem)
+				}
+			}
+		}
+	}
+
+	if req.Category != "" { // look up by category
+		category, ok := module[req.Category]
+		if !ok {
+			// empty result if category does not exist
+			responseCh <- ret
+			return
+		}
+
+		for _, elem := range category {
+			ret = append(ret, *elem)
+		}
 	}
 	responseCh <- ret
 }
@@ -123,9 +147,12 @@ func (crs *ControlReferenceStore) LoadData() {
 
 	// verify that IOElements have at most one string output and at most one integer output
 	// the web UI control reference assumes this to make live data handling a bit easier
+	// also copy the module and element names from the map keys to the .Name and .Module properties of the IOElement structs
 	for moduleName, module := range crs.modules {
 		for categoryName, cat := range module {
 			for elementName, elem := range cat {
+				elem.Name = elementName
+				elem.Module = moduleName
 				countStrOutputs := 0
 				countIntOutputs := 0
 				for _, out := range elem.Outputs {

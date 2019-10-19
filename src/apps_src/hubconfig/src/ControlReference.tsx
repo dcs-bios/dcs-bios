@@ -1,4 +1,5 @@
 import React, { useState, useEffect, ReactElement, useRef, useContext } from 'react';
+import { HashLink } from 'react-router-hash-link';
 
 import {
   Route,
@@ -89,7 +90,6 @@ function ControlReference() {
     }
     liveDataWebsocket.onmessage = async (data) => {
       data = await data.data.arrayBuffer()
-      //console.log(data)
       let a = new Uint8Array(data)
       for (let i = 0; i < a.length; i++) {
         exportDataParser.processByte(a[i])
@@ -156,16 +156,122 @@ function IndexCard(props: { moduleName: string, categories: string[] }) {
   )
 }
 
+function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: string }) {
+  const [ searchResults, setSearchResults ] = useState<TIOElement[]>([]);
+  const [ loading, setLoading ] = useState(true);
+  const [ showAll, setShowAll ] = useState(false);
+  const match = useRouteMatch()
+
+  useEffect(() => {
+    if (props.searchTerm === "") return;
+    let ignore = false;
+    apiPost({
+      datatype: "control_reference_query_ioelements",
+      data: {
+        module: props.moduleName,
+        category: "",
+        searchTerm: props.searchTerm
+      }
+    }).then(data => {
+      if (!ignore) {
+          setShowAll(false)
+          setSearchResults((data as any).data)
+          setLoading(false)
+      }
+    })
+    return () => { ignore = true; }
+  }, [props.searchTerm, props.moduleName])
+
+
+  if (props.searchTerm === "") return null;
+  if (loading) return <div>searching {props.moduleName} for "{props.searchTerm}"...</div>;
+
+  let searchResultsByCategory: Map<string, Array<TIOElement>> = new Map()
+  for (let elem of searchResults) {
+    if (!searchResultsByCategory.has(elem.category)) {
+      searchResultsByCategory.set(elem.category, [])
+    }
+    (searchResultsByCategory.get(elem.category) as TIOElement[]).push(elem)
+  }
+  
+  let sortedSearchResultCategories = new Array<string>()
+  searchResultsByCategory.forEach((_, k) => sortedSearchResultCategories.push(k))
+  sortedSearchResultCategories.sort()
+
+  searchResultsByCategory.forEach(resultList => {
+    resultList.sort((a, b) => {
+      if (a.description < b.description) return 1;
+      if (a.description > b.description) return -1;
+      return 0;
+    })
+  });
+
+  const makeResultUl = () => {
+    const defaultNumberOfResults = 10; // if more than 10 results found, show "show more" button
+    let count = 0
+    let showMoreButton: ReactElement | null = null
+    let categoryListItems: ReactElement[] = []
+    for (let categoryName of sortedSearchResultCategories) {
+      if (count === -1) break;
+      
+      let listItemsInCategory: ReactElement[] = []
+      let searchResultsInCategory = searchResultsByCategory.get(categoryName) as TIOElement[]
+
+      // create a list of <li> elements in searchResultsInCategory
+      for (let elem of searchResultsInCategory) {
+        if (count === -1) break;
+        listItemsInCategory.push(<li key={elem.name}>
+          <HashLink key={elem.name} to={(match ? match.url : "") +'/'+encodeURIComponent(categoryName)+'#'+elem.name}>
+            <b>{props.moduleName}/{elem.name}:</b> {elem.description}
+          </HashLink>
+        </li>)
+
+        count++
+        if (count === defaultNumberOfResults && !showAll) {
+          showMoreButton = <button onClick={() => setShowAll(true)}>Show {searchResults.length - defaultNumberOfResults} more results</button>
+          count = -1
+          break
+        }
+      }
+      // make a <ul> for the category
+      categoryListItems.push(<li key={categoryName}>
+        <b>{categoryName}</b>
+        <ul>{listItemsInCategory}</ul>
+      </li>)
+    }
+
+    return <ul>{categoryListItems}<br/>{showMoreButton}</ul>
+  }
+
+  return (
+    <div>{searchResults.length.toString()} results for {props.searchTerm}:
+    {makeResultUl()}
+    </div>
+  )
+}
+
 function ControlReferenceForModule(props: { moduleNameToCategoryList: any, parentUrl: string }) {
 
   let params = useParams<{ moduleName: string }>();
   let match: any = useRouteMatch() || {}
   let categoryNames: string[] = props.moduleNameToCategoryList[params.moduleName] || []
+  const [categoryListFilter, setCategoryListFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  let filteredCategories = categoryNames.filter((catName) => catName.toLowerCase().indexOf(categoryListFilter.toLowerCase()) >= 0)
+
+  let moduleName = decodeURIComponent(params.moduleName)
 
   return (
-    <div><h3><Link to={`${props.parentUrl}`}>Control Reference:</Link> {params.moduleName}</h3>
+    <div><h3><Link to={`${props.parentUrl}`}>Control Reference:</Link> {moduleName}</h3>
+      Search for a specific control inside the {moduleName} module:<br />
+      <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /><br />
+      <ControlReferenceSearchResults searchTerm={searchTerm} moduleName={moduleName} />
+      <hr />
+
+      Browse a category:<br /><input type="text" value={categoryListFilter} placeholder="Filter categories" onChange={(e) => setCategoryListFilter(e.target.value)} />
       <ul>
-        {categoryNames.map(catName =>
+        {filteredCategories.map(catName =>
           <li key={catName}><Link to={match.url + '/' + encodeURIComponent(catName)}>{catName}</Link></li>
         )}
       </ul>
@@ -176,8 +282,8 @@ function ControlReferenceForModule(props: { moduleNameToCategoryList: any, paren
 
 function ControlReferenceCategory() {
   let params = useParams<{ moduleName: string, categoryName: string }>()
-  let [ioElements, setIOElements] = useState<any>([]);
-
+  let [ioElements, setIOElements] = useState<TIOElement[]>([]);
+  let [controlFilterText, setControlFilterText] = useState("");
 
   let [moduleName, categoryName] = [params.moduleName, params.categoryName].map(decodeURIComponent)
 
@@ -199,16 +305,21 @@ function ControlReferenceCategory() {
           return 0;
       }
       msg.data.sort(compareByKey);
-      setIOElements(msg.data);
+      setIOElements(msg.data as TIOElement[]);
     })
   }, [moduleName, categoryName])
 
+  let filteredIOElements = ioElements.filter((element) => {
+    let fstr = controlFilterText.toLowerCase()
+    return (element.description.toLowerCase().indexOf(fstr) >= 0) || (element.name.toLowerCase().indexOf(fstr) >= 0)
+  })
 
   return (
     <div>
       <h3><Link to='/controlreference'>Control Reference:</Link> <Link to={'/controlreference/' + encodeURIComponent(params.moduleName)}>{moduleName}</Link>: {categoryName}</h3>
-
-      {ioElements.map((elem: any) => <IOElementDocumentation key={elem.name} item={elem} />)}
+      <input type="text" placeholder="Filter" value={controlFilterText} onChange={(e) => setControlFilterText(e.target.value)} />
+      <span> </span>({filteredIOElements.length.toString()}/{ioElements.length.toString()} displayed)
+      {filteredIOElements.map((elem: any) => <IOElementDocumentation key={elem.name} item={elem} />)}
 
     </div>
   )
