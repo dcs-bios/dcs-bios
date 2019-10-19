@@ -227,7 +227,7 @@ function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: 
         </li>)
 
         count++
-        if (count === defaultNumberOfResults && !showAll) {
+        if (count === defaultNumberOfResults && searchResults.length > defaultNumberOfResults && !showAll) {
           showMoreButton = <button onClick={() => setShowAll(true)}>Show {searchResults.length - defaultNumberOfResults} more results</button>
           count = -1
           break

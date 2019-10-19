@@ -4,7 +4,8 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Route,
-  NavLink
+  NavLink,
+  useRouteMatch
 } from "react-router-dom";
 
 
@@ -12,12 +13,21 @@ import SerialPortList from './SerialPortList'
 import ControlReference from './ControlReference'
 import { LuaSnippet } from './LuaConsole';
 
+const RootUrlContext = React.createContext("")
+
 function App() {
+  let rootUrl = "/app/hubconfig"
+  if (window.location.port == "3000") {
+    // development mode
+    rootUrl = ""
+  }
+
   return (
     <Router basename="/app/hubconfig">
+      <RootUrlContext.Provider value={rootUrl}>
       <div className="app">
         <div className="nav">
-         <img alt="" src="/dcs-bios-logo-4.png" style={{marginLeft: "auto", marginRight: "auto", display: "block"}}/>
+         <img alt="" src={rootUrl+"/dcs-bios-logo-4.png"} style={{marginLeft: "auto", marginRight: "auto", display: "block"}}/>
           <ul>
             <li><NavLink to='/controlreference' activeStyle={{ fontWeight: "bold" }}>Control Reference</NavLink></li>
             <li><NavLink to='/comports' activeStyle={{ fontWeight: "bold" }}>Configure serial ports</NavLink></li>
@@ -33,6 +43,7 @@ function App() {
             <Route path='/luaconsole' component={LuaSnippet} />
         </div>
       </div>
+      </RootUrlContext.Provider>
     </Router>
   );
 }

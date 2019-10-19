@@ -12,6 +12,8 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
@@ -31,7 +33,7 @@ func AddHandler(appPath string) {
 	settings.appPath = appPath
 
 	// initialize static file handler to serve static file requests
-	staticFileHandler = http.StripPrefix("/app/", http.FileServer(http.Dir(settings.appPath)))
+	//staticFileHandler = http.StripPrefix("/app/", http.FileServer(http.Dir(settings.appPath)))
 
 	// add handler
 	http.Handle("/app/", http.HandlerFunc(requestHandler))
@@ -81,7 +83,47 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	staticFileHandler.ServeHTTP(w, r)
+	webappHandler := func(w http.ResponseWriter, r *http.Request) {
+
+		basedir, err := filepath.Abs(settings.appPath)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+		fullpath := filepath.Join(basedir, r.URL.Path)
+		fullpath = filepath.Clean(fullpath)
+		fullpath, err = filepath.Abs(fullpath)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+
+		if !filepath.HasPrefix(fullpath, basedir) {
+			w.WriteHeader(http.StatusForbidden)
+			fmt.Fprintf(w, "Forbidden - attempt to access outside of app root folder")
+		}
+		_, err = os.Stat(fullpath)
+		if err == nil { // file exists
+			http.ServeFile(w, r, fullpath)
+			return
+		} else {
+			for filepath.HasPrefix(fullpath, basedir) {
+				fullpath = filepath.Dir(fullpath)
+				indexHTMLPath := filepath.Join(fullpath, "index.html")
+				_, err = os.Stat(indexHTMLPath)
+				if err == nil {
+					http.ServeFile(w, r, indexHTMLPath)
+					return
+				}
+
+			}
+			w.WriteHeader(http.StatusNotFound)
+			fmt.Fprintf(w, "404 - no index.html found in any (parent) directory")
+		}
+	}
+
+	handler := http.HandlerFunc(webappHandler)
+	appHandler := http.StripPrefix("/app/", handler)
+	appHandler.ServeHTTP(w, r)
+
 	return
 
 }
