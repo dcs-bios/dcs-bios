@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"sync"
+	"time"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
@@ -102,16 +103,22 @@ func (lcs *LuaConsoleServer) HandleExecuteSnippetRequest(req *ExecuteSnippetRequ
 		return
 	}
 
-	lcs.connLock.Lock()
-	lcs.requestToDcs <- map[string]string{
+	request := map[string]string{
 		"type":   "lua",
 		"name":   "irrelevant",
 		"luaenv": req.LuaEnvironment,
 		"code":   req.LuaCode,
 	}
 
-	var result LuaResult = <-lcs.responseFromDcs
-
-	lcs.connLock.Unlock()
-	responseCh <- result
+	lcs.connLock.Lock()
+	defer lcs.connLock.Unlock()
+	select {
+	case lcs.requestToDcs <- request:
+		var result LuaResult = <-lcs.responseFromDcs
+		responseCh <- result
+	case <-time.After(1 * time.Second):
+		responseCh <- jsonapi.ErrorResult{
+			Message: "could not send snippet to DCS within 1 second.",
+		}
+	}
 }
