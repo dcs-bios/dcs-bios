@@ -1,12 +1,12 @@
 // Package jsonapi provides a way for other packages
 // to register API calls.
-// TODO: concurrency (RWLock on dataStructFactories map)
 //
-// An API call starts with a WebSocketApiCallData JSON message
-// which specifies the API function through its msgtype attribute.
-// Following that message, an arbitrary amount of JSON messages can be sent
-// from the client to the server ("followup messages") and an arbitrary amount
-// of "response messages" can be sent from the server to the client.
+// All JSON messages have the form {datatype: string, data: any}.
+// The corresponding Go types must have been registered with RegisterType().
+//
+// The type of the first message that is received determines the API function
+// that is called and will receive all subsequent messages as well as be able
+// to send one or more response messages back to the caller.
 //
 // This message exchange stops when either the client or the server closes
 // the connection (i.e. the followupMessage channel is closed by the client
@@ -32,10 +32,7 @@ type JsonMessageEnvelope struct {
 	Data     interface{} `json:"data"`
 }
 
-// TODO:
-// type BinaryMessage []byte
-// special-case this to send binary instead of text web socket messages
-// will come in useful to send export data
+type BinaryData []byte
 
 type SuccessResult struct {
 	Message string `json:"message"`
@@ -145,8 +142,13 @@ func NewJsonApi() *JsonApi {
 	return api
 }
 
-func (api *JsonApi) HandleApiCall(envelopeJsonData []byte, followupMessagesJson chan []byte) (responseJsonChannel chan []byte, err error) {
-	responseJsonChannel = make(chan []byte)
+type ApiResponse struct {
+	Data   []byte
+	IsUTF8 bool
+}
+
+func (api *JsonApi) HandleApiCall(envelopeJsonData []byte, followupMessagesJson chan []byte) (responseJsonChannel chan ApiResponse, err error) {
+	responseJsonChannel = make(chan ApiResponse)
 
 	// decode message
 	envelope, err := api.decodeJson(envelopeJsonData)
@@ -178,13 +180,18 @@ func (api *JsonApi) HandleApiCall(envelopeJsonData []byte, followupMessagesJson 
 
 	go func() {
 		for response := range responseChannel {
-			// todo: implement and use JsonApi.encodeJson, which should use registered types
-			data, err := api.encodeJson(response)
-			if err == nil {
-				// if we could serialize the message, send it out
-				responseJsonChannel <- data
+
+			if binaryData, ok := response.(BinaryData); ok {
+				responseJsonChannel <- ApiResponse{binaryData, false}
 			} else {
-				fmt.Printf("error serializing response: %s\n", err.Error())
+
+				data, err := api.encodeJson(response)
+				if err == nil {
+					// if we could serialize the message, send it out
+					responseJsonChannel <- ApiResponse{data, true}
+				} else {
+					fmt.Printf("error serializing response: %s\n", err.Error())
+				}
 			}
 		}
 		close(responseJsonChannel)
@@ -193,9 +200,12 @@ func (api *JsonApi) HandleApiCall(envelopeJsonData []byte, followupMessagesJson 
 	go func() {
 		for followupData := range followupMessagesJson {
 			envelope, err := api.decodeJson(followupData)
+
 			if err != nil {
-				followupChannel <- envelope.Data
+				fmt.Printf("jsonapi: could not decode followup message: %v\n", err)
+				continue
 			}
+			followupChannel <- envelope.Data
 		}
 		close(followupChannel)
 	}()

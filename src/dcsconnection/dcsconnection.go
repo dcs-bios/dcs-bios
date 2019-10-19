@@ -5,6 +5,8 @@ import (
 	"net"
 	"sync"
 	"time"
+
+	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 )
 
 type ChanWriter struct {
@@ -34,13 +36,15 @@ type DcsConnection struct {
 	mutex      sync.Mutex // synchronizes access to state and conn variables
 	closeOnce  sync.Once
 	done       chan struct{}
+	jsonAPI    *jsonapi.JsonApi
 }
 
-func New() *DcsConnection {
+func New(jsonAPI *jsonapi.JsonApi) *DcsConnection {
 	return &DcsConnection{
 		ExportData: make(chan []byte),
 		state:      StateConnecting,
 		done:       make(chan struct{}),
+		jsonAPI:    jsonAPI,
 	}
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, useRef } from 'react';
+import React, { useState, useEffect, ReactElement, useRef, useContext } from 'react';
 
 import {
   Route,
@@ -9,7 +9,10 @@ import {
 
 import './ControlReference.css';
 
-import { apiPost } from './ApiConnection';
+import ExportDataParser from './ExportDataParser'
+
+import { apiPost, getApiConnection } from './ApiConnection';
+import { w3cwebsocket } from 'websocket';
 
 type TIOElement = {
   name: string
@@ -23,7 +26,7 @@ type TIOElement = {
 type TOutputElement = {
   address: number
   mask: number
-  length: number
+  max_length: number
   description: string
   max_value: number
   shift_by: number
@@ -35,94 +38,122 @@ type TInputElement = {
   interface: string
   max_value: number
   argument: string
+  suggested_step: number
 }
 
-class ControlReference extends React.Component<{ match: any }, { moduleNames: string[], moduleToCategory: any }> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      moduleNames: [],
-      moduleToCategory: {}
-    }
+// A TLiveDataContext is provided by the top level ControlReference component and provides connectivity to the
+// DCS-BIOS Hub to listen to export data and send commands to DCS. This enables the interactive features of the
+// control reference documentation.
+type TLiveDataContext = {
+  subscribeExportCallback: (address: number, callback: (address: number, data: ArrayBuffer) => void) => void
+  unsubscribeExportCallback: (callback: (address: number, data: ArrayBuffer) => void) => void
+  subscribeEndOfUpdateCallback: (callback: () => void) => void
+  unsubscribeEndOfUpdateCallback: (callback: () => void) => void
+  sendInputData: (msg: string) => void
+}
+const LiveDataContext = React.createContext<TLiveDataContext>({
+  subscribeExportCallback: console.log,
+  unsubscribeExportCallback: console.log,
+  subscribeEndOfUpdateCallback: console.log,
+  unsubscribeEndOfUpdateCallback: console.log,
+  sendInputData: console.log
+});
 
+
+function ControlReference() {
+  let match = useRouteMatch() as any;
+
+  let [moduleToCategory, setModuleToCategory] = useState<any>({});
+  let exportDataParser = useState<ExportDataParser>(() => new ExportDataParser())[0]
+  let liveDataWebsocket = useState<w3cwebsocket>(getApiConnection)[0]
+
+  const liveDataCallbacks: TLiveDataContext = {
+    subscribeExportCallback: exportDataParser.registerExportDataListener.bind(exportDataParser),
+    unsubscribeExportCallback: exportDataParser.unregisterExportDataListener.bind(exportDataParser),
+    subscribeEndOfUpdateCallback: exportDataParser.registerEndOfUpdateCallback.bind(exportDataParser),
+    unsubscribeEndOfUpdateCallback: exportDataParser.unregisterEndOfUpdateListener.bind(exportDataParser),
+    sendInputData: (msg) => {
+      liveDataWebsocket.send(JSON.stringify({
+        "datatype": "input_command",
+        "data": msg
+      }))
+    }
   }
 
-  componentDidMount() {
+  useEffect(() => {
+    liveDataWebsocket.onopen = () => {
+      liveDataWebsocket.send(JSON.stringify({
+        datatype: "live_data",
+        data: {}
+      }))
+    }
+    liveDataWebsocket.onmessage = async (data) => {
+      data = await data.data.arrayBuffer()
+      //console.log(data)
+      let a = new Uint8Array(data)
+      for (let i = 0; i < a.length; i++) {
+        exportDataParser.processByte(a[i])
+      }
+    }
+    return () => {
+      if (liveDataWebsocket) liveDataWebsocket.close();
+    }
+  }, [liveDataWebsocket, exportDataParser])
+
+
+  useEffect(() => {
+    apiPost({
+      datatype: "control_reference_get_modules",
+      data: {}
+    }).then((msg: any) => {
+      setModuleToCategory(msg.data)
+    })
+  }, [])
+
+  return (
+    <LiveDataContext.Provider value={liveDataCallbacks}>
+      <div>
+        <Route exact path={`${match.path}`} component={ControlReferenceIndex} />
+        <Route exact path={`${match.path}/:moduleName`} render={() => <ControlReferenceForModule parentUrl={match.url} moduleNameToCategoryList={moduleToCategory} />} />
+        <Route exact path={`${match.path}/:moduleName/:categoryName`} render={() => <ControlReferenceCategory />} />
+      </div>
+    </LiveDataContext.Provider>
+  )
+}
+
+function ControlReferenceIndex() {
+  const [moduleNames, setModuleNames] = React.useState<string[]>([])
+  const [modules, setModules] = React.useState<any>({})
+
+  useEffect(() => {
     apiPost({
       datatype: "control_reference_get_modules",
       data: {}
     }).then((msg: any) => {
       let names = Object.keys(msg.data)
       names.sort()
-      this.setState({
-        moduleNames: names,
-        moduleToCategory: msg.data
-      })
+      setModuleNames(names)
+      setModules(msg.data)
     })
-  }
+  }, [])
 
-  componentWillUnmount() {
-  }
-
-  getCategoriesFromModuleName = (moduleName: string) => this.state.moduleToCategory[moduleName];
-
-  render() {
-    return (
-      <div>
-        <Route exact path={`${this.props.match.path}`} component={ControlReferenceIndex} />
-        <Route exact path={`${this.props.match.path}/:moduleName`} render={() => <ControlReferenceForModule parentUrl={this.props.match.url} moduleNameToCategoryList={this.state.moduleToCategory} />} />
-        <Route exact path={`${this.props.match.path}/:moduleName/:categoryName`} render={() => <ControlReferenceCategory />} />
-      </div>
-    )
-  }
+  return (
+    <div>
+      {
+        moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
+      }
+    </div>
+  )
 }
 
-class ControlReferenceIndex extends React.Component<{}, { moduleNames: string[], modules: any }> {
-  constructor(props: any) {
-    super(props)
-    this.state = {
-      moduleNames: [],
-      modules: {}
-    }
-  }
-  componentDidMount() {
-    apiPost({
-      datatype: "control_reference_get_modules",
-      data: {}
-    }).then((msg: any) => {
-      let names = Object.keys(msg.data)
-      names.sort()
-      this.setState({
-        moduleNames: names,
-        modules: msg.data
-      })
-    })
-  }
-  render() {
-    return (
-      <div>
-        {
-          this.state.moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={this.state.modules[name]} />)
-        }
-      </div>
-    )
-  }
-}
 
-class IndexCard extends React.Component<{ moduleName: string, categories: string[] }, {}> {
-  render() {
-    return (
-
-      <Route render={({ match }) =>
-
-        <div className="" style={{ display: "block", float: "left", padding: "1em" }}>
-          <Link to={match.path + '/' + encodeURIComponent(this.props.moduleName)}><h4>{this.props.moduleName}</h4></Link>
-        </div>
-
-      } />
-
-    )
-  }
+function IndexCard(props: { moduleName: string, categories: string[] }) {
+  const match = useRouteMatch() as any;
+  return (
+    <div className="" style={{ display: "block", float: "left", padding: "1em" }}>
+      <Link to={match.path + '/' + encodeURIComponent(props.moduleName)}><h4>{props.moduleName}</h4></Link>
+    </div>
+  )
 }
 
 function ControlReferenceForModule(props: { moduleNameToCategoryList: any, parentUrl: string }) {
@@ -147,13 +178,16 @@ function ControlReferenceCategory() {
   let params = useParams<{ moduleName: string, categoryName: string }>()
   let [ioElements, setIOElements] = useState<any>([]);
 
+
+  let [moduleName, categoryName] = [params.moduleName, params.categoryName].map(decodeURIComponent)
+
   // load list of IOElements when the component is loaded
   useEffect(() => {
     apiPost({
       datatype: "control_reference_query_ioelements",
       data: {
-        module: params.moduleName,
-        category: params.categoryName
+        module: moduleName,
+        category: decodeURIComponent(categoryName)
       }
     }).then((msg: any) => {
       const compareByKey = (a: TIOElement, b: TIOElement) => {
@@ -167,12 +201,12 @@ function ControlReferenceCategory() {
       msg.data.sort(compareByKey);
       setIOElements(msg.data);
     })
-  }, [params.moduleName, params.categoryName])
+  }, [moduleName, categoryName])
 
 
   return (
     <div>
-      <h3><Link to='/controlreference'>Control Reference:</Link> <Link to={'/controlreference/' + encodeURIComponent(params.moduleName)}>{params.moduleName}</Link>: {params.categoryName}</h3>
+      <h3><Link to='/controlreference'>Control Reference:</Link> <Link to={'/controlreference/' + encodeURIComponent(params.moduleName)}>{moduleName}</Link>: {categoryName}</h3>
 
       {ioElements.map((elem: any) => <IOElementDocumentation key={elem.name} item={elem} />)}
 
@@ -198,7 +232,7 @@ function IOElementDocumentation(props: { item: TIOElement }) {
     "IntegerBuffer",
   ];
   // take a list of inputs and transform it into a list of { CodeSnippet, Description } pairs
-  let inputSnippets: Array<SnippetDescriptionPair> = props.item.inputs.flatMap(input => getInputCodeSnippets(props.item, input).map(snippet => ({snippet, description: input.description})));
+  let inputSnippets: Array<SnippetDescriptionPair> = props.item.inputs.flatMap(input => getInputCodeSnippets(props.item, input).map(snippet => ({ snippet, description: input.description })));
   const compareByCodeSnippetPrecedence = (a: SnippetDescriptionPair, b: SnippetDescriptionPair) => {
     let aIdx = inputSnippetPrecedence.indexOf(a.snippet.key as string);
     let bIdx = inputSnippetPrecedence.indexOf(b.snippet.key as string);
@@ -208,25 +242,37 @@ function IOElementDocumentation(props: { item: TIOElement }) {
 
   let integerOutputs = props.item.outputs.filter(o => o.type === "integer");
   let stringOutputs = props.item.outputs.filter(o => o.type === "string");
-    
-  let integerOutputSnippets: Array<SnippetDescriptionPair> = integerOutputs.flatMap(output =>getOutputCodeSnippets(props.item, output).map(snippet => ({snippet, description: output.description})));
-  let stringOutputSnippets: Array<SnippetDescriptionPair> = stringOutputs.flatMap(output => getOutputCodeSnippets(props.item, output).map(snippet => ({snippet, description: output.description})));
+
+  let integerOutputSnippets: Array<SnippetDescriptionPair> = integerOutputs.flatMap(output => getOutputCodeSnippets(props.item, output).map(snippet => ({ snippet, description: output.description })));
+  let stringOutputSnippets: Array<SnippetDescriptionPair> = stringOutputs.flatMap(output => getOutputCodeSnippets(props.item, output).map(snippet => ({ snippet, description: output.description })));
+
+  let outputElements: ReactElement[] = []
+  if (integerOutputSnippets.length > 0) {
+    outputElements.push(<div key="intOutput" className="outputWrapper">
+      <CodeSnippetSelector descriptionPrefix={<b>Integer Output: </b>} snippetDescriptionPairs={integerOutputSnippets} />
+      <LiveOutputData output={props.item.outputs.find(out => out.type === "integer") as TOutputElement} />
+    </div>);
+  }
+  if (stringOutputSnippets.length > 0) {
+    outputElements.push(<div key="strOutput" className="outputWrapper">
+      <CodeSnippetSelector descriptionPrefix={<b>String Output: </b>} snippetDescriptionPairs={stringOutputSnippets} />
+      <LiveOutputData output={props.item.outputs.find(out => out.type === "string") as TOutputElement} />
+    </div>);
+  }
+
   return (
     <div className="control">
       <div className="controlheader">
+        <span id={props.item.name} />
         <b>{props.item.description}</b>
         <span className="controlidentifier">{props.item.module}/{props.item.name}</span>
       </div>
       <div className="controlbody">
-        <div className="inputs">
-          <CodeSnippetSelector descriptionPrefix={<b>Input: </b>} snippetDescriptionPairs={inputSnippets}/>
+        <div className="inputWrapper">
+          <CodeSnippetSelector descriptionPrefix={<b>Input: </b>} snippetDescriptionPairs={inputSnippets} />
+          <LiveInputControls control={props.item} />
         </div>
-        <div className="outputs">
-          <CodeSnippetSelector descriptionPrefix={<b>Integer Output: </b>} snippetDescriptionPairs={integerOutputSnippets} />
-        </div>
-        <div className="outputs">
-          <CodeSnippetSelector descriptionPrefix={<b>String Output: </b>} snippetDescriptionPairs={stringOutputSnippets} />
-        </div>
+        {outputElements}
       </div>
     </div>
   )
@@ -322,7 +368,7 @@ function CodeSnippetSelector(props: { snippetDescriptionPairs: Array<SnippetDesc
       }
     }
     (snippetRef.current as HTMLDivElement).classList.add("copied");
-    setTimeout(() => {(snippetRef.current as HTMLDivElement).classList.remove("copied");}, 150)
+    setTimeout(() => { (snippetRef.current as HTMLDivElement).classList.remove("copied"); }, 150)
   }
 
   let tabSelectors: ReactElement[] = [];
@@ -333,7 +379,7 @@ function CodeSnippetSelector(props: { snippetDescriptionPairs: Array<SnippetDesc
       cursor: "hand"
     }
     let activeClass = isSelected ? " active-tab-handle" : "";
-    tabSelectors.push(<button className={"snippet-tab-handle"+activeClass} key={snippet.key as string} style={style} onClick={() => setActiveTab(snippet.key)}>{snippet.key}</button>)
+    tabSelectors.push(<button className={"snippet-tab-handle" + activeClass} key={snippet.key as string} style={style} onClick={() => setActiveTab(snippet.key)}>{snippet.key}</button>)
   }
 
   if (tabSelectors.length === 1) tabSelectors = [];
@@ -341,10 +387,10 @@ function CodeSnippetSelector(props: { snippetDescriptionPairs: Array<SnippetDesc
   let activeSnippetTuple = snippetDescriptionPairs.find(x => x.snippet.key === activeTabKey) as SnippetDescriptionPair; // type assertion to guarantee that this will not be null
 
   return (
-    <React.Fragment>
+    <div className="snippetSelector">
       <div>{tabSelectors} <span className="io-description">{props.descriptionPrefix}{activeSnippetTuple.description}</span></div>
       <div className="current-snippet" ref={snippetRef} onClick={copyToClipboard}>{activeSnippetTuple.snippet}</div>
-    </React.Fragment>
+    </div>
   )
 }
 
@@ -444,7 +490,7 @@ function StringBufferSnippet(props: { control: TIOElement, output: TOutputElemen
   return <code>void on{idCamelCase(control.name)}Change(char* newValue) {'{'}<br />
     &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
     {'}'}<br />
-    DcsBios::StringBuffer&lt;{output.length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
+    DcsBios::StringBuffer&lt;{output.max_length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
 }
 
 function IntegerBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
@@ -455,5 +501,166 @@ function IntegerBufferSnippet(props: { control: TIOElement, output: TOutputEleme
     DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
 }
 
+
+
+// Live Data
+function LiveOutputData(props: { output: TOutputElement }) {
+  if (props.output.type === "integer") {
+    return LiveIntegerData(props)
+  } else if (props.output.type === "string") {
+    return LiveStringData(props)
+  } else {
+    return null;
+  }
+}
+
+function LiveIntegerData(props: { output: TOutputElement }) {
+  const output = props.output;
+  const [hasValue, setHasValue] = useState(false)
+  const [value, setValue] = useState(0)
+
+  const liveDataCtx = useContext(LiveDataContext)
+
+  useEffect(() => {
+    const callback = (_: number, data: ArrayBuffer) => {
+      setValue((new Uint16Array(data))[0])
+      setHasValue(true)
+    }
+    liveDataCtx.subscribeExportCallback(output.address, callback);
+    return (() => { liveDataCtx.unsubscribeExportCallback(callback); })
+  }, [output.address, liveDataCtx]);
+
+  var displayValue = value;
+  displayValue &= output.mask;
+  displayValue >>= output.shift_by;
+
+  return (
+    <div className="live-output">
+      {hasValue ? displayValue : "no data yet"}
+    </div>
+  )
+}
+
+function LiveStringData(props: { output: TOutputElement }) {
+  const output = props.output;
+  const [hasValue, setHasValue] = useState(false)
+  const [value, setValue] = useState(() => new Uint8Array(0))
+
+  const liveDataCtx = useContext(LiveDataContext)
+
+  useEffect(() => {
+    let changed = false;
+    const buffer = new ArrayBuffer(output.max_length)
+    const bufferArray = new Uint8Array(buffer)
+    const dataCallback = (address: number, data: ArrayBuffer) => {
+      const offset = address - output.address;
+      const newDataArray = new Uint8Array(data)
+      bufferArray[offset] = newDataArray[0];
+      if (offset < output.max_length - 1) {
+        bufferArray[offset + 1] = newDataArray[1];
+      }
+      changed = true;
+    }
+    const endOfUpdateCallback = () => {
+      if (!changed) return;
+      setValue(new Uint8Array(bufferArray));
+      setHasValue(true)
+    }
+
+    for (let i = 0; i <= output.address + output.max_length; i += 2) {
+      liveDataCtx.subscribeExportCallback(output.address + i, dataCallback)
+    }
+    liveDataCtx.subscribeEndOfUpdateCallback(endOfUpdateCallback)
+
+    return (() => {
+      liveDataCtx.unsubscribeExportCallback(dataCallback)
+      liveDataCtx.unsubscribeEndOfUpdateCallback(endOfUpdateCallback)
+    })
+  }, [output.max_length, output.address, liveDataCtx])
+
+  let displayValue = "";
+  if (hasValue) {
+    var str = "";
+    for (var i = 0; i < value.length; i++) {
+      if (value[i] === 0) break;
+      str = str + String.fromCharCode(value[i]);
+    }
+    displayValue = str
+  }
+
+  return (<div className="live-output">{hasValue ? displayValue.toString() : "no data yet"}</div>);
+}
+
+function LiveInputControls(props: { control: TIOElement }) {
+  let controls: Array<ReactElement> = []
+
+  for (let input of props.control.inputs) {
+    if (input.interface === "action") {
+      controls.push(<LiveActionInputControls key={input.interface} control={props.control} input={input} />)
+    } else if (input.interface === "fixed_step") {
+      controls.push(<LiveFixedStepInputControls key={input.interface} control={props.control} input={input} />)
+    } else if (input.interface === "variable_step") {
+      controls.push(<LiveVariableStepInputControls key={input.interface} control={props.control} input={input} />)
+    } else if (input.interface === "set_state") {
+      controls.push(<LiveSetStateInputControls key={input.interface} control={props.control} input={input} />)
+    }
+  }
+  controls.sort((a, b) => {
+    const order = ["action", "fixed_step", "variable_step", "set_state"]
+    let aIdx = order.indexOf(a.key as string)
+    let bIdx = order.indexOf(b.key as string)
+    return aIdx - bIdx
+  })
+
+  return (
+    <div className="live-controls">
+      Commands:<br />
+      {controls}
+    </div>
+  )
+}
+
+
+function LiveSetStateInputControls(props: { control: TIOElement, input: TInputElement }) {
+  let { control, input } = props;
+  const liveDataCtx = useContext(LiveDataContext)
+  const [targetValue, setTargetValue] = useState(0);
+  return (
+    <div className="fixed-step-controls">
+      <input type="range" value={targetValue} max={input.max_value} onChange={(e) => setTargetValue(parseInt(e.target.value))} /><br />
+      <button onClick={() => liveDataCtx.sendInputData(control.name + " " + targetValue.toString())}>Set to {targetValue.toString()}</button>
+    </div>
+  )
+}
+
+function LiveActionInputControls(props: { control: TIOElement, input: TInputElement }) {
+  const liveDataCtx = useContext(LiveDataContext)
+  return (
+    <div className="action-controls">
+      <button onClick={() => liveDataCtx.sendInputData(props.control.name + " " + props.input.argument)}>{props.input.argument}</button>
+    </div>
+  );
+}
+
+function LiveFixedStepInputControls(props: { control: TIOElement, input: TInputElement }) {
+  const liveDataCtx = useContext(LiveDataContext)
+  return (
+    <div className="fixed-step-controls">
+      <button onClick={() => liveDataCtx.sendInputData(props.control.name + " DEC")}>DEC</button>
+      <button onClick={() => liveDataCtx.sendInputData(props.control.name + " INC")}>INC</button>
+    </div>
+  )
+}
+function LiveVariableStepInputControls(props: { control: TIOElement, input: TInputElement }) {
+  const liveDataCtx = useContext(LiveDataContext)
+  const [delta, setDelta] = useState(props.input.suggested_step || 3200);
+  return (
+    <div className="variable-step-controls">
+      <input type="range" min="0" max={props.input.max_value.toString()} value={delta.toString()} onChange={(e) => setDelta(parseInt(e.target.value))} /><br />
+      <button onClick={() => liveDataCtx.sendInputData(props.control.name + " -" + delta.toString())}>-{delta}</button>
+      <button onClick={() => liveDataCtx.sendInputData(props.control.name + " +" + delta.toString())}>+{delta}</button>
+    </div>
+  )
+}
 
 export default ControlReference

@@ -34,7 +34,7 @@ type Input struct {
 type Output struct {
 	Address     uint16 `json:"address"`
 	Mask        uint16 `json:"mask"`
-	Length      uint16 `json:"length"`
+	MaxLength   uint16 `json:"max_length"`
 	Description string `json:"description"`
 	MaxValue    uint16 `json:"max_value"`
 	ShiftBy     uint16 `json:"shift_by"`

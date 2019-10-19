@@ -62,7 +62,6 @@ class SerialPort extends React.Component<SerialPortProps, {}> {
       if (this.props.portState.autoConnect) stateClasses.push("autoconnect-enabled");
 
       var connectedState: any = ""
-      var connectedClass: string = ""
       let shouldBeConnected = this.props.portState.shouldBeConnected
       let isConnected = this.props.portState.isConnected
       

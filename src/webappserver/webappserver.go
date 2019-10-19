@@ -77,7 +77,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "internal error while handling request: %v", err)
 			return
 		}
-		w.Write(<-responseChan)
+		w.Write((<-responseChan).Data)
 		return
 	}
 

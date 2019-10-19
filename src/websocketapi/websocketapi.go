@@ -82,18 +82,21 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	go func() {
 		for resp := range responses {
-			conn.WriteMessage(websocket.TextMessage, resp)
+			if resp.IsUTF8 {
+				conn.WriteMessage(websocket.TextMessage, resp.Data)
+			} else {
+				conn.WriteMessage(websocket.BinaryMessage, resp.Data)
+			}
 		}
 	}()
 	go func() {
 		for {
-			msgType, fmsg, followupErr := conn.ReadMessage()
+			_, fmsg, followupErr := conn.ReadMessage()
 			if followupErr != nil {
 				// WebSocket was closed
 				break
 			}
-			fmt.Println("websocket followup msg received:", msgType)
-			followupJson <- fmsg
+			followupJson <- []byte(fmsg)
 		}
 		close(followupJson)
 	}()

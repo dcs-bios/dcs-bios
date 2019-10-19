@@ -11,6 +11,7 @@ import (
 	"dcs-bios.a10c.de/dcs-bios-hub/dcsconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
+	"dcs-bios.a10c.de/dcs-bios-hub/livedataapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/luaconsole"
 	"dcs-bios.a10c.de/dcs-bios-hub/serialconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/webappserver"
@@ -62,7 +63,7 @@ func startServices() {
 	go luaConsole.Run()
 
 	// connection to DCS-BIOS Lua Script via TCP port 7778
-	dcsConn := dcsconnection.New()
+	dcsConn := dcsconnection.New(jsonAPI)
 	go dcsConn.Run()
 
 	// serial port connections
@@ -70,15 +71,26 @@ func startServices() {
 	portManager.SetupJSONApi(jsonAPI)
 	go portManager.Run()
 
+	// live data API endpoint
+	lda := livedataapi.NewLiveDataApi(jsonAPI)
+
 	// transmit data between DCS and the serial ports
 	go func() {
+		fmt.Println("main loop starting")
 		for {
 			select {
+			case icstr := <-lda.InputCommands:
+				cmd := append(icstr, byte('\n'))
+				dcsConn.TrySend(cmd)
+
 			case ic := <-portManager.InputCommands:
 				cmd := append(ic.Command, byte('\n'))
 				dcsConn.TrySend(cmd)
+
 			case data := <-dcsConn.ExportData:
 				portManager.Write(data)
+				lda.WriteExportData(data)
+
 			}
 		}
 	}()

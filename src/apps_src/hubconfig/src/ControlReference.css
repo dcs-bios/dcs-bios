@@ -54,6 +54,14 @@ div.input, div.output {
 	font-size: 10pt;
 }
 
+.fixed-step-controls, .variable-step-controls, .action-controls, .set-state-controls {
+	border: 1px solid gray;
+	border-radius: 3px;
+	margin: 5px;
+	padding: 3px;
+
+}
+
 div.controlheader {
 	background-color: lightgreen;
 	color: black;
@@ -112,3 +120,20 @@ b.pinNo {
     color: blue;
 }
 
+
+
+.inputWrapper, .outputWrapper {
+	display: grid;
+	grid-template-columns: auto 15em;
+	column-gap: 1em;
+}
+
+.outputWrapper .snippetSelector {
+	grid-column-start: 1;
+}
+.outputWrapper .live-output {
+	grid-column-start: 2;
+	padding: 1em;
+	margin-top: 1em;
+	text-align: center;
+}
