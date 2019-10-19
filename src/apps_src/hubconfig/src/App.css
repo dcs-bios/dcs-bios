@@ -14,3 +14,11 @@
 .content {
     grid-column-start: 2;
 }
+
+a, a:visited {
+    text-decoration: none;
+    color: blue;
+}
+a:hover {
+    text-decoration: underline;
+}
