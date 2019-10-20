@@ -1,0 +1,154 @@
+code {
+	color: black;
+	margin-bottom: 1em;
+	background-color: lightyellow;
+	border: 1px solid black;
+	padding: 5px;
+	display: block;
+	font-size: 12pt;
+	font-family: Courier New;
+}
+
+code:hover {
+	border: 1px solid blue;
+	text-decoration: italic;
+	background-color: rgb(232, 253, 255);
+	transition: 0.1s;
+}
+code:hover::before {
+	content: 'click to copy to clipboard';
+	float: right;
+	background-color: blue;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
+	font-family: sans-serif;
+	font-weight: bold;
+	display: block;
+	
+}
+
+.copied code:hover::before {
+	content: 'copied.';
+	float: right;
+	background-color: blue;
+	color: white;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
+	font-family: sans-serif;
+	font-weight: bold;
+	display: block;
+}
+.copied code:hover {
+	background-color: lightyellow;
+}
+
+div.control {
+	margin-top: 20px;
+}
+
+div.input, div.output {
+	margin: 5px;
+	font-size: 10pt;
+}
+
+.fixed-step-controls, .variable-step-controls, .action-controls, .set-state-controls {
+	border: 1px solid gray;
+	background-color: white;
+	border-radius: 3px;
+	margin: 5px;
+	padding: 3px;
+
+}
+
+div.control {
+	background-color: #eee;
+	border-radius: 10px;
+}
+
+div.controlheader {
+	background-color: lightgreen;
+	color: black;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+    padding: 5px;
+    margin-bottom: 7px;
+}
+div.controlbody {
+	background-color: #eee;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	padding: 5px;
+}
+.controlidentifier {
+    background-color: lightyellow;
+    padding-left: 4px;
+    padding-right: 4px;
+    border-radius: 2px;
+    float: right;
+}
+.controldescription {
+	font-weight: bold;
+}
+
+.arrow {
+	display: inline-block;
+	margin: 5px;
+	font-size: 30px;
+}
+
+b.pinNo {
+    color: red;
+}
+
+.snippet-tab-handle {
+    margin-right: 1em;
+    cursor: pointer;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+	border-color: black;
+	background-color: white;
+    padding: 3px;
+	margin-right: 7px;
+	border-bottom: none;
+}
+.snippet-tab-handle.active-tab-handle {
+	font-weight: bold;
+	background-color: lightyellow;
+}
+
+.snippet-tab-handle:hover {
+    background-color: lightyellow;
+    color: blue;
+}
+
+
+
+.inputWrapper, .outputWrapper {
+	display: grid;
+	grid-template-columns: auto 15em;
+	column-gap: 1em;
+}
+
+.outputWrapper .snippetSelector {
+	grid-column-start: 1;
+}
+.outputWrapper .live-output {
+	grid-column-start: 2;
+	padding: 1em;
+	margin-top: 1em;
+	text-align: center;
+}
+
+
+.controlreference-index-module {
+	display: block;
+	float: left;
+	margin-right: 2em;
+	padding: 1em;
+}

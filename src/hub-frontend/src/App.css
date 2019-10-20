@@ -1,0 +1,24 @@
+.app {
+    display: grid;
+    grid-template-columns: 15em auto;
+}
+
+.nav {
+    grid-column-start: 1;
+}
+.nav > ul {
+    line-height: 1.5;
+    list-style-type: none;
+}
+
+.content {
+    grid-column-start: 2;
+}
+
+a, a:visited {
+    text-decoration: none;
+    color: blue;
+}
+a:hover {
+    text-decoration: underline;
+}
