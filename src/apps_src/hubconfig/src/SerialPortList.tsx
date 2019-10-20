@@ -149,6 +149,7 @@ type SerialPortListState = {
             ([portName, portState]) => <SerialPort key={portName} portName={portName} portState={portState}/>
           )}
         </ul>
+        <div style={{clear: "both"}}></div>
       </div>);
     }
   }
