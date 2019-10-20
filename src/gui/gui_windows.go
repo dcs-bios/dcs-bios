@@ -36,9 +36,10 @@ func Run(onReady func()) {
 		mHeader.Disable()
 		systray.AddSeparator()
 		mURL := systray.AddMenuItem("Open web interface", "")
+		systray.AddSeparator()
 		mToggleExternalAccess := systray.AddMenuItem("Enable access over the network", "Allow the web interface and API to be accessed over the network.")
 		mLuaConsoleEnabled := systray.AddMenuItem("Enable Lua Console", "Enable the Lua console. Warning: this allows anyone with access to the web interface to execute arbitrary code on your machine!")
-
+		systray.AddSeparator()
 		mQuit := systray.AddMenuItem("Quit", "Quit")
 
 		go func() {
