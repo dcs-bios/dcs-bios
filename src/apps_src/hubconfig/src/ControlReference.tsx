@@ -122,7 +122,7 @@ function ControlReference() {
   )
 }
 
-function ControlReferenceIndex() {
+function ControlReferenceIndex(props: { showInstalledOnly: boolean }) {
   const [moduleNames, setModuleNames] = React.useState<string[]>([])
   const [modules, setModules] = React.useState<any>({})
 
@@ -139,7 +139,7 @@ function ControlReferenceIndex() {
   }, [])
 
 
-  let [ installedModuleNamesApiResult, setInstalledModuleNamesApiResult ] = useState<string[]>([]);
+  let [installedModuleNamesApiResult, setInstalledModuleNamesApiResult] = useState<string[]>([]);
   useEffect(() => {
     apiPost({
       datatype: "get_installed_module_names",
@@ -153,50 +153,55 @@ function ControlReferenceIndex() {
   // Look up the proper capitalization in the list of all available modules.
   const installedModuleNames = []
   let installedModulesElement: ReactElement | null = null
-  if (installedModuleNamesApiResult.length >0 && moduleNames.length >0) {
+  if (installedModuleNamesApiResult.length > 0 && moduleNames.length > 0) {
     for (let moduleName of moduleNames) {
       if (installedModuleNamesApiResult.indexOf(moduleName.toLowerCase()) >= 0) {
         installedModuleNames.push(moduleName)
       }
     }
 
-    installedModulesElement = ( <div>
-      <h3>Installed Modules</h3>
+    installedModulesElement = (<div>
+      <h2>Installed Modules</h2>
       {
         installedModuleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
       }
-    </div> );
+    </div>);
+  }
+
+  
+  let allModulesElement: ReactElement | null = null;
+  if (!props.showInstalledOnly) {
+    allModulesElement = (
+      <div>
+        <h2>All Available Modules</h2>
+        {
+          moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
+        }
+      </div>);
   }
 
   return (
     <div>
-      
       {installedModulesElement}
-      <div style={{clear: "both"}}></div>
-      <div>
-      <h3>All Available Modules</h3>
-      {
-        moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
-      }
-      </div>
+      <div style={{ clear: "both" }}></div>
+      {allModulesElement}
     </div>
   )
 }
 
 
 function IndexCard(props: { moduleName: string, categories: string[] }) {
-  const match = useRouteMatch() as any;
   return (
     <div className="controlreference-index-module">
-      <Link to={match.path + '/' + encodeURIComponent(props.moduleName)}><b>{props.moduleName}</b></Link>
+      <Link to={'/controlreference/' + encodeURIComponent(props.moduleName)}><b>{props.moduleName}</b></Link>
     </div>
   )
 }
 
 function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: string }) {
-  const [ searchResults, setSearchResults ] = useState<TIOElement[]>([]);
-  const [ loading, setLoading ] = useState(true);
-  const [ showAll, setShowAll ] = useState(false);
+  const [searchResults, setSearchResults] = useState<TIOElement[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAll, setShowAll] = useState(false);
   const match = useRouteMatch()
 
   useEffect(() => {
@@ -211,9 +216,9 @@ function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: 
       }
     }).then(data => {
       if (!ignore) {
-          setShowAll(false)
-          setSearchResults((data as any).data)
-          setLoading(false)
+        setShowAll(false)
+        setSearchResults((data as any).data)
+        setLoading(false)
       }
     })
     return () => { ignore = true; }
@@ -230,7 +235,7 @@ function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: 
     }
     (searchResultsByCategory.get(elem.category) as TIOElement[]).push(elem)
   }
-  
+
   let sortedSearchResultCategories = new Array<string>()
   searchResultsByCategory.forEach((_, k) => sortedSearchResultCategories.push(k))
   sortedSearchResultCategories.sort()
@@ -250,7 +255,7 @@ function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: 
     let categoryListItems: ReactElement[] = []
     for (let categoryName of sortedSearchResultCategories) {
       if (count === -1) break;
-      
+
       let listItemsInCategory: ReactElement[] = []
       let searchResultsInCategory = searchResultsByCategory.get(categoryName) as TIOElement[]
 
@@ -258,7 +263,7 @@ function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: 
       for (let elem of searchResultsInCategory) {
         if (count === -1) break;
         listItemsInCategory.push(<li key={elem.name}>
-          <HashLink key={elem.name} to={(match ? match.url : "") +'/'+encodeURIComponent(categoryName)+'#'+elem.name}>
+          <HashLink key={elem.name} to={(match ? match.url : "") + '/' + encodeURIComponent(categoryName) + '#' + elem.name}>
             <b>{props.moduleName}/{elem.name}:</b> {elem.description}
           </HashLink>
         </li>)
@@ -277,7 +282,7 @@ function ControlReferenceSearchResults(props: { searchTerm: string, moduleName: 
       </li>)
     }
 
-    return <ul>{categoryListItems}<br/>{showMoreButton}</ul>
+    return <ul>{categoryListItems}<br />{showMoreButton}</ul>
   }
 
   return (
@@ -811,4 +816,4 @@ function LiveVariableStepInputControls(props: { control: TIOElement, input: TInp
   )
 }
 
-export default ControlReference
+export { ControlReference, ControlReferenceIndex }
