@@ -178,9 +178,8 @@ func GetExportLuaSetupLine() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	luaScriptDir := filepath.Dir(executableFile) + string(os.PathSeparator)
-	entrypointLuaFile := filepath.Join(luaScriptDir, "BIOS.lua")
-	exportLuaSetupLine := "BIOS = {}; BIOS.LuaScriptDir = [[" + entrypointLuaFile + "]];pcall(function() dofile(BIOS.LuaScriptDir..[[BIOS.lua]]) end) --[[DCS-BIOS Automatic Setup]]"
+	luaScriptDir := filepath.Join(filepath.Dir(executableFile), "dcs-lua") + string(os.PathSeparator)
+	exportLuaSetupLine := "BIOS = {}; BIOS.LuaScriptDir = [[" + luaScriptDir + "]];pcall(function() dofile(BIOS.LuaScriptDir..[[BIOS.lua]]) end) --[[DCS-BIOS Automatic Setup]]"
 	return exportLuaSetupLine, nil
 }
 
