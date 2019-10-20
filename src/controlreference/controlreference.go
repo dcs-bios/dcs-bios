@@ -182,6 +182,7 @@ func (crs *ControlReferenceStore) loadFile(filename string) {
 		log.Printf("error loading module %s: %v", moduleName, err)
 		return
 	}
+	defer f.Close()
 	dec := json.NewDecoder(f)
 	dec.Decode(&module)
 
