@@ -1,0 +1,35 @@
+{
+  "product": "DCS-BIOS",
+  "company": "DCS-BIOS Contributors",
+  "license": "LICENSE",
+  "upgrade-code": "efddcc42-2f24-4df4-933a-50fd2089eb74",
+  "files": {
+    "guid": "89d33e87-d1e7-4626-816b-0a2b20eb52c1",
+    "items": [
+      "dcs-bios-hub.exe"
+    ]
+  },
+  "directories": [
+    "dcs-lua",
+    "apps",
+    "control-reference-json"
+  ],
+  "env": {
+    "guid": "",
+    "vars": []
+  },
+  "shortcuts": {
+    "guid": "c52a711d-0905-4ff0-b9ef-dd6a5cca35e7",
+    "items": [
+      {
+        "name": "DCS-BIOS Hub",
+        "description": "Run DCS-BIOS",
+        "target": "[INSTALLDIR]\\dcs-bios-hub.exe",
+        "wdir": "INSTALLDIR",
+        "arguments": "",
+        "icon": "dcsbios-channel-logo.ico"
+      }
+    ]
+  },
+  "choco": {}
+}

@@ -1,6 +1,7 @@
 module dcs-bios.a10c.de/dcs-bios-hub
 
 require (
+	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/cratonica/trayhost v0.0.0-20150112162955-98495206fd96
 	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect
 	github.com/getlantern/errors v0.0.0-20180829142810-e24b7f4ff7c7 // indirect
@@ -11,11 +12,16 @@ require (
 	github.com/getlantern/systray v0.0.0-20181206010516-eaad7114094d
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/gorilla/websocket v1.4.0
+	github.com/mattn/go-zglob v0.0.1 // indirect
+	github.com/mh-cbon/go-msi v0.0.0-20170907180328-7f05345d485b // indirect
+	github.com/mh-cbon/stringexec v0.0.0-20160727103857-5a080a1a4118 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20150712133111-4e1c5567d7c2 // indirect
 	github.com/saibing/bingo v1.1.0 // indirect
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shurcooL/trayhost v0.0.0-20181020202213-114974ef9e16
 	github.com/skratchdot/open-golang v0.0.0-20190104022628-a2dfa6d0dab6
 	github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07
+	github.com/urfave/cli v1.22.1 // indirect
 	github.com/vulcand/oxy v1.0.0
 	golang.org/x/sys v0.0.0-20190422165155-953cdadca894
 )
