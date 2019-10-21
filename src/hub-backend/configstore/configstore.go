@@ -59,3 +59,7 @@ func Store(filename string, data interface{}) error {
 	file.Close()
 	return nil
 }
+
+func OpenFile(filename string) (*os.File, error) {
+	return os.Open(getFilePath(filename))
+}

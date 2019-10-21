@@ -7,12 +7,15 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"strings"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
 	"dcs-bios.a10c.de/dcs-bios-hub/controlreference"
 	"dcs-bios.a10c.de/dcs-bios-hub/dcsconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/dcssetup"
+	"dcs-bios.a10c.de/dcs-bios-hub/exportdataparser"
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
+	"dcs-bios.a10c.de/dcs-bios-hub/inputmapping"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/livedataapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/luaconsole"
@@ -105,19 +108,41 @@ func startServices() {
 	dcssetup.RegisterApi(jsonAPI)
 	dcssetup.GetInstalledModulesList()
 
+	inputmap := &inputmapping.InputRemapper{}
+	inputmap.LoadFromConfigStore()
+
+	exportDataParser := &exportdataparser.ExportDataParser{}
+	currentUnitType := "NONE"
+	exportDataParser.SubscribeStringBuffer(0, 16, func(nameBytes []byte) {
+		name := strings.Trim(string(nameBytes), " ")
+		if currentUnitType != name {
+			currentUnitType = name
+			statusapi.WithStatusInfoDo(func(status *statusapi.StatusInfo) {
+				status.UnitType = name
+			})
+			inputmap.SetActiveAircraft(name)
+		}
+	})
+
 	// transmit data between DCS and the serial ports
 	go func() {
 		for {
 			select {
 			case icstr := <-lda.InputCommands:
-				cmd := append(icstr, byte('\n'))
+				cmdStr := inputmap.Remap(string(icstr))
+				cmd := []byte(cmdStr + "\n")
 				dcsConn.TrySend(cmd)
 
 			case ic := <-portManager.InputCommands:
-				cmd := append(ic.Command, byte('\n'))
+				cmdStr := inputmap.Remap(string(ic.Command))
+				cmd := []byte(cmdStr + "\n")
+
 				dcsConn.TrySend(cmd)
 
 			case data := <-dcsConn.ExportData:
+				for _, b := range data {
+					exportDataParser.ProcessByte(b)
+				}
 				portManager.Write(data)
 				lda.WriteExportData(data)
 

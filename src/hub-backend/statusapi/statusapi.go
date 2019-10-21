@@ -16,6 +16,7 @@ type StatusInfo struct {
 	IsLuaConsoleConnected          bool   `json:"isLuaConsoleConnected"`
 	IsLuaConsoleEnabled            bool   `json:"isLuaConsoleEnabled"`
 	IsExternalNetworkAccessEnabled bool   `json:"isExternalNetworkAccessEnabled"`
+	UnitType                       string `json:"unittype"`
 }
 
 var currentStatus StatusInfo
