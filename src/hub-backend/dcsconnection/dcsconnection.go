@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
+	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
 )
 
 type ChanWriter struct {
@@ -81,7 +82,11 @@ func (dc *DcsConnection) Run() {
 				dc.mutex.Lock()
 				dc.conn = conn
 				dc.state = StateConnected
+				statusapi.WithStatusInfoDo(func(status *statusapi.StatusInfo) {
+					status.IsDcsConnected = true
+				})
 				dc.mutex.Unlock()
+
 				break
 			}
 			// wait one second for the next connection attempt
@@ -99,14 +104,18 @@ func (dc *DcsConnection) Run() {
 			dcsConnectionClosed <- struct{}{}
 		}()
 
+		// wait until we want to close the connection or it is closed by DCS
 		select {
 		case <-dcsConnectionClosed:
 		case <-dc.done:
-			return
 		}
 
+		// close the connection and update status
 		dc.mutex.Lock()
 		dc.state = StateConnecting
+		statusapi.WithStatusInfoDo(func(status *statusapi.StatusInfo) {
+			status.IsDcsConnected = false
+		})
 		dc.conn.Close()
 		dc.conn = nil
 		dc.mutex.Unlock()
