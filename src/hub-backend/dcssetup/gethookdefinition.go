@@ -101,7 +101,7 @@ func getHookDefinition(name string) *hookDefinition {
 					success = true
 				else
 					result, success = net.dostring_in(env, resultStringCode)
-					log.write("Lua Console", log.INFO, "l94: success="..tostring(success))
+					--log.write("Lua Console", log.INFO, "l94: success="..tostring(success))
 				end
 				
 				if not success then
@@ -109,7 +109,7 @@ func getHookDefinition(name string) *hookDefinition {
 				end
 				
 				local firstNewlinePos = string.find(result, "\n")
-				log.write("Lua Console", log.INFO, "firstnewlinepos="..tostring(firstNewlinePos))
+				--log.write("Lua Console", log.INFO, "firstnewlinepos="..tostring(firstNewlinePos))
 				
 				local result_str = string.sub(result, firstNewlinePos+1)
 				local status_str = string.sub(result, 1, firstNewlinePos-1)
@@ -118,75 +118,75 @@ func getHookDefinition(name string) *hookDefinition {
 			
 			
 			
-			witchcraft = {}
+			dcsBiosLuaConsole = {}
 			
-			witchcraft.host = "localhost"
-			witchcraft.port = 3001
+			dcsBiosLuaConsole.host = "localhost"
+			dcsBiosLuaConsole.port = 3001
 			
-			witchcraft.state = "closed"
-			witchcraft.timeClosed = 0
-			witchcraft.timeOfLastSendAttempt = 0
+			dcsBiosLuaConsole.state = "closed"
+			dcsBiosLuaConsole.timeClosed = 0
+			dcsBiosLuaConsole.timeOfLastSendAttempt = 0
 			
 			local function reconnect()
-				log.write('Lua Console', log.INFO, "attempting to connect at real time "..tostring(DCS.getRealTime()))
-				if witchcraft.conn ~= nil then
-					witchcraft.conn:close()
+				--log.write('Lua Console', log.INFO, "attempting to connect at real time "..tostring(DCS.getRealTime()))
+				if dcsBiosLuaConsole.conn ~= nil then
+					dcsBiosLuaConsole.conn:close()
 				end
 			
-				witchcraft.state = "connecting"
-				witchcraft.txbuf = '{"type":"ping"}\n'
-				witchcraft.rxbuf = ""
-				witchcraft.conn = socket.tcp()
-				witchcraft.conn:settimeout(.0001)
-				witchcraft.conn:connect(witchcraft.host, witchcraft.port)
+				dcsBiosLuaConsole.state = "connecting"
+				dcsBiosLuaConsole.txbuf = '{"type":"ping"}\n'
+				dcsBiosLuaConsole.rxbuf = ""
+				dcsBiosLuaConsole.conn = socket.tcp()
+				dcsBiosLuaConsole.conn:settimeout(.0001)
+				dcsBiosLuaConsole.conn:connect(dcsBiosLuaConsole.host, dcsBiosLuaConsole.port)
 			end
 			
 			
 			local function step()
-				if witchcraft.state == "closed" then
-					if DCS.getRealTime() - witchcraft.timeClosed > 2 then
+				if dcsBiosLuaConsole.state == "closed" then
+					if DCS.getRealTime() - dcsBiosLuaConsole.timeClosed > 2 then
 						reconnect()
 					end
 				end
 				
-				--if witchcraft.txbuf == "" then
-				--	witchcraft.txbuf = witchcraft.txbuf .. '{"type":"ping"}\n'
+				--if dcsBiosLuaConsole.txbuf == "" then
+				--	dcsBiosLuaConsole.txbuf = dcsBiosLuaConsole.txbuf .. '{"type":"ping"}\n'
 				--else
-				--	--log.write("Lua Console", log.INFO, "txbuf has length "..tostring(string.len(witchcraft.txbuf)))
+				--	--log.write("Lua Console", log.INFO, "txbuf has length "..tostring(string.len(dcsBiosLuaConsole.txbuf)))
 				--end
-				if witchcraft.txbuf:len() > 0 then
-					witchcraft.timeOfLastSendAttempt = DCS.getRealTime()
+				if dcsBiosLuaConsole.txbuf:len() > 0 then
+					dcsBiosLuaConsole.timeOfLastSendAttempt = DCS.getRealTime()
 					local bytes_sent = nil
-					--local ret1, ret2, ret3 = witchcraft.conn:send(witchcraft.txbuf)
-					local bytes_sent, err_msg, err_bytes_sent = witchcraft.conn:send(witchcraft.txbuf)
+					--local ret1, ret2, ret3 = dcsBiosLuaConsole.conn:send(dcsBiosLuaConsole.txbuf)
+					local bytes_sent, err_msg, err_bytes_sent = dcsBiosLuaConsole.conn:send(dcsBiosLuaConsole.txbuf)
 					if bytes_sent == nil then
-						--env.info("could not send witchcraft: "..ret2)
+						--env.info("could not send dcsBiosLuaConsole: "..ret2)
 						if err_bytes_sent == 0 then
 							if err_msg == "closed" then
-			--					witchcraft.txbuf = '{"type":"ping"}\n'
-			--					witchcraft.rxbuf = ""
-			--					witchcraft.lastUnitUpdateTime = 0
-			--					witchcraft.conn = socket.tcp()
-			--					witchcraft.conn:settimeout(.0001)
-								log.write("Lua Console", log.INFO, "socket was closed")
-								witchcraft.state = "closed"
+			--					dcsBiosLuaConsole.txbuf = '{"type":"ping"}\n'
+			--					dcsBiosLuaConsole.rxbuf = ""
+			--					dcsBiosLuaConsole.lastUnitUpdateTime = 0
+			--					dcsBiosLuaConsole.conn = socket.tcp()
+			--					dcsBiosLuaConsole.conn:settimeout(.0001)
+								--log.write("Lua Console", log.INFO, "socket was closed")
+								dcsBiosLuaConsole.state = "closed"
 							end
-							--env.info("reconnecting to "..tostring(witchcraft.host)..":"..tostring(witchcraft.port))
-							witchcraft.conn:connect(witchcraft.host, witchcraft.port)
+							--env.info("reconnecting to "..tostring(dcsBiosLuaConsole.host)..":"..tostring(dcsBiosLuaConsole.port))
+							dcsBiosLuaConsole.conn:connect(dcsBiosLuaConsole.host, dcsBiosLuaConsole.port)
 							return
 						end
 						bytes_sent = err_bytes_sent
 					end
-					witchcraft.txbuf = witchcraft.txbuf:sub(bytes_sent + 1)
+					dcsBiosLuaConsole.txbuf = dcsBiosLuaConsole.txbuf:sub(bytes_sent + 1)
 				else
-					if DCS.getRealTime() - witchcraft.timeOfLastSendAttempt > 2 then
-						witchcraft.txbuf = '{"type":"ping"}\n'
+					if DCS.getRealTime() - dcsBiosLuaConsole.timeOfLastSendAttempt > 2 then
+						dcsBiosLuaConsole.txbuf = '{"type":"ping"}\n'
 					end
 				end
 				
-				local line, err = witchcraft.conn:receive()
+				local line, err = dcsBiosLuaConsole.conn:receive()
 				if err then
-					--env.info("witchcraft read error: "..err)
+					--env.info("dcsBiosLuaConsole read error: "..err)
 				else
 					msg = JSON:decode(line)
 					if msg.type == "lua" then
@@ -220,7 +220,7 @@ func getHookDefinition(name string) *hookDefinition {
 						--log.write("Lua Console", log.INFO, "response_string is "..tostring(response_string))
 						--log.write("Lua Console", log.INFO, "response_string has length "..tostring(string.len(response_string)))
 						
-						witchcraft.txbuf = witchcraft.txbuf .. response_string
+						dcsBiosLuaConsole.txbuf = dcsBiosLuaConsole.txbuf .. response_string
 					end
 				end
 					
@@ -229,50 +229,50 @@ func getHookDefinition(name string) *hookDefinition {
 			
 			local function stepOld()
 				--log.write('Lua Console', log.INFO, 'step()')
-				local timeSinceLastPing = DCS.getRealTime() - (witchcraft.lastPingTime or 0)
+				local timeSinceLastPing = DCS.getRealTime() - (dcsBiosLuaConsole.lastPingTime or 0)
 				--log.write('Lua Console', log.INFO, "time since last ping is "..tostring(timeSinceLastPing).." and time is "..tostring(DCS.getRealTime()))
 				if timeSinceLastPing > 2 then
 					log.write('Lua Console', log.INFO, "calling reconnect()")
-					witchcraft.lastPingTime = DCS.getRealTime()
+					dcsBiosLuaConsole.lastPingTime = DCS.getRealTime()
 					reconnect()
 				end
 				
-				if witchcraft.txbuf:len() > 0 then
+				if dcsBiosLuaConsole.txbuf:len() > 0 then
 					local bytes_sent = nil
-					local ret1, ret2, ret3 = witchcraft.conn:send(witchcraft.txbuf)
+					local ret1, ret2, ret3 = dcsBiosLuaConsole.conn:send(dcsBiosLuaConsole.txbuf)
 					if ret1 then
 						bytes_sent = ret1
 					else
-						--env.info("could not send witchcraft: "..ret2)
+						--env.info("could not send dcsBiosLuaConsole: "..ret2)
 						if ret3 == 0 then
 							if ret2 == "closed" then
 								reconnect()
 							end
-							--env.info("reconnecting to "..tostring(witchcraft.host)..":"..tostring(witchcraft.port))
-							witchcraft.conn:connect(witchcraft.host, witchcraft.port)
+							--env.info("reconnecting to "..tostring(dcsBiosLuaConsole.host)..":"..tostring(dcsBiosLuaConsole.port))
+							dcsBiosLuaConsole.conn:connect(dcsBiosLuaConsole.host, dcsBiosLuaConsole.port)
 							return
 						end
 						bytes_sent = ret3
 					end
-					witchcraft.txbuf = witchcraft.txbuf:sub(bytes_sent + 1)
+					dcsBiosLuaConsole.txbuf = dcsBiosLuaConsole.txbuf:sub(bytes_sent + 1)
 				else
-					if witchcraft.txidle_hook then
-						local bool, err = pcall(witchcraft.txidle_hook)
+					if dcsBiosLuaConsole.txidle_hook then
+						local bool, err = pcall(dcsBiosLuaConsole.txidle_hook)
 						if not bool then
-							--env.info("witchcraft.txidle_hook() failed: "..err)
+							--env.info("dcsBiosLuaConsole.txidle_hook() failed: "..err)
 						end
 					end
 				end
 				
-				local line, err = witchcraft.conn:receive()
+				local line, err = dcsBiosLuaConsole.conn:receive()
 				if err then
-					log.write("Lua Console", log.INFO, "witchcraft read error: "..tostring(err))
+					--log.write("Lua Console", log.INFO, "dcsBiosLuaConsole read error: "..tostring(err))
 				else
 					log.write('Lua Console', log.INFO, "got line "..tostring(line))
 					msg = JSON:decode(line)
 					if msg.type == "ping" then
-						witchcraft.lastPingTime = DCS.getRealTime()
-						log.write('Lua Console', log.INFO, "got ping at "..tostring(DCS.getRealTime()))
+						dcsBiosLuaConsole.lastPingTime = DCS.getRealTime()
+						--log.write('Lua Console', log.INFO, "got ping at "..tostring(DCS.getRealTime()))
 					end
 					if msg.type == "lua" then
 						local response_msg = {}
@@ -303,9 +303,9 @@ func getHookDefinition(name string) *hookDefinition {
 						end
 						
 						--log.write("Lua Console", log.INFO, "response_string is "..tostring(response_string))
-						log.write("Lua Console", log.INFO, "response_string has length "..tostring(string.len(response_string)))
+						--log.write("Lua Console", log.INFO, "response_string has length "..tostring(string.len(response_string)))
 						
-						witchcraft.txbuf = witchcraft.txbuf .. response_string
+						dcsBiosLuaConsole.txbuf = dcsBiosLuaConsole.txbuf .. response_string
 					end
 				end
 				
@@ -317,7 +317,7 @@ func getHookDefinition(name string) *hookDefinition {
 				["onSimulationFrame"] = function()
 					status, err = pcall(step)
 					if not status then
-						log.write("Lua Console Error", log.INFO, tostring(err))
+						--log.write("Lua Console Error", log.INFO, tostring(err))
 					end
 				end
 			})
