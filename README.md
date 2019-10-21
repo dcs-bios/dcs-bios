@@ -35,5 +35,5 @@ Prerequisites:
 | Wix Toolkit | https://wixtoolset.org/releases/ | Builds the .msi installer |
 | `go-msi` | run `go install github.com/mh-cbon/go-msi` | Configures and invokes the Wix Toolkit |
 
-To create an MSI installer, run `release-build.cmd`.
+To create an MSI installer, run `npm install` in the `src\hub-frontend` directory, then run `release-build.cmd` from the repository root.
 If your code checkout is not on drive C:, you have to set the `TMP` environment variable to point to a directory on the same drive as your code.
