@@ -1,0 +1,27 @@
+.status-indicator {
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    display: inline-block;
+    color: white;
+    font-weight: bold;
+}
+
+.status-indicator.status-false {
+    background-color: darkgray;
+}
+.status-indicator.status-true {
+    background-color: green;
+}
+
+td.setup-td-true {
+    background-color: lightgreen;
+}
+
+tr.dcs-installation:hover {
+    background-color: #eee;
+}
+
+td.setup-td-false:hover, td.setup-td-true:hover {
+    cursor: pointer;
+}

@@ -6,6 +6,7 @@ import 'codemirror/mode/javascript/javascript'
 import React from 'react';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import { getApiConnection } from './ApiConnection';
+import { LuaConsoleStatus } from './Status'
 
 type LuaSnippetState = {
     luaEnvironment: string
@@ -71,7 +72,8 @@ class LuaSnippet extends React.Component<{}, LuaSnippetState> {
     render() {
         return (
             <div>
-                Lua Console:<br/>
+                Lua Console<br/>
+                <LuaConsoleStatus/>
                 Env: <select value={this.state.luaEnvironment} onChange={(e) => {this.setState({ luaEnvironment: e.target.value });}}>
                     <option value="mission">mission</option>
                     <option value="export">export</option>

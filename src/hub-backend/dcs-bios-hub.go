@@ -1,9 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"log"
+	"net"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
@@ -15,12 +17,17 @@ import (
 	"dcs-bios.a10c.de/dcs-bios-hub/livedataapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/luaconsole"
 	"dcs-bios.a10c.de/dcs-bios-hub/serialconnection"
+	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/webappserver"
 	"dcs-bios.a10c.de/dcs-bios-hub/websocketapi"
 )
 
-func runHttpServer(listenURI string) {
-	err := http.ListenAndServe(listenURI, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var gitSha1 string = "development build"
+var gitTag string = "development build"
+var autorunMode *bool = flag.Bool("autorun-mode", false, "Silently exit when binding TCP port 5010 fails. This prevents a message box when the program is being started by DCS but is already running.")
+
+func runHttpServer(listenURI string) error {
+	handlerFunc := func(w http.ResponseWriter, r *http.Request) {
 		// redirect "/" to "/app/hubconfig"
 		if r.RequestURI == "/" {
 			http.Redirect(w, r, "/app/hubconfig", 302)
@@ -28,10 +35,15 @@ func runHttpServer(listenURI string) {
 		}
 		http.DefaultServeMux.ServeHTTP(w, r)
 		return
-	}))
-	if err != nil {
-		log.Fatalln("error: " + err.Error())
 	}
+
+	server := &http.Server{Addr: listenURI, Handler: http.HandlerFunc(handlerFunc)}
+	listenSocket, err := net.Listen("tcp", server.Addr)
+	if err != nil {
+		return err
+	}
+	go server.Serve(listenSocket)
+	return nil
 }
 
 func startServices() {
@@ -51,9 +63,24 @@ func startServices() {
 	webappserver.JsonApi = jsonAPI
 	webappserver.AddHandler("apps")
 
+	statusapi.RegisterApiCalls(jsonAPI)
+	statusapi.WithStatusInfoDo(func(si *statusapi.StatusInfo) {
+		si.Version = gitTag
+		si.GitSha1 = gitSha1
+	})
+
 	websocketapi.JsonApi = jsonAPI
 	websocketapi.AddHandler()
-	go runHttpServer(":5010")
+	err := runHttpServer(":5010")
+	if err != nil {
+		// already running
+		if !*autorunMode {
+			gui.ErrorMsgBox("Could not listen on TCP port 5010.\nMost likely, another instance of DCS-BIOS Hub is already running. You can access it via the system tray icon.\n\nIf that is not the case, make sure nothing else is using TCP port 5010 and that your firewall is not interfering.", "DCS-BIOS Hub")
+		}
+		fmt.Println("could not listen on TCP :5010, is another instance running?")
+		gui.Quit()
+		return
+	}
 
 	// Control Reference Documentation
 	cref := controlreference.NewControlReferenceStore(jsonAPI)
@@ -80,7 +107,6 @@ func startServices() {
 
 	// transmit data between DCS and the serial ports
 	go func() {
-		fmt.Println("main loop starting")
 		for {
 			select {
 			case icstr := <-lda.InputCommands:
@@ -103,5 +129,6 @@ func startServices() {
 }
 
 func main() {
+	flag.Parse()
 	gui.Run(startServices)
 }

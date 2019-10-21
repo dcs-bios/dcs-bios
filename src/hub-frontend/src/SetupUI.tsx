@@ -6,6 +6,8 @@ type DcsInstallation = {
     profileDir: string
     variant: string
     luaScriptsInstalled: boolean
+    luaConsoleHookInstalled: boolean
+    autostartHubHookInstalled: boolean
 }
 
 export default function SetupUI() {
@@ -41,6 +43,20 @@ export default function SetupUI() {
         })
     }
 
+    const modifyHook = (hookType: string, install: DcsInstallation, shouldBeInstalled: boolean) => {
+        apiPost({
+            datatype: "modify_hook",
+            data: {
+                profileDir: install.profileDir,
+                shouldBeInstalled: shouldBeInstalled,
+                hookType: hookType
+            }
+        }).then(response => {
+            setLastSetupLog(response.data.message)
+            updateSetupInfoTable()
+        })
+    }
+
     let setupLog: ReactElement | null = null;
     if (lastSetupLog.length > 0) {
         setupLog = (<div className="setupLog">
@@ -51,35 +67,37 @@ export default function SetupUI() {
     return (
         <React.Fragment>
             <h2>Setup Scripts</h2>
-
-                To be able to communicate with DCS: World, the DCS-BIOS Lua Scripts need to be installed.
-            
-                The table below shows the auto-detected DCS: World installations on your machine (Release and Open Beta). You can use the buttons on the right
-                to enable or disable DCS-BIOS for that installation.
-
             <table>
                 <tbody>
                 <tr>
                     <th>Installation Path</th>
                     <th>User Profile Path</th>
-                    <th>DCS-BIOS Scripts installed?</th>
-                    <th></th>
-                    <th></th>
+                    <th>Virtual Cockpit Connection</th>
+                    <th>Autostart DCS-BIOS</th>
+                    <th>Lua Console</th>
+
                     </tr>
                 {installs.map(i => (
-                    <tr key={i.installDir}>
+                    <tr key={i.installDir} className="dcs-installation">
                         <td>{i.installDir}</td>
                         <td>{i.profileDir}</td>
-                        <td style={{width: "13em", textAlign: "center", backgroundColor: i.luaScriptsInstalled ? "lightgreen" : "white"}}>{i.luaScriptsInstalled ? "OK" : "not installed"}</td>
-                        <td><button onClick={() => modifyExportLua(i, true)}>Install Scripts</button></td>
-                        <td><button onClick={() => modifyExportLua(i, false)}>Remove Scripts</button></td>
+                        <td align="center" onClick={(e) => modifyExportLua(i, !i.luaScriptsInstalled)} className={"setup-td-"+i.luaScriptsInstalled.toString()}><input type="checkbox" checked={i.luaScriptsInstalled}/></td>
+                        <td align="center" onClick={(e) => modifyHook("autostart", i, !i.autostartHubHookInstalled)} className={"setup-td-"+i.autostartHubHookInstalled.toString()}><input type="checkbox" checked={i.autostartHubHookInstalled}/></td>
+                        <td align="center" onClick={(e) => modifyHook("luaconsole", i, !i.luaConsoleHookInstalled)} className={"setup-td-"+i.luaConsoleHookInstalled.toString()}><input type="checkbox" checked={i.luaConsoleHookInstalled}/></td>
                     </tr>
                 ))}
                 </tbody>
             </table>
-            <br/>
             {setupLog}
+                    <br/><br/>
+                Use the table above to enable or disable DCS-BIOS features for each DCS: World installation.
+                <ul>
+                    <li>Check <b>Virtual Cockpit Connection</b> to hook into Export.lua so DCS-BIOS can receive cockpit data and send commands to DCS.</li>
+                    <li>Check <b>Autostart DCS-BIOS</b> if you want to start the DCS-BIOS Hub automatically whenever you start DCS: World.</li>
+                    <li>If you are a developer, you may want to check <b>Lua Console</b>. This is a prerequisite to use the Lua Console feature, which is useful when developing Lua scripts for DCS: World.</li>
+                </ul>
             <br/>
+            
             If your DCS installation is not shown above, you can manually add the following line to your <span style={{font: "monospace"}}>Export.lua</span>:<br/>
                 <br/>
                 <code>{exportLuaSetupLine}</code>

@@ -9,6 +9,7 @@ import (
 
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
+	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
 )
 
 type LuaResult struct {
@@ -62,11 +63,13 @@ func (lcs *LuaConsoleServer) Run() {
 
 func (lcs *LuaConsoleServer) handleConnection(conn net.Conn) {
 	fmt.Println("luaconsole: DCS has connected.")
+	statusapi.WithStatusInfoDo(func(si *statusapi.StatusInfo) {
+		si.IsLuaConsoleConnected = true
+	})
 	go func() {
 		enc := json.NewEncoder(conn)
 		enc.SetEscapeHTML(false)
 		for {
-			fmt.Println("reading from requestToDcs")
 			req := <-lcs.requestToDcs
 			fmt.Println("sending", req)
 			if err := enc.Encode(req); err != nil {
@@ -82,6 +85,9 @@ func (lcs *LuaConsoleServer) handleConnection(conn net.Conn) {
 		for {
 			if err := dec.Decode(&dcsResponse); err != nil {
 				conn.Close()
+				statusapi.WithStatusInfoDo(func(si *statusapi.StatusInfo) {
+					si.IsLuaConsoleConnected = false
+				})
 				return
 			}
 			if dcsResponse.Type != "ping" {

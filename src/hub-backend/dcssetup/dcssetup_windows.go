@@ -19,10 +19,12 @@ import (
 )
 
 type DcsInstallation struct {
-	InstallDir          string `json:"installDir"`
-	Variant             string `json:"variant"`
-	ProfileDir          string `json:"profileDir"`
-	LuaScriptsInstalled bool   `json:"luaScriptsInstalled"`
+	InstallDir                string `json:"installDir"`
+	Variant                   string `json:"variant"`
+	ProfileDir                string `json:"profileDir"`
+	LuaScriptsInstalled       bool   `json:"luaScriptsInstalled"`
+	LuaConsoleHookInstalled   bool   `json:"luaConsoleHookInstalled"`
+	AutostartHubHookInstalled bool   `json:"autostartHubHookInstalled"`
 }
 
 type GetInstalledModuleNamesRequest struct{}
@@ -44,6 +46,9 @@ func RegisterApi(jsonAPI *jsonapi.JsonApi) {
 
 	jsonAPI.RegisterType("modify_export_lua", ModifyExportLuaRequest{})
 	jsonAPI.RegisterApiCall("modify_export_lua", HandleModifyExportLuaRequest)
+
+	jsonAPI.RegisterType("modify_hook", ModifyHookRequest{})
+	jsonAPI.RegisterApiCall("modify_hook", HandleModifyHookRequest)
 }
 
 // GetInstalledModulesList returns a list of all installed DCS: World modules.
@@ -79,20 +84,27 @@ type ModifyExportLuaRequest struct {
 	ShouldBeInstalled bool   `json:"shouldBeInstalled"`
 }
 
+func isValidProfileDir(profileDir string) bool {
+	installs := GetDcsInstallations()
+	for _, i := range installs {
+		if i.ProfileDir == profileDir {
+			return true
+		}
+	}
+	return false
+}
+
 func HandleModifyExportLuaRequest(req *ModifyExportLuaRequest, responseCh chan<- interface{}, followupCh <-chan interface{}) {
 	defer close(responseCh)
 
-	installs := GetDcsInstallations()
-	for _, i := range installs {
-		if i.ProfileDir == req.ProfileDir {
-			ok, log := SetupExportLua(req.ProfileDir, req.ShouldBeInstalled)
-			if !ok {
-				responseCh <- jsonapi.ErrorResult{Message: log}
-			} else {
-				responseCh <- jsonapi.SuccessResult{Message: log}
-			}
-			return
+	if isValidProfileDir(req.ProfileDir) {
+		ok, log := SetupExportLua(req.ProfileDir, req.ShouldBeInstalled)
+		if !ok {
+			responseCh <- jsonapi.ErrorResult{Message: log}
+		} else {
+			responseCh <- jsonapi.SuccessResult{Message: log}
 		}
+		return
 	}
 
 	responseCh <- jsonapi.ErrorResult{Message: "could not find a DCS installation with profile path " + req.ProfileDir}
@@ -149,6 +161,8 @@ func GetDcsInstallations() []DcsInstallation {
 		}
 
 		dcsInstall.LuaScriptsInstalled = IsExportLuaSetup(dcsInstall.ProfileDir)
+		dcsInstall.LuaConsoleHookInstalled = isHookInstalled(dcsInstall.ProfileDir, getHookDefinition("luaconsole"))
+		dcsInstall.AutostartHubHookInstalled = isHookInstalled(dcsInstall.ProfileDir, getHookDefinition("autostart"))
 
 		installs = append(installs, dcsInstall)
 	}
@@ -233,6 +247,26 @@ func GetModifiedExportLua(oldExportLua io.Reader, shouldBeInstalled bool, logBuf
 	return newExportLuaBuffer.Bytes()
 }
 
+func createProfileSubdir(profileDir string, subdirName string, logBuffer io.Writer) bool {
+	fullSubdirPath := filepath.Join(profileDir, subdirName)
+	stat, err := os.Stat(fullSubdirPath)
+	if err != nil {
+		// does not exist
+		err = os.Mkdir(fullSubdirPath, 0777)
+		if err != nil {
+			fmt.Fprintf(logBuffer, "error: could not create directory %s: %v\n", fullSubdirPath, err)
+			return false
+		}
+	} else {
+		// exists, assert that it is a directory
+		if !stat.IsDir() {
+			fmt.Fprintf(logBuffer, "error: path exists but is not a directory: %s\n", fullSubdirPath)
+			return false
+		}
+	}
+	return true
+}
+
 func SetupExportLua(profileDir string, shouldBeInstalled bool) (ok bool, logMessages string) {
 	logBuffer := &bytes.Buffer{}
 
@@ -244,26 +278,14 @@ func SetupExportLua(profileDir string, shouldBeInstalled bool) (ok bool, logMess
 	}
 
 	// make sure a Scripts directory exists
-	scriptDirPath := filepath.Join(profileDir, "Scripts")
-	stat, err = os.Stat(scriptDirPath)
-	if err != nil {
-		// does not exist
-		err = os.Mkdir(scriptDirPath, 0777)
-		if err != nil {
-			fmt.Fprintf(logBuffer, "error: could not create directory %s: %v\n", scriptDirPath, err)
-			return false, logBuffer.String()
-		}
-	} else {
-		// exists, assert that it is a directory
-		if !stat.IsDir() {
-			fmt.Fprintf(logBuffer, "error: path exists but is not a directory: %s\n", scriptDirPath)
-			return false, logBuffer.String()
-		}
+	if !createProfileSubdir(profileDir, "Scripts", logBuffer) {
+		fmt.Fprintf(logBuffer, "could not create subdirectory.")
+		return false, logBuffer.String()
 	}
 
 	// open existing Export.lua for reading or provide an empty buffer instead
 	var existingExportLuaReader io.Reader
-	exportLuaFilePath := filepath.Join(scriptDirPath, "Export.lua")
+	exportLuaFilePath := filepath.Join(profileDir, "Scripts", "Export.lua")
 	stat, err = os.Stat(exportLuaFilePath)
 	if err != nil {
 		// Export.lua does not exist yet
@@ -292,4 +314,86 @@ func SetupExportLua(profileDir string, shouldBeInstalled bool) (ok bool, logMess
 	fmt.Fprintf(logBuffer, "file saved: %s\n", exportLuaFilePath)
 
 	return true, logBuffer.String()
+}
+
+type hookDefinition struct {
+	filename string
+	content  string
+}
+
+func isHookInstalled(profileDir string, hookDef *hookDefinition) bool {
+	hookFile := filepath.Join(profileDir, "Scripts", "Hooks", hookDef.filename)
+	contents, err := ioutil.ReadFile(hookFile)
+	if err != nil {
+		return false
+	}
+	return string(contents) == hookDef.content
+}
+
+func uninstallHook(profileDir string, hookDef *hookDefinition, logBuffer io.Writer) bool {
+	hookFile := filepath.Join(profileDir, "Scripts", "Hooks", hookDef.filename)
+	_, err := os.Stat(hookFile)
+	if err != nil {
+		return true // does not exist, so successfully removed
+	}
+	err = os.Remove(hookFile)
+	if err != nil {
+		fmt.Fprint(logBuffer, "error: could not delete %s: %v\n", hookFile, err)
+		return false
+	}
+	fmt.Fprintf(logBuffer, "deleted: %s\n", hookFile)
+	return true
+}
+func installHook(profileDir string, hookDefinition *hookDefinition, logBuffer io.Writer) bool {
+	uninstallHook(profileDir, hookDefinition, logBuffer)
+	if !createProfileSubdir(profileDir, "Scripts", logBuffer) {
+		return false
+	}
+	if !createProfileSubdir(profileDir, "Hooks", logBuffer) {
+		return false
+	}
+	hookFile := filepath.Join(profileDir, "Scripts", "Hooks", hookDefinition.filename)
+	file, err := os.Create(hookFile)
+	if err != nil {
+		fmt.Fprintf(logBuffer, "error: could not create file %s: %v\n", hookFile, err.Error())
+		return false
+	}
+	defer file.Close()
+	file.Write([]byte(hookDefinition.content))
+	fmt.Fprintf(logBuffer, "created: %s\n", hookFile)
+	return true
+}
+
+type ModifyHookRequest struct {
+	ProfileDir        string `json:"profileDir"`
+	HookType          string `json:"hookType"`
+	ShouldBeInstalled bool   `json:"shouldBeInstalled"`
+}
+
+func HandleModifyHookRequest(req *ModifyHookRequest, responseCh chan<- interface{}, followupCh <-chan interface{}) {
+	defer close(responseCh)
+	if !isValidProfileDir(req.ProfileDir) {
+		responseCh <- jsonapi.ErrorResult{Message: "not a valid profile directory: " + req.ProfileDir}
+		return
+	}
+
+	hookDef := getHookDefinition(req.HookType)
+	if hookDef == nil {
+		responseCh <- jsonapi.ErrorResult{Message: "unknown hook type: " + req.HookType}
+		return
+	}
+
+	logBuffer := &bytes.Buffer{}
+	var success bool
+	if req.ShouldBeInstalled {
+		success = installHook(req.ProfileDir, hookDef, logBuffer)
+	} else {
+		success = uninstallHook(req.ProfileDir, hookDef, logBuffer)
+	}
+
+	if success {
+		responseCh <- jsonapi.SuccessResult{Message: logBuffer.String()}
+	} else {
+		responseCh <- jsonapi.ErrorResult{Message: logBuffer.String()}
+	}
 }

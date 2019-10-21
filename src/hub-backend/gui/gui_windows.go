@@ -7,10 +7,14 @@ import (
 	"os"
 	"os/signal"
 	"sync/atomic"
+	"syscall"
+	"unsafe"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/icon"
 	"github.com/getlantern/systray"
 	"github.com/skratchdot/open-golang/open"
+
+	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
 )
 
 var externalNetworkAccessEnabled uint32
@@ -23,6 +27,23 @@ var luaConsoleEnabled uint32
 
 func IsLuaConsoleEnabled() bool {
 	return atomic.LoadUint32(&luaConsoleEnabled) == 1
+}
+
+func Quit() {
+	systray.Quit()
+}
+
+func ErrorMsgBox(msg string, title string) {
+	// see https://github.com/golang/go/wiki/WindowsDLLs
+	var mod = syscall.NewLazyDLL("user32.dll")
+	var proc = mod.NewProc("MessageBoxW")
+	var MB_OK = 0x00000000
+	var MB_ICONERROR = 0x00000010
+
+	proc.Call(0,
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(msg))),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(title))),
+		uintptr(MB_OK|MB_ICONERROR))
 }
 
 // Run displays the GUI. Needs to be called directly
@@ -70,6 +91,9 @@ func Run(onReady func()) {
 					}
 					atomic.StoreUint32(&externalNetworkAccessEnabled,
 						map[bool]uint32{false: 0, true: 1}[mToggleExternalAccess.Checked()])
+					statusapi.WithStatusInfoDo(func(si *statusapi.StatusInfo) {
+						si.IsExternalNetworkAccessEnabled = mToggleExternalAccess.Checked()
+					})
 				case <-mLuaConsoleEnabled.ClickedCh:
 					if mLuaConsoleEnabled.Checked() {
 						mLuaConsoleEnabled.Uncheck()
@@ -78,6 +102,9 @@ func Run(onReady func()) {
 					}
 					atomic.StoreUint32(&luaConsoleEnabled,
 						map[bool]uint32{false: 0, true: 1}[mLuaConsoleEnabled.Checked()])
+					statusapi.WithStatusInfoDo(func(si *statusapi.StatusInfo) {
+						si.IsLuaConsoleEnabled = mLuaConsoleEnabled.Checked()
+					})
 				case <-mQuit.ClickedCh:
 					systray.Quit()
 					return
