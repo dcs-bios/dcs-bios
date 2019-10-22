@@ -28,9 +28,8 @@ xcopy src\hub-backend\dcsbios-channel-logo.ico build\
 
 echo creating installer
 cd build
-go-msi make --path ../src/installer/wix.json --src ../src/installer/ --arch amd64 --msi setup.msi --version %BUILD_VERSION% --license ../DCS-BIOS-License.txt
+go-msi make --path ../src/installer/wix.json --src ../src/installer/ --arch amd64 --msi DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi --version %BUILD_VERSION% --license ../DCS-BIOS-License.txt
+if exist "DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" echo built version %BUILD_VERSION% (%BUILD_COMMIT%), saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi
 cd ..
-
-echo built version %BUILD_VERSION% (%BUILD_COMMIT%)
 
 :end
