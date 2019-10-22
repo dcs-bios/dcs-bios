@@ -11,6 +11,7 @@ import {
 import { ControlReference } from './ControlReference'
 import Dashboard from './Dashboard'
 import { LuaSnippet } from './LuaConsole';
+import SetupUI from './SetupUI';
 
 const RootUrlContext = React.createContext("")
 
@@ -31,10 +32,12 @@ function App() {
           <li><NavLink exact to='/' activeStyle={{ fontWeight: "bold" }}>Dashboard</NavLink></li>
             <li><NavLink to='/controlreference' activeStyle={{ fontWeight: "bold" }}>Control Reference</NavLink></li>
             <li><NavLink to='/luaconsole' activeStyle={{ fontWeight: "bold" }}>Lua Console</NavLink></li>
+            <li><NavLink to='/setup' activeStyle={{ fontWeight: "bold" }}>Setup Scripts</NavLink></li>
           </ul>
         </div>
         <div className="content">
             <Route exact path='/' component={Dashboard}/>
+            <Route path='/setup' component={SetupUI}/>
             <Route path='/controlreference' component={ControlReference}/>
             <Route path='/luaconsole' component={LuaSnippet} />
         </div>
