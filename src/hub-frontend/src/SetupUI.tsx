@@ -66,6 +66,7 @@ export default function SetupUI() {
             <pre>{lastSetupLog}</pre>
         </div>)
     }
+
     return (
         <React.Fragment>
             <h2>Setup Scripts</h2>
@@ -81,8 +82,8 @@ export default function SetupUI() {
                     </tr>
                 {installs.map(i => (
                     <tr key={i.installDir} className="dcs-installation">
-                        <td>{i.installDir}</td>
-                        <td>{i.profileDir}</td>
+                        <td><DirPath path={i.installDir}/></td>
+                        <td><DirPath path={i.profileDir}/></td>
                         <td align="center" onClick={(e) => modifyExportLua(i, !i.luaScriptsInstalled)} className={"setup-td-"+i.luaScriptsInstalled.toString()}><input type="checkbox" checked={i.luaScriptsInstalled} readOnly/></td>
                         <td align="center" onClick={(e) => modifyHook("autostart", i, !i.autostartHubHookInstalled)} className={"setup-td-"+i.autostartHubHookInstalled.toString()}><input type="checkbox" checked={i.autostartHubHookInstalled} readOnly/></td>
                         <td align="center" onClick={(e) => modifyHook("luaconsole", i, !i.luaConsoleHookInstalled)} className={"setup-td-"+i.luaConsoleHookInstalled.toString()}><input type="checkbox" checked={i.luaConsoleHookInstalled} readOnly/></td>
@@ -106,4 +107,14 @@ export default function SetupUI() {
 
         </React.Fragment>
     );
+}
+
+// display the last element of a directory path,
+// but provide the full path as a tooltip
+function DirPath(props: { path: string }) {
+    const parts = props.path.split("\\")
+    const shortPath = parts[parts.length-1]
+    return (
+        <span title={props.path}>{shortPath}</span>
+    )
 }
