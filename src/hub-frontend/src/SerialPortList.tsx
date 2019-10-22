@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { getApiConnection } from './ApiConnection'
 
 import './SerialPorts.css';
+import { StatusIndicator } from './Status';
 
 type PortState = {
     shouldBeConnected: boolean,
@@ -22,107 +22,55 @@ type SerialPortProps = {
   portState: PortState
 }
 
-class SerialPort extends React.Component<SerialPortProps, {}> {
-    updatePortPref(newState: PortPreference) {
-      let ws = getApiConnection()
-      ws.onopen = () => {
-        ws.send(JSON.stringify({
-          datatype:"set_port_pref",
-          data: {
-            portName: this.props.portName,
-            shouldBeConnected: newState.shouldBeConnected,
-            autoConnect: newState.autoConnect
-          }
-        }))
-        ws.close()
-      }
-    }
-  
-    render() {
-      let toggleConnectButton = (
-      <button onClick={(e) => this.updatePortPref({
-                  shouldBeConnected: !this.props.portState.shouldBeConnected,
-                  autoConnect: this.props.portState.autoConnect
-                  })}
-              className="serial-port-connect-disconnect-button"
-          >{this.props.portState.shouldBeConnected ? "Disconnect" : "Connect"} {this.props.portName}</button>)
-  
-      let connectOnStartupCheckbox = (
-        <span className="autoconnect-checkbox"><input type="checkbox"
-        checked={this.props.portState.autoConnect}
-        onChange={(e) => {this.updatePortPref({
-          shouldBeConnected: this.props.portState.shouldBeConnected,
-          autoConnect: !this.props.portState.autoConnect
-        }
-        )}}
-        ></input>connect automatically</span>
-      )
-  
-      let stateClasses = [];
-      if (this.props.portState.autoConnect) stateClasses.push("autoconnect-enabled");
-
-      var connectedState: any = ""
-      let shouldBeConnected = this.props.portState.shouldBeConnected
-      let isConnected = this.props.portState.isConnected
-      
-      
-      if (shouldBeConnected && isConnected) {
-        connectedState = <b>connected</b>;
-        stateClasses.push("state-connected");
-      }
-      if (shouldBeConnected && (!isConnected)) {
-        connectedState = "connecting..."
-        stateClasses.push("state-connecting");
-      }
-      if ((!shouldBeConnected) && isConnected) {
-        connectedState = "disconnecting..."
-        stateClasses.push("state-disconnecting");
-      }
-      if ((!shouldBeConnected) && (!isConnected)) {
-        connectedState = "not connected"
-        stateClasses.push("state-disconnected");
-      }
-      if (!this.props.portState.isPresent) {
-        connectedState = "missing"
-        stateClasses.push("state-missing");
-      }
-
-      return (
-        <div className={"serial-port "+stateClasses.join(' ')}>
-        <b className="serial-port-name">{this.props.portName}</b><br/>
-        <span className={"serial-port-state "+stateClasses.join(' ')}>{connectedState}</span><br/>
-          {toggleConnectButton}<br/>
-          {connectOnStartupCheckbox}<br/>
-        </div>
-      )
-    }
-  }
-  
 type SerialPortListState = {
   ports: Map<string, PortState>
 }
 
-  class SerialPortList extends React.Component<{}, SerialPortListState> {
-    private monitorPortsWebsocket: W3CWebSocket | undefined
+function describeState(portState: PortState) {
+  let connectedState: string = ""
+  let stateClasses = []
+  if (portState.autoConnect) {
+    stateClasses.push("autoconnect-enabled")
+  } else {
+    stateClasses.push("autoconnect-disabled")
+  }
+  const { shouldBeConnected, isConnected } = portState
+  if (shouldBeConnected && isConnected) {
+    connectedState = "connected";
+    stateClasses.push("state-connected");
+  }
+  if (shouldBeConnected && (!isConnected)) {
+    connectedState = "connecting..."
+    stateClasses.push("state-connecting");
+  }
+  if ((!shouldBeConnected) && isConnected) {
+    connectedState = "disconnecting..."
+    stateClasses.push("state-disconnecting");
+  }
+  if ((!shouldBeConnected) && (!isConnected)) {
+    connectedState = "not connected"
+    stateClasses.push("state-disconnected");
+  }
+  if (!portState.isPresent) {
+    connectedState = "missing"
+    stateClasses.push("state-missing");
+  }
+  return { connectedState, stateClasses }
+}
 
-    constructor(props: any) {
-      super(props)
-      this.state = {
-        ports: new Map<string, PortState>()
-      }
-    }
-  
-  componentDidMount() {
-    this.monitorPortsWebsocket = getApiConnection()
+function SerialPortList() {
+  const [ ports, setPorts ] = useState<Map<string, PortState>>(() => new Map<string, PortState>())
+
+  useEffect(() => {
+    const monitorPortsWebsocket = getApiConnection()
     
-    this.monitorPortsWebsocket.onopen = () => {
-      if (!this.monitorPortsWebsocket) return;
-      this.monitorPortsWebsocket.send(JSON.stringify({
+    monitorPortsWebsocket.onopen = () => {
+      monitorPortsWebsocket.send(JSON.stringify({
         datatype: "monitor_serial_ports",
         data: {}
       }))
     }
-    this.monitorPortsWebsocket.onmessage = msg => {
+    monitorPortsWebsocket.onmessage = msg => {
       msg = JSON.parse(msg.data)
       let newPortStates = new Map<string, PortState>();
       let sortedPortNames = Object.keys(msg.data);
@@ -130,28 +78,99 @@ type SerialPortListState = {
       for (let portName of sortedPortNames) {
         newPortStates.set(portName, msg.data[portName] as PortState)
       }
-      this.setState({
-        ports: newPortStates
-      })
+      setPorts(newPortStates)
     }
-  }
-  componentWillUnmount() {
-    if (!this.monitorPortsWebsocket) return;
-    this.monitorPortsWebsocket.close()
-  }
-  
-    render() {
-      let sortedPortNames = Object.keys(this.state.ports)
-      sortedPortNames.sort()
-      return (<div>
-        <ul>
-          {Array.from(this.state.ports.entries()).map(
-            ([portName, portState]) => <SerialPort key={portName} portName={portName} portState={portState}/>
-          )}
-        </ul>
-        <div style={{clear: "both"}}></div>
-      </div>);
+    return () => monitorPortsWebsocket.close()
+  }, [])
+
+  const updatePortPref = (portName: string, newState: PortPreference) => {
+    let ws = getApiConnection()
+    ws.onopen = () => {
+      ws.send(JSON.stringify({
+        datatype:"set_port_pref",
+        data: {
+          portName: portName,
+          shouldBeConnected: newState.shouldBeConnected,
+          autoConnect: newState.autoConnect
+        }
+      }))
+      ws.close()
     }
   }
 
-  export default SerialPortList
+  const disconnectAll = () => {
+    ports.forEach((port, portName) => {
+      updatePortPref(
+          portName,
+         {
+          autoConnect: port.autoConnect,
+          shouldBeConnected: false
+        }
+      )
+    });
+  }
+  const reconnectAutoPorts = () => {
+    ports.forEach((port, portName) => {
+      if (!port.autoConnect) return;
+      updatePortPref(
+          portName,
+         {
+          autoConnect: port.autoConnect,
+          shouldBeConnected: true
+        }
+      )
+    });
+    
+  }
+
+  let sortedPortNames: Array<string> = Array.from(ports.keys())
+  sortedPortNames.sort()
+
+  return (
+    <div>
+      <button onClick={disconnectAll}>Disconnect All</button>
+      <button onClick={reconnectAutoPorts}>Connect All Auto</button>
+      <br/><br/>
+
+      <table className="serial-port-table">
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <th>State</th>
+            <th>Autoconnect?</th>
+            <th></th>
+          </tr>
+          {sortedPortNames.map(portName => <SerialPortTableRow key={portName} portName={portName} portState={ports.get(portName) as PortState} updatePortPref={updatePortPref}/>)}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+function SerialPortTableRow(props: {portName: string, portState: PortState, updatePortPref: (portName: string, newState: PortPreference) => void}) {
+  const { portName, portState, updatePortPref } = props
+
+  const { connectedState, stateClasses } = describeState(portState)
+
+  return (
+    <tr className={"serial-port-row "+stateClasses.join(" ")}>
+      <td className="serial-port-name">{portName}</td>
+      <td className={"serial-port-connection-state "+stateClasses.join(" ")}><StatusIndicator text={connectedState} active={portState.isConnected}/></td>
+      <td className="serial-port-autoconnect" onClick={(e) => props.updatePortPref(portName, {
+        shouldBeConnected: portState.shouldBeConnected,
+        autoConnect: !portState.autoConnect
+      })}>
+        <input type="checkbox" readOnly checked={portState.autoConnect}/>
+      </td>
+      <td className="serial-port-button"><button onClick={(e) => updatePortPref(portName, {
+                  shouldBeConnected: !portState.shouldBeConnected,
+                  autoConnect: portState.autoConnect
+                  })}
+          >{portState.shouldBeConnected ? "Disconnect" : "Connect"} {portName}</button></td>
+    </tr>
+  )
+}
+
+
+
+export default SerialPortList

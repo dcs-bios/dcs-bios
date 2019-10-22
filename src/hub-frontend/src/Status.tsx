@@ -73,3 +73,7 @@ export function ConnectionStatus() {
         </div>
     )
 }
+
+export function StatusIndicator(props: { active: boolean, text: string }) {
+    return  <span className={"status-indicator status-"+props.active}>{props.text}</span>
+}
