@@ -1,6 +1,8 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 import { apiPost } from './ApiConnection';
 
+import './SetupUI.css'
+
 type DcsInstallation = {
     installDir: string
     profileDir: string
@@ -81,9 +83,9 @@ export default function SetupUI() {
                     <tr key={i.installDir} className="dcs-installation">
                         <td>{i.installDir}</td>
                         <td>{i.profileDir}</td>
-                        <td align="center" onClick={(e) => modifyExportLua(i, !i.luaScriptsInstalled)} className={"setup-td-"+i.luaScriptsInstalled.toString()}><input type="checkbox" checked={i.luaScriptsInstalled}/></td>
-                        <td align="center" onClick={(e) => modifyHook("autostart", i, !i.autostartHubHookInstalled)} className={"setup-td-"+i.autostartHubHookInstalled.toString()}><input type="checkbox" checked={i.autostartHubHookInstalled}/></td>
-                        <td align="center" onClick={(e) => modifyHook("luaconsole", i, !i.luaConsoleHookInstalled)} className={"setup-td-"+i.luaConsoleHookInstalled.toString()}><input type="checkbox" checked={i.luaConsoleHookInstalled}/></td>
+                        <td align="center" onClick={(e) => modifyExportLua(i, !i.luaScriptsInstalled)} className={"setup-td-"+i.luaScriptsInstalled.toString()}><input type="checkbox" checked={i.luaScriptsInstalled} readOnly/></td>
+                        <td align="center" onClick={(e) => modifyHook("autostart", i, !i.autostartHubHookInstalled)} className={"setup-td-"+i.autostartHubHookInstalled.toString()}><input type="checkbox" checked={i.autostartHubHookInstalled} readOnly/></td>
+                        <td align="center" onClick={(e) => modifyHook("luaconsole", i, !i.luaConsoleHookInstalled)} className={"setup-td-"+i.luaConsoleHookInstalled.toString()}><input type="checkbox" checked={i.luaConsoleHookInstalled} readOnly/></td>
                     </tr>
                 ))}
                 </tbody>

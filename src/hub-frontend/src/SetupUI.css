@@ -1,0 +1,11 @@
+td.setup-td-true {
+    background-color: lightgreen;
+}
+
+tr.dcs-installation:hover {
+    background-color: #eee;
+}
+
+td.setup-td-false:hover, td.setup-td-true:hover, td.setup-td-true input:hover, td.setup-td-false input:hover {
+    cursor: pointer;
+}

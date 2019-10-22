@@ -13,15 +13,3 @@
 .status-indicator.status-true {
     background-color: green;
 }
-
-td.setup-td-true {
-    background-color: lightgreen;
-}
-
-tr.dcs-installation:hover {
-    background-color: #eee;
-}
-
-td.setup-td-false:hover, td.setup-td-true:hover {
-    cursor: pointer;
-}
