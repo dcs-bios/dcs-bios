@@ -1881,22 +1881,16 @@
                                                                      },
                                                           "NAV_CRS": {
                                                                              "category": "Flight Instruments",
-                                                                         "control_type": "limited_dial",
+                                                                         "control_type": "fixed_step_dial",
                                                                           "description": "NAV Course Setting",
                                                                            "identifier": "NAV_CRS",
                                                                                "inputs": [ {
-                                                                                             "description": "set the position of the dial",
-                                                                                               "interface": "set_state",
-                                                                                               "max_value": 65535
-                                                                                         }, {
-                                                                                                "description": "turn the dial left or right",
-                                                                                                  "interface": "variable_step",
-                                                                                                  "max_value": 65535,
-                                                                                             "suggested_step": 3200
+                                                                                             "description": "rotate the knob left or right",
+                                                                                               "interface": "fixed_step"
                                                                                          } ],
                                                                               "outputs": [ {
                                                                                                  "address": 30782,
-                                                                                             "description": "position of the potentiometer",
+                                                                                             "description": "rotation of the knob",
                                                                                                     "mask": 65535,
                                                                                                "max_value": 65535,
                                                                                                 "shift_by": 0,
@@ -8446,22 +8440,16 @@
                                                                  },
                                                  "UFC_COM1_SEL": {
                                                                          "category": "UHF Radio",
-                                                                     "control_type": "limited_dial",
+                                                                     "control_type": "fixed_step_dial",
                                                                       "description": "UFC Comm 1 Channel Selector",
                                                                        "identifier": "UFC_COM1_SEL",
                                                                            "inputs": [ {
-                                                                                         "description": "set the position of the dial",
-                                                                                           "interface": "set_state",
-                                                                                           "max_value": 65535
-                                                                                     }, {
-                                                                                            "description": "turn the dial left or right",
-                                                                                              "interface": "variable_step",
-                                                                                              "max_value": 65535,
-                                                                                         "suggested_step": 3200
+                                                                                         "description": "rotate the knob left or right",
+                                                                                           "interface": "fixed_step"
                                                                                      } ],
                                                                           "outputs": [ {
                                                                                              "address": 30740,
-                                                                                         "description": "position of the potentiometer",
+                                                                                         "description": "rotation of the knob",
                                                                                                 "mask": 65535,
                                                                                            "max_value": 65535,
                                                                                             "shift_by": 0,
@@ -8496,22 +8484,16 @@
                                                                  },
                                                  "UFC_COM2_SEL": {
                                                                          "category": "UHF Radio",
-                                                                     "control_type": "limited_dial",
+                                                                     "control_type": "fixed_step_dial",
                                                                       "description": "UFC Comm 2 Channel Selector",
                                                                        "identifier": "UFC_COM2_SEL",
                                                                            "inputs": [ {
-                                                                                         "description": "set the position of the dial",
-                                                                                           "interface": "set_state",
-                                                                                           "max_value": 65535
-                                                                                     }, {
-                                                                                            "description": "turn the dial left or right",
-                                                                                              "interface": "variable_step",
-                                                                                              "max_value": 65535,
-                                                                                         "suggested_step": 3200
+                                                                                         "description": "rotate the knob left or right",
+                                                                                           "interface": "fixed_step"
                                                                                      } ],
                                                                           "outputs": [ {
                                                                                              "address": 30742,
-                                                                                         "description": "position of the potentiometer",
+                                                                                         "description": "rotation of the knob",
                                                                                                 "mask": 65535,
                                                                                            "max_value": 65535,
                                                                                             "shift_by": 0,

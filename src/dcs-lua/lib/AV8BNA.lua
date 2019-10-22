@@ -20,6 +20,46 @@ local define3PosTumb = BIOS.util.define3PosTumb
 local defineIntegerFromGetter = BIOS.util.defineIntegerFromGetter
 local defineString = BIOS.util.defineString
 
+
+local function defineAV8BCommSelector(msg, device_id, command, arg_delta, arg_number, category, description)
+	moduleBeingDefined.inputProcessors[msg] = function(state)
+		local currentValue = GetDevice(0):get_argument_value(arg_number)
+		if state == "INC" then
+			GetDevice(device_id):performClickableAction(command, currentValue + arg_delta)
+		end
+		if state == "DEC" then
+			GetDevice(device_id):performClickableAction(command, currentValue - arg_delta)
+		end
+	end
+	
+	local value = moduleBeingDefined.memoryMap:allocateInt {
+		maxValue = 65535
+	}
+	moduleBeingDefined.exportHooks[#moduleBeingDefined.exportHooks+1] = function(dev0)
+		value:setValue(dev0:get_argument_value(arg_number) * 65535)
+	end
+
+	document {
+		identifier = msg,
+		category = category,
+		description = description,
+		control_type = "fixed_step_dial",
+		inputs = {
+			{ interface = "fixed_step", description = "rotate the knob left or right" },
+		},
+		outputs = {
+			{ ["type"] = "integer",
+			  suffix = "",
+			  address = value.address,
+			  mask = value.mask,
+			  shift_by = value.shiftBy,
+			  max_value = 65535,
+			  description = "rotation of the knob"
+			}
+		}
+	}
+end
+
 -------------------------------------------------------------------
 -- MAIN INSTRUMENT PANEL:
 -------------------------------------------------------------------
@@ -74,8 +114,9 @@ definePotentiometer("UFC_COM1_VOL", 23, 3298, 298, {0, 1}, "UHF Radio", "UFC Com
 definePotentiometer("UFC_COM2_VOL", 23, 3299, 299, {0, 1}, "UHF Radio", "UFC Comm 2 Volume Control")
 definePushButton("UFC_COM1_PULL", 23, 3178, 178,"UFC" , "UFC Comm 1 Channel Selector Pull")
 definePushButton("UFC_COM2_PULL", 23, 3179, 179,"UFC" , "UFC Comm 2 Channel Selector Pull")
-definePotentiometer("UFC_COM1_SEL", 23, 3300, 300, {0, 1}, "UHF Radio", "UFC Comm 1 Channel Selector")
-definePotentiometer("UFC_COM2_SEL", 23, 3301, 301, {0, 1}, "UHF Radio", "UFC Comm 2 Channel Selector")
+defineAV8BCommSelector("UFC_COM1_SEL", 23, 3300, 0.015, 300, "UHF Radio", "UFC Comm 1 Channel Selector")
+defineAV8BCommSelector("UFC_COM2_SEL", 23, 3301, 0.015, 301, "UHF Radio", "UFC Comm 2 Channel Selector")
+
 
 function getARC210_COMM1_String_Frequency()
 	local arc_210_comm1 = GetDevice(2)
@@ -232,7 +273,7 @@ defineToggleSwitch("SEAT_SAFE_LEVER", 12, 3800, 800,"Seat" , "Seat Ground Safety
 -- CENTER CONSOLE:
 -------------------------------------------------------------------
 -- Flights Instruments Panel
-definePotentiometer("NAV_CRS", 11, 3364, 364, {0, 1}, "Flight Instruments", "NAV Course Setting")
+defineAV8BCommSelector("NAV_CRS", 11, 3364, 0.015, 364, "Flight Instruments", "NAV Course Setting")
 definePotentiometer("BARO_PRESSURE", 10, 3653, 653, {0, 1}, "Flight Instruments", "Barometric Pressure Calibration")
 definePotentiometer("BAK_ADI_CAGE_KNOB", 19, 3351, 351, {0, 1}, "Flight Instruments", "Backup ADI Cage/Pitch Adjust Knob")
 definePushButton("BAK_ADI_CAGE_PULL", 19, 3350, 350,"Flight Instruments" , "Backup ADI Cage/Pitch Adjust Pull")
