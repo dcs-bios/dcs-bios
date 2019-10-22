@@ -118,7 +118,7 @@ defineAV8BCommSelector("UFC_COM1_SEL", 23, 3300, 0.015, 300, "UHF Radio", "UFC C
 defineAV8BCommSelector("UFC_COM2_SEL", 23, 3301, 0.015, 301, "UHF Radio", "UFC Comm 2 Channel Selector")
 
 
-function getARC210_COMM1_String_Frequency()
+local function getARC210_COMM1_String_Frequency()
 	local arc_210_comm1 = GetDevice(2)
 	local freq = tostring(arc_210_comm1:get_frequency())
 	if(string.len(freq) == 8) then
@@ -129,7 +129,7 @@ function getARC210_COMM1_String_Frequency()
 end
 defineString("COMM1_STRING_FREQ", getARC210_COMM1_String_Frequency, 7, "AAA", "COMM1 ARC-210 Frequency (string)")
 
-function getARC210_COMM2_String_Frequency()
+local function getARC210_COMM2_String_Frequency()
 	local arc_210_comm2 = GetDevice(3)
 	local freq = tostring(arc_210_comm2:get_frequency())
 	if(string.len(freq) == 8) then
@@ -822,7 +822,7 @@ end
 defineString("AV8BNA_ODU_5_Text", getAV8BNAODU5Text, 4, "ODU", "ODU Option 5 Text (string)")
 
 
-function getUfcText()
+local function getUfcText()
 	if parse_indication(5) == nil then return (" "):rep(12) end
 	local leftStr = parse_indication(5)["ufc_left_position"] or ""
 	local rightStr = parse_indication(5)["ufc_right_position"] or ""
