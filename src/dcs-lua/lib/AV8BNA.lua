@@ -603,71 +603,21 @@ end, 1, "External Aircraft Model", "Tail Strobe Light")
 
 -- Get Displays Functions
 
-local function getAV8BNAUFCComm1DisplayV()
-	local li = list_indication(5)
-	local m = li:gmatch("-----------------------------------------\n([^\n]+)\n([^\n]*)\n")
-	while true do
-		local name, value = m()
-        if not name then break end
-		if name == "ufc_chnl_1_v"
-			then
-			return value:sub(1,2)
-		end
-    end
-return "XX"
+local function getComm1Text()
+	if parse_indication(5) == nil then return (" "):rep(2) end
+	local txt = parse_indication(5)["ufc_chnl_1_m"] or parse_indication(5)["ufc_chnl_1_v"] or ""
+	return (" "):rep(2 - #txt) .. txt
 end
- 
-defineString("AV8BNA_UFC_COMM1_DISPLAY_V", getAV8BNAUFCComm1DisplayV, 2, "UFC", "UFC Comm 1 Display V (string)")
-
-local function getAV8BNAUFCComm1DisplayM()
-	local li = list_indication(5)
-	local m = li:gmatch("-----------------------------------------\n([^\n]+)\n([^\n]*)\n")
-	while true do
-		local name, value = m()
-        if not name then break end
-		if name == "ufc_chnl_1_m"
-			then
-			return value:sub(1)
-		end
-    end
-return "XX"
+defineString("UFC_COMM1_DISPLAY", getComm1Text, 2, "UFC", "UFC Comm1 Preset Display")
+local function getComm2Text()
+	if parse_indication(5) == nil then return (" "):rep(2) end
+	local txt = parse_indication(5)["ufc_chnl_2_m"] or parse_indication(5)["ufc_chnl_2_v"] or ""
+	return (" "):rep(2 - #txt) .. txt
 end
+defineString("UFC_COMM2_DISPLAY", getComm2Text, 2, "UFC", "UFC Comm2 Preset Display")
 
-defineString("AV8BNA_UFC_COMM1_DISPLAY_M", getAV8BNAUFCComm1DisplayM, 2, "UFC", "UFC Comm 1 Display M (string)")
- 
- local function getAV8BNAUFCComm2DisplayV()
-	local li = list_indication(5)
-	local m = li:gmatch("-----------------------------------------\n([^\n]+)\n([^\n]*)\n")
-	while true do
-		local name, value = m()
-        if not name then break end
-		if name == "ufc_chnl_2_v"
-			then
-			return value:sub(1,2)
-		end
-    end
-return "XX"
-end
- 
-defineString("AV8BNA_UFC_COMM2_DISPLAY_V", getAV8BNAUFCComm2DisplayV, 2, "UFC", "UFC Comm 2 Display V (string)")
 
-local function getAV8BNAUFCComm2DisplayM()
-	local li = list_indication(5)
-	local m = li:gmatch("-----------------------------------------\n([^\n]+)\n([^\n]*)\n")
-	while true do
-		local name, value = m()
-        if not name then break end
-		if name == "ufc_chnl_2_m"
-			then
-			return value:sub(1)
-		end
-    end
-return "XX"
-end
-
-defineString("AV8BNA_UFC_COMM2_DISPLAY_M", getAV8BNAUFCComm2DisplayM, 2, "UFC", "UFC Comm 2 Display M (string)")
-
-local dummyAlloc = moduleBeingDefined.memoryMap:allocateString { maxLength = 10 }
+local dummyAlloc = moduleBeingDefined.memoryMap:allocateString { maxLength = 14 }
 
 local function getAV8BNAODU1Select()
 	local li = list_indication(6)
