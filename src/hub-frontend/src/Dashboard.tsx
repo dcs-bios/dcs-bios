@@ -9,9 +9,9 @@ export default function Dashboard() {
         <React.Fragment>
             <h1>DCS-BIOS Hub</h1>
             <ConnectionStatus />
+            <ControlReferenceIndex showInstalledOnly />
             <h2>Serial Ports</h2>
             <SerialPortList />
-            <ControlReferenceIndex showInstalledOnly />
         </React.Fragment>
     );
 }
