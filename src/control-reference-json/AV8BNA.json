@@ -7536,34 +7536,6 @@
                                                                                                              "type": "string"
                                                                                                   } ]
                                                                               },
-                                                   "AV8BNA_UFC_SCRATCHPAD_L": {
-                                                                                      "category": "UFC",
-                                                                                  "control_type": "display",
-                                                                                   "description": "UFC Scratchpad Left (string)",
-                                                                                    "identifier": "AV8BNA_UFC_SCRATCHPAD_L",
-                                                                                        "inputs": [  ],
-                                                                                       "outputs": [ {
-                                                                                                          "address": 31064,
-                                                                                                      "description": "UFC Scratchpad Left (string)",
-                                                                                                       "max_length": 2,
-                                                                                                           "suffix": "",
-                                                                                                             "type": "string"
-                                                                                                  } ]
-                                                                              },
-                                                   "AV8BNA_UFC_SCRATCHPAD_R": {
-                                                                                      "category": "UFC",
-                                                                                  "control_type": "display",
-                                                                                   "description": "UFC Scratchpad Right (string)",
-                                                                                    "identifier": "AV8BNA_UFC_SCRATCHPAD_R",
-                                                                                        "inputs": [  ],
-                                                                                       "outputs": [ {
-                                                                                                          "address": 31066,
-                                                                                                      "description": "UFC Scratchpad Right (string)",
-                                                                                                       "max_length": 7,
-                                                                                                           "suffix": "",
-                                                                                                             "type": "string"
-                                                                                                  } ]
-                                                                              },
                                                                    "UFC_ALT": {
                                                                                           "api_variant": "momentary_last_position",
                                                                                              "category": "UFC",
@@ -8253,6 +8225,20 @@
                                                                                                                     "type": "integer"
                                                                                                          } ],
                                                                                      "physical_variant": "push_button"
+                                                                              },
+                                                            "UFC_SCRATCHPAD": {
+                                                                                      "category": "UFC",
+                                                                                  "control_type": "display",
+                                                                                   "description": "UFC Scratchpad Display",
+                                                                                    "identifier": "UFC_SCRATCHPAD",
+                                                                                        "inputs": [  ],
+                                                                                       "outputs": [ {
+                                                                                                          "address": 31104,
+                                                                                                      "description": "UFC Scratchpad Display",
+                                                                                                       "max_length": 12,
+                                                                                                           "suffix": "",
+                                                                                                             "type": "string"
+                                                                                                  } ]
                                                                               },
                                                                  "UFC_TACAN": {
                                                                                           "api_variant": "momentary_last_position",

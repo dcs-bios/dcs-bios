@@ -667,38 +667,7 @@ end
 
 defineString("AV8BNA_UFC_COMM2_DISPLAY_M", getAV8BNAUFCComm2DisplayM, 2, "UFC", "UFC Comm 2 Display M (string)")
 
-local function getAV8BNAUFCScratchpadLeft()
-	local li = list_indication(5)
-	local m = li:gmatch("-----------------------------------------\n([^\n]+)\n([^\n]*)\n")
-	while true do
-		local name, value = m()
-        if not name then break end
-		if name == "ufc_left_position"
-			then
-			return value:sub(1,2)
-		end
-    end
-return "  "
-end
-
-defineString("AV8BNA_UFC_SCRATCHPAD_L", getAV8BNAUFCScratchpadLeft, 2, "UFC", "UFC Scratchpad Left (string)")
-
- 
-local function getAV8BNAUFCScratchpadRight()
-	local li = list_indication(5)
-	local m = li:gmatch("-----------------------------------------\n([^\n]+)\n([^\n]*)\n")
-	while true do
-		local name, value = m()
-        if not name then break end
-		if name == "ufc_right_position"
-			then
-			return value:sub(1,7)
-		end
-    end
-return "       "
-end
-
-defineString("AV8BNA_UFC_SCRATCHPAD_R", getAV8BNAUFCScratchpadRight, 7, "UFC", "UFC Scratchpad Right (string)")
+local dummyAlloc = moduleBeingDefined.memoryMap:allocateString { maxLength = 10 }
 
 local function getAV8BNAODU1Select()
 	local li = list_indication(6)
@@ -861,6 +830,16 @@ end
 
 defineString("AV8BNA_ODU_5_Text", getAV8BNAODU5Text, 4, "ODU", "ODU Option 5 Text (string)")
 
+
+function getUfcText()
+	if parse_indication(5) == nil then return (" "):rep(12) end
+	local leftStr = parse_indication(5)["ufc_left_position"] or ""
+	local rightStr = parse_indication(5)["ufc_right_position"] or ""
+	
+    local displayStr = leftStr .. (" "):rep(12 - #leftStr - #rightStr) .. rightStr
+    return displayStr
+end
+defineString("UFC_SCRATCHPAD", getUfcText, 12, "UFC", "UFC Scratchpad Display")
 
 
 BIOS.protocol.endModule()
