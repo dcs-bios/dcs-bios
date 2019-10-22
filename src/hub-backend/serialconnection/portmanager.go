@@ -2,7 +2,6 @@ package serialconnection
 
 import (
 	"fmt"
-	"log"
 	"sync"
 	"time"
 
@@ -190,7 +189,8 @@ func (p *PortManager) updatePortState() {
 	// get the list of all serial ports on the system
 	availablePorts, err := serialportlist.GetSerialPortList()
 	if err != nil {
-		log.Fatal("could not get serial port list: %s", err)
+		fmt.Printf("could not get serial port list: %s", err.Error())
+		availablePorts = make([]string, 0)
 	}
 	// detect removed ports
 	for portName, portState := range p.portState {
