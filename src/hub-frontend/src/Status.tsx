@@ -48,6 +48,7 @@ export function LuaConsoleStatus() {
     
     return (
         <div>
+        <b>Status:</b>
         <span className={"status-indicator status-"+status.isLuaConsoleConnected}>DCS Connection</span>
         <span className={"status-indicator status-"+status.isLuaConsoleEnabled}>Enabled in Systray</span>
         </div>

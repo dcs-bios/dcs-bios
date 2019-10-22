@@ -72,14 +72,15 @@ class LuaSnippet extends React.Component<{}, LuaSnippetState> {
     render() {
         return (
             <div>
-                Lua Console<br/>
                 <LuaConsoleStatus/>
-                Env: <select value={this.state.luaEnvironment} onChange={(e) => {this.setState({ luaEnvironment: e.target.value });}}>
+
+                <b>Lua Environment:</b> <select value={this.state.luaEnvironment} onChange={(e) => {this.setState({ luaEnvironment: e.target.value });}}>
                     <option value="mission">mission</option>
                     <option value="export">export</option>
                     <option value="gui">gui</option>
                     </select> 
-                Code: <CodeMirror
+                <br/>
+                <CodeMirror
                     value={this.state.code}
                     options={{
                         mode: 'lua',
@@ -88,6 +89,7 @@ class LuaSnippet extends React.Component<{}, LuaSnippetState> {
                     onBeforeChange={(editor, data, value) => {this.setState({code: value}); }}
                     onKeyPress={this.onKeyPress} /><br/>
                 <button onClick={this.executeSnippet} disabled={!this.state.readyToExecute}>Execute</button>
+                &nbsp;&nbsp;Enter the code above, then click the button or press Ctrl+Enter.
                 <hr/>
                 Response: {this.state.responseStatus} 
                 <CodeMirror
