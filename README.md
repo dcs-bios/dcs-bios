@@ -33,7 +33,11 @@ Prerequisites:
 | `go` | https://golang.org/ | The DCS-BIOS Hub is implemented in the Go programming language. |
 | `npm` | https://nodejs.org/ | To build the frontend web application, you will need the `npm` package manager, which is part of node.js. |
 | Wix Toolkit | https://wixtoolset.org/releases/ | Builds the .msi installer |
-| `go-msi` | run `go install github.com/mh-cbon/go-msi` | Configures and invokes the Wix Toolkit |
 
-To create an MSI installer, run `npm install` in the `src\hub-frontend` directory, then run `release-build.cmd` from the repository root.
-If your code checkout is not on drive C:, you have to set the `TMP` environment variable to point to a directory on the same drive as your code.
+To create an MSI installer, run `release-build.cmd` from the repository root. Make sure to set the `BUILD_VERSION` and `MSI_VERSION` environment variables accordingly:
+
+````
+set BUILD_VERSION=v0.1.2beta3
+set MSI_VERSION=0.1.2.3
+.\release-build.cmd
+````

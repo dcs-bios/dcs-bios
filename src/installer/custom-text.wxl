@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-US" Codepage="1252" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+    <!-- _locID@Culture="en-US" _locComment="American English" -->
+    <!-- _locID@Codepage="1252" _locComment="Windows-1252" -->
+    <String Id="WelcomeDlgDescription" Overridable="yes"><!-- _locID_text="WelcomeDlgDescription" _locComment="WelcomeDlgDescription" -->DCS-BIOS is free to use and published under an open source license, which you can find as "DCS-BIOS-License.txt" in the GitHub repository.
+    
+Click Next to continue or Cancel to exit the Setup Wizard.</String>
+</WixLocalization>
