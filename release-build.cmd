@@ -17,7 +17,7 @@ FOR /F "tokens=* USEBACKQ" %%g IN (`git rev-parse HEAD`) do (SET "BUILD_COMMIT=%
 
 echo on
 @echo deleting ./build directory
-rd /S /Q build
+if exist build rd /S /Q build
 @echo creating empty build directory
 mkdir build
 
