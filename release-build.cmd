@@ -13,7 +13,7 @@ if "%BUILD_VERSION%" == "" (
 )
 
 set TRIMPATH=-trimpath
-if %APPVEYOR% == "True" (
+if "%APPVEYOR%" == "True" (
     rem Appveyor provides Go 1.12, which does not support -trimpath yet
     set TRIMPATH=""
 )
