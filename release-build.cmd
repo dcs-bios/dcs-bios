@@ -12,12 +12,6 @@ if "%BUILD_VERSION%" == "" (
     exit 1
 )
 
-set TRIMPATH=-trimpath
-if "%APPVEYOR%" == "True" (
-    rem Appveyor provides Go 1.12, which does not support -trimpath yet
-    set TRIMPATH=""
-)
-
 rem this is the equivalent of BUILD_COMMIT=$(git rev-parse HEAD) in bash
 FOR /F "tokens=* USEBACKQ" %%g IN (`git rev-parse HEAD`) do (SET "BUILD_COMMIT=%%g")
 
@@ -29,7 +23,12 @@ mkdir build
 
 @echo building backend
 cd src\hub-backend
-go build %TRIMPATH% -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o dcs-bios-hub.exe
+if "%APPVEYOR%" == "True" (
+    go build -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o dcs-bios-hub.exe
+) else (
+    go build -trimpath -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o dcs-bios-hub.exe
+)
+
 copy dcs-bios-hub.exe ..\..\build\dcs-bios-hub.exe
 cd ..\..
 
@@ -48,5 +47,10 @@ cd ..\..
 "%WIX%\bin\candle" -dMsiVersion=%MSI_VERSION% -out build\ -dDcsLuaSourceDir=src\dcs-lua -dControlReferenceJsonSourceDir=src\control-reference-json -dFrontendAppSourceDir=src\hub-frontend\build -arch x64 -fips -pedantic -wx -ext WixUIExtension src\installer\*.wxs build\wix\*.wxs -out build\wix\
 "%WIX%\bin\light" -dMsiVersion=%MSI_VERSION% -loc src\installer\custom-text.wxl -out build\DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi build\wix\*.wixobj -ext WixUIExtension
 
-if exist "DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" echo built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi
+if exist "DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" (
+    echo built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi
+    exit 0
+)
+exit 1
+
 
