@@ -9,18 +9,20 @@ import (
 )
 
 func getFilePath(filename string) string {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		panic(err)
-	}
+	//dir, err := os.UserConfigDir()  // needs go 1.13
+	// if err != nil {
+	// 	panic(err)
+	// }
+	dir := os.ExpandEnv("${APPDATA}")
 	return filepath.Join(dir, "DCS-BIOS", "Config", filename)
 }
 
 func MakeDirs() error {
-	dir, err := os.UserConfigDir()
-	if err != nil {
-		return err
-	}
+	//dir, err := os.UserConfigDir()  // needs go 1.13
+	// if err != nil {
+	// 	return err
+	// }
+	dir := os.ExpandEnv("${APPDATA}")
 	os.MkdirAll(filepath.Join(dir, "DCS-BIOS", "Config"), 0600)
 	return nil
 }
