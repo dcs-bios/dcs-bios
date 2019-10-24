@@ -12,6 +12,12 @@ if "%BUILD_VERSION%" == "" (
     exit 1
 )
 
+set TRIMPATH=-trimpath
+if %APPVEYOR% == "True" (
+    rem Appveyor provides Go 1.12, which does not support -trimpath yet
+    set TRIMPATH=""
+)
+
 rem this is the equivalent of BUILD_COMMIT=$(git rev-parse HEAD) in bash
 FOR /F "tokens=* USEBACKQ" %%g IN (`git rev-parse HEAD`) do (SET "BUILD_COMMIT=%%g")
 
@@ -23,7 +29,7 @@ mkdir build
 
 @echo building backend
 cd src\hub-backend
-go build -trimpath -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o  ..\..\build\dcs-bios-hub.exe
+go build %TRIMPATH% -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o  ..\..\build\dcs-bios-hub.exe
 cd ..\..
 
 @echo building frontend
