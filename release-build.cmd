@@ -15,23 +15,24 @@ if "%BUILD_VERSION%" == "" (
 rem this is the equivalent of BUILD_COMMIT=$(git rev-parse HEAD) in bash
 FOR /F "tokens=* USEBACKQ" %%g IN (`git rev-parse HEAD`) do (SET "BUILD_COMMIT=%%g")
 
-echo deleting ./build directory
+echo on
+@echo deleting ./build directory
 rd /S /Q build
-echo creating empty build directory
+@echo creating empty build directory
 mkdir build
 
-echo building backend
+@echo building backend
 cd src\hub-backend
 go build -trimpath -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o  ..\..\build\dcs-bios-hub.exe
 cd ..\..
 
-echo building frontend
+@echo building frontend
 cd src\hub-frontend
 call npm install
 call npm run build
 cd ..\..
 
-echo creating installer
+@echo creating installer
 
 "%WIX%\bin\heat" dir src\dcs-lua -var var.DcsLuaSourceDir -dr DCSLuaDir -cg CMP_DcsLuaFiles -ag -g1 -sfrag -srd -out build\wix\dcs-lua.wxs
 "%WIX%\bin\heat" dir src\control-reference-json -var var.ControlReferenceJsonSourceDir -dr ControlReferenceJsonDir -cg CMP_ControlReferenceJsonFiles -ag -g1 -sfrag -srd -out build\wix\control-reference-json.wxs
