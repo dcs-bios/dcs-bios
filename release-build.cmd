@@ -29,7 +29,8 @@ mkdir build
 
 @echo building backend
 cd src\hub-backend
-go build %TRIMPATH% -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o  ..\..\build\dcs-bios-hub.exe
+go build %TRIMPATH% -ldflags "-X main.gitSha1=%BUILD_COMMIT% -X main.gitTag=%BUILD_VERSION% -H=windowsgui" -o dcs-bios-hub.exe
+copy dcs-bios-hub.exe ..\..\build\dcs-bios-hub.exe
 cd ..\..
 
 @echo building frontend
