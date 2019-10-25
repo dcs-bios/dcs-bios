@@ -1,0 +1,32 @@
+version: v0.8.0+{build}
+pull_requests:
+  do_not_increment_build_number: true
+image: Visual Studio 2017
+clone_depth: 100
+install:
+- cmd: >-
+    set PATH=%PATH%;C:\Program Files (x86)\WiX Toolset v3.11\bin
+    set GOPATH=C:\Users\appveyor
+    set PATH=%PATH%;%GOPATH%\bin
+    go get "github.com/Masterminds/semver"
+build_script:
+- ps: >-
+    go version
+    #$ErrorActionPreference = "Stop";
+    $env:BUILD_VERSION=$env:APPVEYOR_BUILD_VERSION
+    $env:MSI_VERSION=$(go run .\src\installer\semver-to-msiversion.go v0.1.2 6)
+    $GOPROXY="direct";
+    .\release-build.cmd
+test: off
+artifacts:
+- path: build\DCS-BIOS-Hub-Setup-${build_version}.msi
+  name: MsiInstaller
+deploy:
+- provider: GitHub
+  description: DCS-BIOS Release
+  auth_token:
+    secure: 23xmGoTKygMQyZ+Jtf+CF+wtN8EMABOIPH3ruy5E2ROY2weXbjZAhJ/MZOh8ZuQs
+  artifact: MsiInstaller
+  draft: true
+  on:
+    branch: master
