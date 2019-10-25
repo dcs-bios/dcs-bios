@@ -12,7 +12,9 @@ install:
     set PATH=%PATH%;%GOPATH%\bin
 
     go get "github.com/Masterminds/semver"
-    
+
+    pip install sphinx
+
 build_script:
 - ps: >-
 
