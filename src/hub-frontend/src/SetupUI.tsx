@@ -69,7 +69,7 @@ export default function SetupUI() {
 
     return (
         <React.Fragment>
-            <h2>Setup Scripts</h2>
+            <h2>DCS Connection</h2>
             <table>
                 <tbody>
                 <tr>
@@ -101,7 +101,7 @@ export default function SetupUI() {
                 </ul>
             <br/>
             
-            If your DCS installation is not shown above, you can manually add the following line to your <span style={{font: "monospace"}}>Export.lua</span>:<br/>
+            If your DCS installation is not shown above, you can manually add the following line to your <span style={{font: "monospace"}}>Export.lua</span> to enable the Virtual Cockpit Connection:<br/>
                 <br/>
                 <code>{exportLuaSetupLine}</code>
 

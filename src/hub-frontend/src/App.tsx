@@ -32,7 +32,7 @@ function App() {
           <li><NavLink exact to='/' activeStyle={{ fontWeight: "bold" }}>Dashboard</NavLink></li>
             <li><NavLink to='/controlreference' activeStyle={{ fontWeight: "bold" }}>Control Reference</NavLink></li>
             <li><NavLink to='/luaconsole' activeStyle={{ fontWeight: "bold" }}>Lua Console</NavLink></li>
-            <li><NavLink to='/setup' activeStyle={{ fontWeight: "bold" }}>Setup Scripts</NavLink></li>
+            <li><NavLink to='/setup' activeStyle={{ fontWeight: "bold" }}>DCS Connection</NavLink></li>
           </ul>
         </div>
         <div className="content">
