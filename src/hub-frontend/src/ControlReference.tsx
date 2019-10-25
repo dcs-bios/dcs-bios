@@ -376,8 +376,8 @@ function IOElementDocumentation(props: { item: TIOElement }) {
     "Switch2Pos",
     "Switch3Pos",
     "SwitchMultiPos",
-    "RotaryEncoder_variable_step",
-    "RotaryEncoder_fixed_step",
+    "RotaryEncoderVariableStep",
+    "RotaryEncoderFixedStep",
     "ActionButton",
     "LED",
     "StringBuffer",
@@ -389,7 +389,9 @@ function IOElementDocumentation(props: { item: TIOElement }) {
   const compareByCodeSnippetPrecedence = (a: SnippetDescriptionPair, b: SnippetDescriptionPair) => {
     let aIdx = inputSnippetPrecedence.indexOf(a.snippet.key as string);
     let bIdx = inputSnippetPrecedence.indexOf(b.snippet.key as string);
-    return bIdx - aIdx;
+    if (aIdx === -1) console.log("missing code snippet sort key:", a.snippet.key);
+    if (bIdx === -1) console.log("missing code snippet sort key:", b.snippet.key)
+    return aIdx - bIdx;
   }
   inputSnippets.sort(compareByCodeSnippetPrecedence);
 
