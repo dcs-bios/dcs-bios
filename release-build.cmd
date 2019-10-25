@@ -59,6 +59,9 @@ if exist "DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" (
     echo "built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi"
     exit 0
 )
+
+echo "could not find DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi"
+dir build
 exit 1
 
 
