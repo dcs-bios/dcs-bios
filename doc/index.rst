@@ -3,18 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to DCS-BIOS's documentation!
-====================================
+DCS-BIOS Documentation
+======================
+
+If you are a new user, start with the next chapter: :doc:`Installing DCS-BIOS. <installation>`
+
+If you already know what you are looking for, use the search bar below the logo image on the left or consult the table of contents below.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    installation
+    dcs-connection
+    dashboard
+    control-reference
+    hardware
+    code-snippets
+    lua-console
