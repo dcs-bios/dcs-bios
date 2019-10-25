@@ -16,8 +16,10 @@ rem this is the equivalent of BUILD_COMMIT=$(git rev-parse HEAD) in bash
 FOR /F "tokens=* USEBACKQ" %%g IN (`git rev-parse HEAD`) do (SET "BUILD_COMMIT=%%g")
 
 echo on
+@if exist ./build (
 @echo deleting ./build directory
 rd /S /Q build
+)
 @echo creating empty build directory
 mkdir build
 
