@@ -55,7 +55,7 @@ cd ..
 "%WIX%\bin\candle" -dMsiVersion=%MSI_VERSION% -out build\ -dDcsLuaSourceDir=src\dcs-lua -dControlReferenceJsonSourceDir=src\control-reference-json -dFrontendAppSourceDir=src\hub-frontend\build -dDocumentationAppSourceDir=doc\_build\html -arch x64 -fips -pedantic -wx -ext WixUIExtension src\installer\*.wxs build\wix\*.wxs -out build\wix\
 "%WIX%\bin\light" -dMsiVersion=%MSI_VERSION%  -sw1076 -loc src\installer\custom-text.wxl -out build\DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi build\wix\*.wixobj -ext WixUIExtension
 
-if exist "DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" (
+if exist "build\DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" (
     echo "built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi"
     exit 0
 )
