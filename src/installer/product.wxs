@@ -22,6 +22,7 @@
                     <Directory Id="ControlReferenceJsonDir" Name="control-reference-json"/>
                     <Directory Id="AppDir" Name="apps">
                         <Directory Id="FrontendAppDir" Name="hubconfig"/>
+                        <Directory Id="DocumentationAppDir" Name="doc"/>
                     </Directory>
                 </Directory>
             </Directory>
@@ -44,6 +45,7 @@
             <ComponentGroupRef Id="CMP_DcsLuaFiles"/>
             <ComponentGroupRef Id="CMP_ControlReferenceJsonFiles"/>
             <ComponentGroupRef Id="CMP_FrontendApp"/>
+            <ComponentGroupRef Id="CMP_DocumentationApp"/>
         </Feature>
 
 	</Product>

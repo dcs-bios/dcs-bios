@@ -38,17 +38,23 @@ call npm install
 call npm run build
 cd ..\..
 
+@echo building documentation
+cd doc
+call make.bat html
+cd ..
+
 @echo creating installer
 
 "%WIX%\bin\heat" dir src\dcs-lua -var var.DcsLuaSourceDir -dr DCSLuaDir -cg CMP_DcsLuaFiles -ag -g1 -sfrag -srd -out build\wix\dcs-lua.wxs
 "%WIX%\bin\heat" dir src\control-reference-json -var var.ControlReferenceJsonSourceDir -dr ControlReferenceJsonDir -cg CMP_ControlReferenceJsonFiles -ag -g1 -sfrag -srd -out build\wix\control-reference-json.wxs
 "%WIX%\bin\heat" dir src\hub-frontend\build -var var.FrontendAppSourceDir -dr FrontendAppDir -cg CMP_FrontendApp -gg -g1 -sfrag -srd -out build\wix\frontend-app.wxs
+"%WIX%\bin\heat" dir doc\_build\html -var var.DocumentationAppSourceDir -dr DocumentationAppDir -cg CMP_DocumentationApp -gg -g1 -sfrag -srd -out build\wix\documentation-app.wxs
 
-"%WIX%\bin\candle" -dMsiVersion=%MSI_VERSION% -out build\ -dDcsLuaSourceDir=src\dcs-lua -dControlReferenceJsonSourceDir=src\control-reference-json -dFrontendAppSourceDir=src\hub-frontend\build -arch x64 -fips -pedantic -wx -ext WixUIExtension src\installer\*.wxs build\wix\*.wxs -out build\wix\
-"%WIX%\bin\light" -dMsiVersion=%MSI_VERSION% -loc src\installer\custom-text.wxl -out build\DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi build\wix\*.wixobj -ext WixUIExtension
+"%WIX%\bin\candle" -dMsiVersion=%MSI_VERSION% -out build\ -dDcsLuaSourceDir=src\dcs-lua -dControlReferenceJsonSourceDir=src\control-reference-json -dFrontendAppSourceDir=src\hub-frontend\build -dDocumentationAppSourceDir=doc\_build\html -arch x64 -fips -pedantic -wx -ext WixUIExtension src\installer\*.wxs build\wix\*.wxs -out build\wix\
+"%WIX%\bin\light" -dMsiVersion=%MSI_VERSION%  -sw1076 -loc src\installer\custom-text.wxl -out build\DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi build\wix\*.wixobj -ext WixUIExtension
 
 if exist "DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" (
-    echo built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi
+    echo "built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi"
     exit 0
 )
 exit 1

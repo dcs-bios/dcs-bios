@@ -33,6 +33,7 @@ function App() {
             <li><NavLink to='/controlreference' activeStyle={{ fontWeight: "bold" }}>Control Reference</NavLink></li>
             <li><NavLink to='/luaconsole' activeStyle={{ fontWeight: "bold" }}>Lua Console</NavLink></li>
             <li><NavLink to='/setup' activeStyle={{ fontWeight: "bold" }}>DCS Connection</NavLink></li>
+            <li><a target="_blank" href="/app/doc/">Documentation</a></li>
           </ul>
         </div>
         <div className="content">
