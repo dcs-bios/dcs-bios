@@ -4,12 +4,12 @@ if "%MSI_VERSION%" == "" (
     echo Error: Please set the MSI_VERSION variable, e.g. "set MSI_VERSION=0.1.2.3"
     echo MSI_VERSION is the version of the MSI installer, which is used to determine if
     echo a newer version of DCS-BIOS is already installed.
-    exit 1
+    exit /B 1
 )
 if "%BUILD_VERSION%" == "" (
     echo Error: Please set the BUILD_VERSION variable, e.g. "set BUILD_VERSION=v0.1.2-alpha3"
     echo BUILD_VERSION is the version shown in the user interface next to the git commit hash.
-    exit 1
+    exit /B 1
 )
 
 rem this is the equivalent of BUILD_COMMIT=$(git rev-parse HEAD) in bash
@@ -57,11 +57,11 @@ cd ..
 
 if exist "build\DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi" (
     echo "built version %BUILD_VERSION% (%BUILD_COMMIT%) with MSI_VERSION=%MSI_VERSION%, saved to build/DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi"
-    exit 0
+    exit /B 0
 )
 
 echo "could not find DCS-BIOS-Hub-Setup-%BUILD_VERSION%.msi"
 dir build
-exit 1
+exit /B 1
 
 
