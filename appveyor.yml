@@ -22,7 +22,7 @@ build_script:
     go version
     #$ErrorActionPreference = "Stop";
     $env:BUILD_VERSION=$env:APPVEYOR_BUILD_VERSION
-    $env:MSI_VERSION=$(go run .\src\installer\semver-to-msiversion.go v0.1.2 6)
+    $env:MSI_VERSION=$(go run .\src\installer\semver-to-msiversion.go "${env:APPVEYOR_BUILD_VERSION}" "${env:APPVEYOR_BUILD_NUMBER}")
     $GOPROXY="direct";
     & {
       $ErrorActionPreference = 'SilentlyContinue'
