@@ -18,19 +18,16 @@ install:
     pip install sphinx_rtd_theme
 
 build_script:
-- ps: >-
-
+- ps: |
     go version
-
     #$ErrorActionPreference = "Stop";
-
     $env:BUILD_VERSION=$env:APPVEYOR_BUILD_VERSION
-
     $env:MSI_VERSION=$(go run .\src\installer\semver-to-msiversion.go v0.1.2 6)
-
     $GOPROXY="direct";
-
-    .\release-build.cmd
+    & {
+      $ErrorActionPreference = 'SilentlyContinue'
+      .\release-build.cmd 2>&1
+    }
 
 test: off
 artifacts:
