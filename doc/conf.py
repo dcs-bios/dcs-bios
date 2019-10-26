@@ -14,6 +14,7 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import yaml
 
 # -- Project information -----------------------------------------------------
 
@@ -22,7 +23,7 @@ copyright = '2019, DCS-BIOS Contributors'
 author = 'DCS-BIOS Contributors'
 
 # The full version, including alpha/beta/rc tags
-release = 'v0.8.0'
+release = yaml.load(open("../appveyor.yml"))["version"].split("+")[0]
 
 
 # -- General configuration ---------------------------------------------------
