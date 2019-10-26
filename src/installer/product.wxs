@@ -14,6 +14,11 @@
         </Upgrade>
         <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
 
+        <!-- http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/Bug-UpgradeVersion-element-causing-LGHT0094-error-td7579387.html -->
+        <InstallExecuteSequence>
+            <RemoveExistingProducts After="InstallInitialize" />
+        </InstallExecuteSequence> 
+
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
         <UIRef Id="Custom_WixUI_InstallDir" />
 
