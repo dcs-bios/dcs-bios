@@ -1,4 +1,4 @@
-version: v0.8.0+{build}
+version: v0.8.1+{build}
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2017
@@ -6,17 +6,29 @@ clone_depth: 100
 install:
 - cmd: >-
     set PATH=%PATH%;C:\Program Files (x86)\WiX Toolset v3.11\bin
+
     set GOPATH=C:\Users\appveyor
+
     set PATH=%PATH%;%GOPATH%\bin
+
     go get "github.com/Masterminds/semver"
+
+    pip install sphinx
+
+    pip install sphinx_rtd_theme
+
 build_script:
-- ps: >-
+- ps: |
     go version
     #$ErrorActionPreference = "Stop";
     $env:BUILD_VERSION=$env:APPVEYOR_BUILD_VERSION
-    $env:MSI_VERSION=$(go run .\src\installer\semver-to-msiversion.go v0.1.2 6)
+    $env:MSI_VERSION=$(go run .\src\installer\semver-to-msiversion.go "${env:APPVEYOR_BUILD_VERSION}" "${env:APPVEYOR_BUILD_NUMBER}")
     $GOPROXY="direct";
-    .\release-build.cmd
+    & {
+      $ErrorActionPreference = 'SilentlyContinue'
+      .\release-build.cmd 2>&1
+    }
+
 test: off
 artifacts:
 - path: build\DCS-BIOS-Hub-Setup-${build_version}.msi

@@ -7,6 +7,18 @@
                  Description="DCS-BIOS" />
         <MediaTemplate EmbedCab="yes" />
 
+        <Upgrade Id="EFDDCC42-2F24-4DF4-933A-50FD2089EB74">
+            <UpgradeVersion Minimum="$(var.MsiVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED"/>
+            <UpgradeVersion Minimum="0.0.0" Maximum="$(var.MsiVersion)" IncludeMinimum="yes" IncludeMaximum="no"
+                            Property="OLDERVERSIONBEINGUPGRADED"/>
+        </Upgrade>
+        <Condition Message="A newer version of this software is already installed.">NOT NEWERVERSIONDETECTED</Condition>
+
+        <!-- http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/Bug-UpgradeVersion-element-causing-LGHT0094-error-td7579387.html -->
+        <InstallExecuteSequence>
+            <RemoveExistingProducts After="InstallInitialize" />
+        </InstallExecuteSequence> 
+
         <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
         <UIRef Id="Custom_WixUI_InstallDir" />
 
