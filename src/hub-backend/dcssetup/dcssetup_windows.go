@@ -53,6 +53,9 @@ func RegisterApi(jsonAPI *jsonapi.JsonApi) {
 
 // GetInstalledModulesList returns a list of all installed DCS: World modules.
 func GetInstalledModulesList() []string {
+	var folderNamesToModuleDefinitionNames = map[string][]string{
+		"FA-18C": {"FA-18C_hornet"},
+	}
 	moduleSet := make(map[string]struct{}, 0)
 
 	scanDcsInstallDir := func(path string) {
@@ -63,6 +66,11 @@ func GetInstalledModulesList() []string {
 		for _, fi := range fileinfoList {
 			if fi.IsDir() {
 				moduleSet[strings.ToLower(fi.Name())] = struct{}{}
+			}
+			if otherDefinitonNames, ok := folderNamesToModuleDefinitionNames[fi.Name()]; ok {
+				for _, name := range otherDefinitonNames {
+					moduleSet[strings.ToLower(name)] = struct{}{}
+				}
 			}
 		}
 	}
