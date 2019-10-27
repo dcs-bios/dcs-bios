@@ -11,6 +11,7 @@
     "@types/react-router-dom": "^5.1.0",
     "@types/react-router-hash-link": "^1.2.1",
     "@types/websocket": "0.0.40",
+    "array-flat-polyfill": "^1.0.1",
     "codemirror": "^5.49.0",
     "react": "^16.10.2",
     "react-codemirror2": "^6.0.0",
