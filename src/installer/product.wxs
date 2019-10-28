@@ -49,11 +49,16 @@
                     </Component>
                 </Directory>
             </Directory>
+    
+            <Component Id="CMP_InstallDirRegistryKey" Guid="85307F57-4580-46FA-92A8-E989D26F5E0C">
+                <RegistryValue Root="HKLM" Key="Software\DCS-BIOS\DCS-BIOS Hub" Name="Path" Type="string" Value="[INSTALLDIR]" KeyPath="yes"/>
+            </Component>
         </Directory>
 
         <Feature Id="DcsBios" Title="DCS-BIOS" Level="1" Absent="disallow">
             <ComponentRef Id="CMP_mainexe"/>
             <ComponentRef Id="CMP_StartMenuShortcut"/>
+            <ComponentRef Id="CMP_InstallDirRegistryKey"/>
             <ComponentGroupRef Id="CMP_DcsLuaFiles"/>
             <ComponentGroupRef Id="CMP_ControlReferenceJsonFiles"/>
             <ComponentGroupRef Id="CMP_FrontendApp"/>
