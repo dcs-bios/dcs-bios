@@ -1,7 +1,7 @@
 Installing DCS-BIOS
 ===================
 
-Download and run the installer file for the `latest stable release <https://github.com/dcs-bios/dcs-bios/releases/latest/>`_ from GitHub.
+Download and run the installer (called DCS-BIOS-Hub-Setup-*version*.msi) for the `latest stable release <https://github.com/dcs-bios/dcs-bios/releases/latest/>`_ from GitHub.
 
 
 .. note::

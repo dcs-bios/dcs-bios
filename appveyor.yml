@@ -1,21 +1,15 @@
-version: v0.8.1+{build}
+version: v0.8.2+{build}
 pull_requests:
   do_not_increment_build_number: true
 image: Visual Studio 2017
 clone_depth: 100
 install:
-- cmd: >-
+- cmd: |
     set PATH=%PATH%;C:\Program Files (x86)\WiX Toolset v3.11\bin
-
     set GOPATH=C:\Users\appveyor
-
     set PATH=%PATH%;%GOPATH%\bin
-
     go get "github.com/Masterminds/semver"
-
-    pip install sphinx
-
-    pip install sphinx_rtd_theme
+    pip install sphinx sphinx_rtd_theme pyyaml
 
 build_script:
 - ps: |

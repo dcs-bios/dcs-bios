@@ -53,6 +53,9 @@ func RegisterApi(jsonAPI *jsonapi.JsonApi) {
 
 // GetInstalledModulesList returns a list of all installed DCS: World modules.
 func GetInstalledModulesList() []string {
+	var folderNamesToModuleDefinitionNames = map[string][]string{
+		"FA-18C": {"FA-18C_hornet"},
+	}
 	moduleSet := make(map[string]struct{}, 0)
 
 	scanDcsInstallDir := func(path string) {
@@ -63,6 +66,11 @@ func GetInstalledModulesList() []string {
 		for _, fi := range fileinfoList {
 			if fi.IsDir() {
 				moduleSet[strings.ToLower(fi.Name())] = struct{}{}
+			}
+			if otherDefinitonNames, ok := folderNamesToModuleDefinitionNames[fi.Name()]; ok {
+				for _, name := range otherDefinitonNames {
+					moduleSet[strings.ToLower(name)] = struct{}{}
+				}
 			}
 		}
 	}
@@ -252,6 +260,7 @@ func createProfileSubdir(profileDir string, subdirName string, logBuffer io.Writ
 	stat, err := os.Stat(fullSubdirPath)
 	if err != nil {
 		// does not exist
+		fmt.Fprintf(logBuffer, "creating directory: %s\n", fullSubdirPath)
 		err = os.Mkdir(fullSubdirPath, 0777)
 		if err != nil {
 			fmt.Fprintf(logBuffer, "error: could not create directory %s: %v\n", fullSubdirPath, err)
@@ -273,7 +282,7 @@ func SetupExportLua(profileDir string, shouldBeInstalled bool) (ok bool, logMess
 	// assert that profileDir exists and is a directory
 	stat, err := os.Stat(profileDir)
 	if err != nil || !stat.IsDir() {
-		fmt.Fprintf(logBuffer, "error: not a directory: %s\n", profileDir)
+		fmt.Fprintf(logBuffer, "error: profile directory does not exist, please start and exit DCS and try again: %s\n", profileDir)
 		return false, logBuffer.String()
 	}
 
@@ -287,6 +296,7 @@ func SetupExportLua(profileDir string, shouldBeInstalled bool) (ok bool, logMess
 	var existingExportLuaReader io.Reader
 	exportLuaFilePath := filepath.Join(profileDir, "Scripts", "Export.lua")
 	stat, err = os.Stat(exportLuaFilePath)
+
 	if err != nil {
 		// Export.lua does not exist yet
 		existingExportLuaReader = &bytes.Buffer{}
@@ -300,10 +310,6 @@ func SetupExportLua(profileDir string, shouldBeInstalled bool) (ok bool, logMess
 
 	// try setup
 	newExportLuaContent := GetModifiedExportLua(existingExportLuaReader, shouldBeInstalled, logBuffer)
-	if err != nil {
-		fmt.Fprintf(logBuffer, "error while generating new Export.lua content: %v\n", err)
-		return false, logBuffer.String()
-	}
 	file, err := os.Create(exportLuaFilePath)
 	if err != nil {
 		fmt.Fprintf(logBuffer, "error: could not open Export.lua for writing: %v\n", err)
@@ -338,18 +344,25 @@ func uninstallHook(profileDir string, hookDef *hookDefinition, logBuffer io.Writ
 	}
 	err = os.Remove(hookFile)
 	if err != nil {
-		fmt.Fprint(logBuffer, "error: could not delete %s: %v\n", hookFile, err)
+		fmt.Fprintf(logBuffer, "error: could not delete %s: %v\n", hookFile, err)
 		return false
 	}
 	fmt.Fprintf(logBuffer, "deleted: %s\n", hookFile)
 	return true
 }
 func installHook(profileDir string, hookDefinition *hookDefinition, logBuffer io.Writer) bool {
+	// assert that profileDir exists and is a directory
+	stat, err := os.Stat(profileDir)
+	if err != nil || !stat.IsDir() {
+		fmt.Fprintf(logBuffer, "error: profile directory does not exist, please start and exit DCS and try again: %s\n", profileDir)
+		return false
+	}
+
 	uninstallHook(profileDir, hookDefinition, logBuffer)
 	if !createProfileSubdir(profileDir, "Scripts", logBuffer) {
 		return false
 	}
-	if !createProfileSubdir(profileDir, "Hooks", logBuffer) {
+	if !createProfileSubdir(profileDir, "Scripts\\Hooks", logBuffer) {
 		return false
 	}
 	hookFile := filepath.Join(profileDir, "Scripts", "Hooks", hookDefinition.filename)
