@@ -2154,22 +2154,16 @@
                               "Fuel Panel": {
                                                   "BINGO_SET": {
                                                                        "category": "Fuel Panel",
-                                                                   "control_type": "limited_dial",
+                                                                   "control_type": "fixed_step_dial",
                                                                     "description": "Bingo Fuel Set Knob",
                                                                      "identifier": "BINGO_SET",
                                                                          "inputs": [ {
-                                                                                       "description": "set the position of the dial",
-                                                                                         "interface": "set_state",
-                                                                                         "max_value": 65535
-                                                                                   }, {
-                                                                                          "description": "turn the dial left or right",
-                                                                                            "interface": "variable_step",
-                                                                                            "max_value": 65535,
-                                                                                       "suggested_step": 3200
+                                                                                       "description": "rotate the knob left or right",
+                                                                                         "interface": "fixed_step"
                                                                                    } ],
                                                                         "outputs": [ {
                                                                                            "address": 30760,
-                                                                                       "description": "position of the potentiometer",
+                                                                                       "description": "rotation of the knob",
                                                                                               "mask": 65535,
                                                                                          "max_value": 65535,
                                                                                           "shift_by": 0,
