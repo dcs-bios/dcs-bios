@@ -160,7 +160,7 @@ func (api *JsonApi) HandleApiCall(envelopeJsonData []byte, followupMessagesJson 
 	handlerFunc, ok := api.handlerFunctions[envelope.DataType]
 	if !ok {
 		close(responseJsonChannel)
-		return responseJsonChannel, errors.New("jsonapi: HandleApiCall: no handlerFunc for message type" + envelope.DataType)
+		return responseJsonChannel, errors.New("jsonapi: HandleApiCall: no handlerFunc for message type " + envelope.DataType)
 	}
 	// we know that handlerFunc expects 3 parameters and has Kind reflect.Func
 	// assert that the first argument type matches the type of the inital message
