@@ -13,7 +13,6 @@ import './ControlReference.css';
 import ExportDataParser from './ExportDataParser'
 
 import { apiPost, getApiConnection } from './ApiConnection';
-import { w3cwebsocket } from 'websocket';
 
 type TIOElement = {
   name: string
@@ -67,7 +66,8 @@ function ControlReference() {
 
   let [moduleToCategory, setModuleToCategory] = useState<any>({});
   let exportDataParser = useState<ExportDataParser>(() => new ExportDataParser())[0]
-  let liveDataWebsocket = useState<w3cwebsocket>(getApiConnection)[0]
+  const dummySend = (msg:any ) => console.log
+  let [ sendWebsocketMsg, setSendWebsocketMsg ] = useState<(msg: any)=>void>(dummySend)
 
   const liveDataCallbacks: TLiveDataContext = {
     subscribeExportCallback: exportDataParser.registerExportDataListener.bind(exportDataParser),
@@ -75,7 +75,7 @@ function ControlReference() {
     subscribeEndOfUpdateCallback: exportDataParser.registerEndOfUpdateCallback.bind(exportDataParser),
     unsubscribeEndOfUpdateCallback: exportDataParser.unregisterEndOfUpdateListener.bind(exportDataParser),
     sendInputData: (msg) => {
-      liveDataWebsocket.send(JSON.stringify({
+      sendWebsocketMsg(JSON.stringify({
         "datatype": "input_command",
         "data": msg
       }))
@@ -83,23 +83,28 @@ function ControlReference() {
   }
 
   useEffect(() => {
+    const liveDataWebsocket = getApiConnection()
     liveDataWebsocket.onopen = () => {
+      const foo = (msg: any) => liveDataWebsocket.send(msg)
+      setSendWebsocketMsg(() => foo)
+      liveDataWebsocket.binaryType = "arraybuffer"
       liveDataWebsocket.send(JSON.stringify({
         datatype: "live_data",
         data: {}
       }))
     }
-    liveDataWebsocket.onmessage = async (data) => {
-      data = await data.data.arrayBuffer()
+    liveDataWebsocket.onmessage = async (response) => {
+      let data = response.data
+      //console.log("wsresponse", data)
       let a = new Uint8Array(data)
       for (let i = 0; i < a.length; i++) {
         exportDataParser.processByte(a[i])
-      }
+      } 
     }
     return () => {
       if (liveDataWebsocket) liveDataWebsocket.close();
     }
-  }, [liveDataWebsocket, exportDataParser])
+  }, [exportDataParser])
 
 
   useEffect(() => {
