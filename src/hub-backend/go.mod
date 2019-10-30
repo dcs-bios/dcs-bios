@@ -1,6 +1,7 @@
 module dcs-bios.a10c.de/dcs-bios-hub
 
 require (
+	github.com/andygrunwald/vdf v1.0.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect
 	github.com/getlantern/errors v0.0.0-20180829142810-e24b7f4ff7c7 // indirect

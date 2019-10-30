@@ -11,8 +11,10 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
+	"github.com/andygrunwald/vdf"
 	"golang.org/x/sys/windows/registry"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
@@ -191,8 +193,60 @@ func GetDcsInstallations() []DcsInstallation {
 
 	scanRegistryPath(registry.CURRENT_USER, "Software\\Eagle Dynamics\\DCS World")
 	scanRegistryPath(registry.CURRENT_USER, "Software\\Eagle Dynamics\\DCS World OpenBeta")
+	for _, dir := range getSteamInstallDirs() {
+		addInstallPath(dir)
+	}
 
 	return installs
+}
+
+func getSteamInstallDirs() (foundDirectories []string) {
+	// find Steam installation directory
+	d, err := registry.OpenKey(registry.CURRENT_USER, "Software\\Valve\\Steam", registry.QUERY_VALUE)
+	if err != nil {
+		return
+	}
+	defer d.Close()
+
+	steamPath, _, err := d.GetStringValue("SteamPath")
+	if err != nil {
+		return
+	}
+
+	scanSteamLibrary := func(path string) {
+		dcsInstallPath := filepath.Join(path, "steamapps", "common", "DCSWorld")
+		stat, err := os.Stat(dcsInstallPath)
+		if err == nil && stat.IsDir() {
+			foundDirectories = append(foundDirectories, dcsInstallPath)
+		}
+	}
+
+	scanSteamLibrary(steamPath)
+
+	// check for additional steam libraries
+	file, err := os.Open(filepath.Join(steamPath, "steamapps", "libraryfolders.vdf"))
+	if err == nil {
+		defer file.Close()
+		p := vdf.NewParser(file)
+		libraryFoldersVdf, err := p.Parse()
+		if err == nil {
+			libraryFoldersInterface, ok := libraryFoldersVdf["LibraryFolders"]
+			if ok {
+				libraryFolders := libraryFoldersInterface.(map[string]interface{})
+				for i := 1; true; i++ {
+					steamLibraryPath, ok := libraryFolders[strconv.Itoa(i)]
+					if ok {
+						scanSteamLibrary(steamLibraryPath.(string))
+					} else {
+						break
+					}
+				}
+			}
+		}
+
+	}
+
+	return
 }
 
 func GetExportLuaSetupLine() (string, error) {
