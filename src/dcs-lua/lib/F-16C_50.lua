@@ -1,4 +1,4 @@
--- V1.0g by Warlord (aka BlackLibrary)
+-- V1.1 by Warlord (aka BlackLibrary)
 -- DED Display, UHF, CMDS & Initial version of outputs from mainpanel_init.lua by Matchstick
 -- Tested and fixes by BuzzKillington
 
@@ -210,6 +210,7 @@ definePushButton("FIRE_OHEAT_DETECT_BTN", 6, 3012, 575, "Engine", "FIRE & OHEAT 
 defineTumb("OXY_SUPPLY_LVR", 8, 3001, 728, 0.5, {0.0, 1.0}, nil, true,"Oxygen System", "Supply Lever, PBG/ON/OFF")
 defineToggleSwitch("OXY_DILUTER_LVR", 8, 3002, 727, "Oxygen System", "Diluter Lever, 100 percent/NORM")
 defineSpringloaded_3_pos_tumb("OXY_EMERG_LVR", 8, 3004, 3003, 726, "Oxygen System", "Emergency Lever, EMERGENCY/NORMAL/TEST MASK")
+defineToggleSwitch("OBOGS_SW", 8, 3005, 576, "Oxygen System", "OBOGS BIT Switch, BIT/OFF")
 
 --Sensor Power Control Panel
 defineToggleSwitch("HDPT_SW_L", 22, 3002, 670, "Sensor Panel", "LEFT HDPT Switch, ON/OFF")
@@ -222,12 +223,12 @@ defineToggleSwitch("MMC_PWR_SW", 19, 3001, 715, "Avionic Panel", "MMC Switch, MM
 defineToggleSwitch("ST_STA_SW", 22, 3001, 716, "Avionic Panel", "ST STA Switch, ST STA/OFF")
 defineToggleSwitch("MFD_SW", 19, 3014, 717, "Avionic Panel", "MFD Switch, MFD/OFF")
 defineToggleSwitch("UFC_SW", 17, 3001, 718, "Avionic Panel", "UFC Switch, UFC/OFF")
+defineToggleSwitch("GPS_SW", 59, 3001, 720, "Avionic Panel", "GPS Switch, GPS/OFF")
 defineTumb("MIDS_LVT_KNB", 41, 3001, 723, 0.1, {0.0,0.2}, nil, true, "Avionic Panel", "MIDS LVT Knob, ZERO/OFF/ON")
 defineTumb("INS_KNB", 14, 3001, 719, 0.1, {0.0,0.6}, nil, true, "Avionic Panel", "INS Knob, OFF/STOR HDG/NORM/NAV/CAL/INFLT ALIGN/ATT")
 
 --WIP:
 defineToggleSwitch("MAP_SW", 3, 3101, 722, "WIP", "MAP Switch, MAP/OFF")
-defineToggleSwitch("GPS_SW", 3, 3102, 720, "WIP", "GPS Switch, GPS/OFF")
 defineToggleSwitch("DL_SW", 3, 3103, 721, "WIP", "DL Switch, DL/OFF")
 
 --Modular Mission Computer (MMC)
