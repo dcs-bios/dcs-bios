@@ -177,23 +177,17 @@ defineFloat("RALT_HI_IDX", 466, {0, 1}, "Radar Altimeter", "HI Index")
 
 local function getRadarAlt()
     local function a(n) return GetDevice(0):get_argument_value(n) end
-    local digit1 = string.format("%.0f", GetDevice(0):get_argument_value(468)*10)
+    local digit1 = string.format("%.0f", a(468)*10)
     if digit1 == "10" then digit1 = " " end
-    local digit2 = string.format("%.0f", GetDevice(0):get_argument_value(469)*10)
+    local digit2 = string.format("%.0f", a(469)*10)
     if digit2 == "10" then digit2 = " " end
-    local digit3 = string.format("%.0f", GetDevice(0):get_argument_value(470)*10)
+    local digit3 = string.format("%.0f", a(470)*10)
     if digit3 == "10" then digit3 = " " end
-    local digit4 = string.format("%.0f", GetDevice(0):get_argument_value(471)*10)
+    local digit4 = string.format("%.0f", a(471)*10)
     if digit4 == "10" then digit4 = " " end
-    return tonumber(digit1 .. digit2 .. digit3 .. digit4)
+    return digit1 .. digit2 .. digit3 .. digit4
 end
-defineIntegerFromGetter("RALT_DISPLAY", getRadarAlt, 65000, "Radar Altimeter", "Radar Altitude Display")
-
-defineFloat("RALT_DIGIT_1", 468, {0, 1}, "Radar Altimeter", "Radar Altimeter 1.Digit")
-defineFloat("RALT_DIGIT_2", 469, {0, 1}, "Radar Altimeter", "Radar Altimeter 2.Digit")
-defineFloat("RALT_DIGIT_3", 470, {0, 1}, "Radar Altimeter", "Radar Altimeter 3.Digit")
-defineFloat("RALT_DIGIT_4", 471, {0, 1}, "Radar Altimeter", "Radar Altimeter 4.Digit")
-
+defineString("RALT_DISPLAY", getRadarAlt, 4, "Radar Altimeter", "Display")
 -- clickabledata.lua:
 
 
@@ -481,25 +475,21 @@ defineToggleSwitch("CM_ARM_SW", 50, 3005, 456, "Countermeasures", "SAFE / ARMED 
 defineToggleSwitch("CM_MAN_PGRM_SW", 50, 3009, 459, "Countermeasures", "MAN / PGRM Switch")
 definePushButton("CM_FLARE_BTN", 50, 3006, 464, "Countermeasures", "Flare Button")
 definePushButton("CM_ARMED_TEST", 50, 3010, 457, "Countermeasures", "Armed Lamp Test")
-
+defineString("CM_FLARECNT_DISPLAY", getFlareCount, 2, "Countermeasures", "Flare Counter")
 definePushButton("CM_FLARECNT_RESET", 50, 3003, 453, "Countermeasures", "Flare Counter Reset Button")
 local function getFlareCount()
     local function a(n) return GetDevice(0):get_argument_value(n) end
-    local digit1 = string.format("%.0f", GetDevice(0):get_argument_value(460)*10)
-    local digit2 = string.format("%.0f", GetDevice(0):get_argument_value(461)*10)
-    return tonumber(digit1 .. digit2)
+    return string.format("%.0f%.0f", a(462)*10, a(463)*10)
 end
-defineIntegerFromGetter("CM_FLARECNT_DISPLAY", getFlareCount, 60, "Countermeasures", "Flare Counter Display")
+
 defineFixedStepInput("CM_FLARECNT", 50, 3004, {-1, 1}, "Countermeasures", "Flare Counter Decrease/Increase")
 
 definePushButton("CM_CHAFFCNT_RESET", 50, 3007, 455, "Countermeasures", "Chaff Counter Reset Button")
 local function getChaffCount()
     local function a(n) return GetDevice(0):get_argument_value(n) end
-    local digit1 = string.format("%.0f", GetDevice(0):get_argument_value(462)*10)
-    local digit2 = string.format("%.0f", GetDevice(0):get_argument_value(463)*10)
-    return tonumber(digit1 .. digit2)
+    return string.format("%.0f%.0f", a(462)*10, a(463)*10)
 end
-defineIntegerFromGetter("CM_CHAFFCNT_DISPLAY", getChaffCount, 60, "Countermeasures", "Chaff Counter Display")
+defineString("CM_CHAFFCNT_DISPLAY", getChaffCount, 2, "Countermeasures", "Chaff Counter")
 defineFixedStepInput("CM_CHAFFCNT", 50, 3008, {-1, 1}, "Countermeasures", "Chaff Counter Decrease/Increase")
 
 defineToggleSwitch("RADAR_ALT_PWR", 13, 3007, 449, "Overhead Panel", "Radar Altimeter Power")

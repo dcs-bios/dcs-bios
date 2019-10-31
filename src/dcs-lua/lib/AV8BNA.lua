@@ -153,7 +153,7 @@ definePushButton("M_Warning", 35, 3199, 199,"Master Warning Panel" , "Master War
 
 -- Fuel Quantity Indicator
 defineMultipositionSwitch("FUEL_SEL", 21, 3379, 379, 7, 0.33,"Fuel Panel" ,"Fuel Totalizer Selector OUTBD/INBD/WING/INT/TOT/FEED/BIT")
-definePotentiometer("BINGO_SET", 21, 3380, 380, {0, 1},"Fuel Panel" , "Bingo Fuel Set Knob")
+defineAV8BCommSelector("BINGO_SET", 21, 3380, 0.01, 380, "Fuel Panel" , "Bingo Fuel Set Knob")
 
 -- MPCD left
 definePushButton("MPCD_L_1", 26, 3200, 200,"MPCD Left" , "MPCD Left Button 1")
