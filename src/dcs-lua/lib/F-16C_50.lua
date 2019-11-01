@@ -1,5 +1,5 @@
--- V1.0f by Warlord (aka BlackLibrary)
--- DED Display & Initial version of outputs from mainpanel_init.lua by Matchstick
+-- V1.1 by Warlord (aka BlackLibrary)
+-- DED Display, UHF, CMDS & Initial version of outputs from mainpanel_init.lua by Matchstick
 -- Tested and fixes by BuzzKillington
 
 BIOS.protocol.beginModule("F-16C_50", 0x4400)
@@ -210,6 +210,7 @@ definePushButton("FIRE_OHEAT_DETECT_BTN", 6, 3012, 575, "Engine", "FIRE & OHEAT 
 defineTumb("OXY_SUPPLY_LVR", 8, 3001, 728, 0.5, {0.0, 1.0}, nil, true,"Oxygen System", "Supply Lever, PBG/ON/OFF")
 defineToggleSwitch("OXY_DILUTER_LVR", 8, 3002, 727, "Oxygen System", "Diluter Lever, 100 percent/NORM")
 defineSpringloaded_3_pos_tumb("OXY_EMERG_LVR", 8, 3004, 3003, 726, "Oxygen System", "Emergency Lever, EMERGENCY/NORMAL/TEST MASK")
+defineToggleSwitch("OBOGS_SW", 8, 3005, 576, "Oxygen System", "OBOGS BIT Switch, BIT/OFF")
 
 --Sensor Power Control Panel
 defineToggleSwitch("HDPT_SW_L", 22, 3002, 670, "Sensor Panel", "LEFT HDPT Switch, ON/OFF")
@@ -222,12 +223,12 @@ defineToggleSwitch("MMC_PWR_SW", 19, 3001, 715, "Avionic Panel", "MMC Switch, MM
 defineToggleSwitch("ST_STA_SW", 22, 3001, 716, "Avionic Panel", "ST STA Switch, ST STA/OFF")
 defineToggleSwitch("MFD_SW", 19, 3014, 717, "Avionic Panel", "MFD Switch, MFD/OFF")
 defineToggleSwitch("UFC_SW", 17, 3001, 718, "Avionic Panel", "UFC Switch, UFC/OFF")
+defineToggleSwitch("GPS_SW", 59, 3001, 720, "Avionic Panel", "GPS Switch, GPS/OFF")
 defineTumb("MIDS_LVT_KNB", 41, 3001, 723, 0.1, {0.0,0.2}, nil, true, "Avionic Panel", "MIDS LVT Knob, ZERO/OFF/ON")
 defineTumb("INS_KNB", 14, 3001, 719, 0.1, {0.0,0.6}, nil, true, "Avionic Panel", "INS Knob, OFF/STOR HDG/NORM/NAV/CAL/INFLT ALIGN/ATT")
 
 --WIP:
 defineToggleSwitch("MAP_SW", 3, 3101, 722, "WIP", "MAP Switch, MAP/OFF")
-defineToggleSwitch("GPS_SW", 3, 3102, 720, "WIP", "GPS Switch, GPS/OFF")
 defineToggleSwitch("DL_SW", 3, 3103, 721, "WIP", "DL Switch, DL/OFF")
 
 --Modular Mission Computer (MMC)
@@ -910,7 +911,7 @@ DEDLayout_l3["CARA ALOW Asterisks_both"] = {14,1,22,"","I"}
 --STPT
 DEDLayout_l3["STEERPOINT Longitude"] = {3,3}
 DEDLayout_l3["STEERPOINT Longitude Value"] = {8,12,0,"_inv","I"}
-DEDLayout_l3["STEERPOINT Latitude Asteriscs_both"] = {7,1,20,"","I"}
+DEDLayout_l3["STEERPOINT Longitude Asteriscs_both"] = {7,1,20,"","I"}
 --BINGO
 DEDLayout_l3["SET label"] = {6,3}
 DEDLayout_l3["BINGO Asterisks_both"] = {10,1,19,"","I"}
@@ -1247,6 +1248,58 @@ defineString("DED_LINE_2", function() return DEDLine2 end, 25, "DED Output Data"
 defineString("DED_LINE_3", function() return DEDLine3 end, 25, "DED Output Data", "DED Display Line 3")
 defineString("DED_LINE_4", function() return DEDLine4 end, 25, "DED Output Data", "DED Display Line 4")
 defineString("DED_LINE_5", function() return DEDLine5 end, 25, "DED Output Data", "DED Display Line 5")
+
+------------------------------------------------------------------CMDS Display--------------------------------------------------------------------------------------
+local CMDS_O1_Amount
+local CMDS_O1_Amount
+local CMDS_O2_Amount
+local CMDS_CH_Amount
+local CMDS_FL_Amount
+
+moduleBeingDefined.exportHooks[#moduleBeingDefined.exportHooks+1] = function()
+	local cmds = parse_indication(17)
+	CMDS_O1_Amount = "    "
+	CMDS_O2_Amount = "    "
+	CMDS_CH_Amount = "    "
+	CMDS_FL_Amount = "    "
+	if not cmds then
+		return
+	end
+	CMDS_O1_Amount 				= coerce_nil_to_string(cmds.CMDS_O1_Amount)
+	CMDS_O2_Amount 				= coerce_nil_to_string(cmds.CMDS_O2_Amount)
+	CMDS_CH_Amount 				= coerce_nil_to_string(cmds.CMDS_CH_Amount)
+	CMDS_FL_Amount 				= coerce_nil_to_string(cmds.CMDS_FL_Amount)
+end
+
+defineString("CMDS_O1_Amount", function() return CMDS_O1_Amount end, 4, "CMDS", "CMDS O1 Amount Display")
+defineString("CMDS_O2_Amount", function() return CMDS_O2_Amount end, 4, "CMDS", "CMDS O2 Amount Display")
+defineString("CMDS_CH_Amount", function() return CMDS_CH_Amount end, 4, "CMDS", "CMDS CH Amount Display")
+defineString("CMDS_FL_Amount", function() return CMDS_FL_Amount end, 4, "CMDS", "CMDS FL Amount Display")
+
+------------------------------------------------------------------UHF Display---------------------------------------------------------------------------------------
+local function get_UHF_CHAN()
+    local UHF = parse_indication(11)
+	if UHF and UHF.txtPresetChannel then
+		return coerce_nil_to_string(UHF.txtPresetChannel)
+	else
+		return "  "
+	end
+end
+
+defineString("UHF_CHAN_DISP", get_UHF_CHAN, 2, "UHF", "UHF CHAN Display")
+
+local function get_UHF_FREQUENCY()
+    local UHF = parse_indication(12)
+    if UHF and UHF.txtFreqStatus then
+        local UHF_Freq = UHF.txtFreqStatus
+        local UHF_dot =  UHF.txtDot
+        return UHF_Freq:sub(1,3)..UHF_dot..UHF_Freq:sub(4,6)
+    else
+        return "       "
+    end
+end
+
+defineString("UHF_FREQ_DISP", get_UHF_FREQUENCY, 7, "UHF", "UHF Manual Frequency Display")  
 
 ------------------------------------------------------------------Externals-----------------------------------------------------------------------------------------
 defineIntegerFromGetter("EXT_SPEED_BRAKE_RIGHT", function()

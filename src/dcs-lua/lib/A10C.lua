@@ -332,8 +332,6 @@ defineFloat("FUEL_QTY_10000", 90, {0, 1}, "Fuel Panel", "Fuel Quantity Counter 1
 defineFloat("FUEL_QTY_1000", 91, {0, 1}, "Fuel Panel", "Fuel Quantity Counter 1000")
 defineFloat("FUEL_QTY_100", 92, {0, 1}, "Fuel Panel", "Fuel Quantity Counter 100")
 
---defineFloat("CANOPY_VALUE", 7, {0.0, 1.0}, "Misc", "Canopy Position")
-
 defineIndicatorLight("MASTER_CAUTION", 404, "UFC", "Master Caution Light")
 
 -- The order in this file roughly follows clickabledata.lua
@@ -820,13 +818,6 @@ defineTumb("TISL_CODE4", 57, 3008, 642, 0.05, {0, 1}, {"0", "0.5", "1", "1.5", "
 defineTumb("TISL_AUX", 57, 3009, 644, 1, {-1, 1}, nil, false, "TISL Panel", "TISL AUX Switch")
 definePushButton("TISL_ENTER", 57, 3010, 628, "TISL Panel", "TISL ENTER")
 definePushButton("TISL_BITE", 57, 3011, 632, "TISL Panel", "TISL BITE")
---definePushButton("TISL_OVERTEMP", 57, 3012, 630, "TISL Panel", "TISL OVER TEMP")
---definePushButton("TISL_TRACK", 57, 3013, 634, "TISL Panel", "TISL TRACK")
--- defineIndicatorLight("TISL_ENTER_L", 629, "TISL Panel", "TISL ENTER Light")
--- defineIndicatorLight("TISL_OVERTEMP_L", 631, "TISL Panel", "TISL OVER TEMP Light")
--- defineIndicatorLight("TISL_BITE_L", 633, "TISL Panel", "TISL BITE Light")
--- defineIndicatorLight("TISL_TRACK_L", 635, "TISL Panel", "TISL TRACK Light")
-
 
 definePushButton("EXT_STORES_JETTISON", 12, 3001, 101, "Glare Shield", "External Stores Jettison Button")
 
@@ -1350,6 +1341,16 @@ end, 1, "External Aircraft Model", "Left Strobe Light")
 defineIntegerFromGetter("EXT_STROBE_RIGHT", function()
 	if LoGetAircraftDrawArgumentValue(196) > 0 then return 1 else return 0 end
 end, 1, "External Aircraft Model", "Right Strobe Light")
+
+defineFloat("CANOPY_VALUE", 7, {0.0, 1.0}, "Misc", "Canopy Position")
+
+definePushButton("TISL_OVERTEMP", 57, 3012, 630, "TISL Panel", "TISL OVER TEMP")
+definePushButton("TISL_TRACK", 57, 3013, 634, "TISL Panel", "TISL TRACK")
+defineIndicatorLight("TISL_ENTER_L", 629, "TISL Panel", "TISL ENTER Light")
+defineIndicatorLight("TISL_OVERTEMP_L", 631, "TISL Panel", "TISL OVER TEMP Light")
+defineIndicatorLight("TISL_BITE_L", 633, "TISL Panel", "TISL BITE Light")
+defineIndicatorLight("TISL_TRACK_L", 635, "TISL Panel", "TISL TRACK Light")
+
 
 
 BIOS.protocol.endModule()
