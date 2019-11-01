@@ -187,7 +187,7 @@ local function getRadarAlt()
     if digit4 == "10" then digit4 = " " end
     return digit1 .. digit2 .. digit3 .. digit4
 end
-defineString("RALT_DISPLAY", getRadarAlt, 4, "Radar Altimeter", "Display")
+defineString("RALT_DISPLAY_STR", getRadarAlt, 4, "Radar Altimeter", "Display (String)")
 -- clickabledata.lua:
 
 
@@ -475,7 +475,7 @@ defineToggleSwitch("CM_ARM_SW", 50, 3005, 456, "Countermeasures", "SAFE / ARMED 
 defineToggleSwitch("CM_MAN_PGRM_SW", 50, 3009, 459, "Countermeasures", "MAN / PGRM Switch")
 definePushButton("CM_FLARE_BTN", 50, 3006, 464, "Countermeasures", "Flare Button")
 definePushButton("CM_ARMED_TEST", 50, 3010, 457, "Countermeasures", "Armed Lamp Test")
-defineString("CM_FLARECNT_DISPLAY", getFlareCount, 2, "Countermeasures", "Flare Counter")
+defineString("CM_FLARECNT_DISPLAY_STR", getFlareCount, 2, "Countermeasures", "Flare Counter (String)")
 definePushButton("CM_FLARECNT_RESET", 50, 3003, 453, "Countermeasures", "Flare Counter Reset Button")
 local function getFlareCount()
     local function a(n) return GetDevice(0):get_argument_value(n) end
@@ -489,7 +489,7 @@ local function getChaffCount()
     local function a(n) return GetDevice(0):get_argument_value(n) end
     return string.format("%.0f%.0f", a(462)*10, a(463)*10)
 end
-defineString("CM_CHAFFCNT_DISPLAY", getChaffCount, 2, "Countermeasures", "Chaff Counter")
+defineString("CM_CHAFFCNT_DISPLAY_STR", getChaffCount, 2, "Countermeasures", "Chaff Counter (String)")
 defineFixedStepInput("CM_CHAFFCNT", 50, 3008, {-1, 1}, "Countermeasures", "Chaff Counter Decrease/Increase")
 
 defineToggleSwitch("RADAR_ALT_PWR", 13, 3007, 449, "Overhead Panel", "Radar Altimeter Power")
@@ -515,5 +515,39 @@ end, 1, "External Aircraft Model", "Right Position Light (green)")
 defineIntegerFromGetter("EXT_STROBE", function()
 	if LoGetAircraftDrawArgumentValue(193) > 0 then return 1 else return 0 end
 end, 1, "External Aircraft Model", "Strobe Light")
+
+
+-- Radar Altimeter Display, Chaff and Flare counters as numeric values
+local function getRadarAltAsNumber()
+    local digit1 = string.format("%.0f", GetDevice(0):get_argument_value(468)*10)
+    if digit1 == "10" then digit1 = " " end
+    local digit2 = string.format("%.0f", GetDevice(0):get_argument_value(469)*10)
+    if digit2 == "10" then digit2 = " " end
+    local digit3 = string.format("%.0f", GetDevice(0):get_argument_value(470)*10)
+    if digit3 == "10" then digit3 = " " end
+    local digit4 = string.format("%.0f", GetDevice(0):get_argument_value(471)*10)
+    if digit4 == "10" then digit4 = " " end
+    return tonumber(digit1 .. digit2 .. digit3 .. digit4)
+end
+defineIntegerFromGetter("RALT_DISPLAY", getRadarAltAsNumber, 65000, "Radar Altimeter", "Radar Altitude Display (Number)")
+
+defineFloat("RALT_DIGIT_1", 468, {0, 1}, "Radar Altimeter", "Radar Altimeter 1.Digit")
+defineFloat("RALT_DIGIT_2", 469, {0, 1}, "Radar Altimeter", "Radar Altimeter 2.Digit")
+defineFloat("RALT_DIGIT_3", 470, {0, 1}, "Radar Altimeter", "Radar Altimeter 3.Digit")
+defineFloat("RALT_DIGIT_4", 471, {0, 1}, "Radar Altimeter", "Radar Altimeter 4.Digit")
+
+local function getFlareCountAsNumber()
+    local digit1 = string.format("%.0f", GetDevice(0):get_argument_value(460)*10)
+    local digit2 = string.format("%.0f", GetDevice(0):get_argument_value(461)*10)
+    return tonumber(digit1 .. digit2)
+end
+defineIntegerFromGetter("CM_FLARECNT_DISPLAY", getFlareCountAsNumber, 60, "Countermeasures", "Flare Counter Display (Number)")
+
+local function getChaffCountAsNumber()
+    local digit1 = string.format("%.0f", GetDevice(0):get_argument_value(462)*10)
+    local digit2 = string.format("%.0f", GetDevice(0):get_argument_value(463)*10)
+    return tonumber(digit1 .. digit2)
+end
+defineIntegerFromGetter("CM_CHAFFCNT_DISPLAY", getChaffCountAsNumber, 60, "Countermeasures", "Chaff Counter Display (Number)")
 
 BIOS.protocol.endModule()

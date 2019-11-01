@@ -3465,292 +3465,324 @@
                                                                 }
                                                 },
                              "Countermeasures": {
-                                                          "CM_ARMED_TEST": {
-                                                                                       "api_variant": "momentary_last_position",
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "Armed Lamp Test",
-                                                                                        "identifier": "CM_ARMED_TEST",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5404,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 2,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 1,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "push_button"
-                                                                           },
-                                                              "CM_ARM_SW": {
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "SAFE / ARMED Switch",
-                                                                                        "identifier": "CM_ARM_SW",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5396,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 16384,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 14,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "toggle_switch"
-                                                                           },
-                                                            "CM_CHAFFCNT": {
-                                                                                   "category": "Countermeasures",
-                                                                               "control_type": "fixed_step_dial",
-                                                                                "description": "Chaff Counter Decrease/Increase",
-                                                                                 "identifier": "CM_CHAFFCNT",
-                                                                                     "inputs": [ {
-                                                                                                   "description": "turn left or right",
-                                                                                                     "interface": "fixed_step"
-                                                                                               } ],
-                                                                                    "outputs": [  ]
-                                                                           },
-                                                    "CM_CHAFFCNT_DISPLAY": {
-                                                                                   "category": "Countermeasures",
-                                                                               "control_type": "display",
-                                                                                "description": "Chaff Counter",
-                                                                                 "identifier": "CM_CHAFFCNT_DISPLAY",
-                                                                                     "inputs": [  ],
-                                                                                    "outputs": [ {
-                                                                                                       "address": 5408,
-                                                                                                   "description": "Chaff Counter",
-                                                                                                    "max_length": 2,
-                                                                                                        "suffix": "",
-                                                                                                          "type": "string"
-                                                                                               } ]
-                                                                           },
-                                                      "CM_CHAFFCNT_RESET": {
-                                                                                       "api_variant": "momentary_last_position",
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "Chaff Counter Reset Button",
-                                                                                        "identifier": "CM_CHAFFCNT_RESET",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5404,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 8,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 3,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "push_button"
-                                                                           },
-                                                            "CM_FLARECNT": {
-                                                                                   "category": "Countermeasures",
-                                                                               "control_type": "fixed_step_dial",
-                                                                                "description": "Flare Counter Decrease/Increase",
-                                                                                 "identifier": "CM_FLARECNT",
-                                                                                     "inputs": [ {
-                                                                                                   "description": "turn left or right",
-                                                                                                     "interface": "fixed_step"
-                                                                                               } ],
-                                                                                    "outputs": [  ]
-                                                                           },
-                                                    "CM_FLARECNT_DISPLAY": {
-                                                                                   "category": "Countermeasures",
-                                                                               "control_type": "display",
-                                                                                "description": "Flare Counter",
-                                                                                 "identifier": "CM_FLARECNT_DISPLAY",
-                                                                                     "inputs": [  ],
-                                                                                    "outputs": [ {
-                                                                                                       "address": 5406,
-                                                                                                   "description": "Flare Counter",
-                                                                                                    "max_length": 2,
-                                                                                                        "suffix": "",
-                                                                                                          "type": "string"
-                                                                                               } ]
-                                                                           },
-                                                      "CM_FLARECNT_RESET": {
-                                                                                       "api_variant": "momentary_last_position",
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "Flare Counter Reset Button",
-                                                                                        "identifier": "CM_FLARECNT_RESET",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5404,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 4,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 2,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "push_button"
-                                                                           },
-                                                           "CM_FLARE_BTN": {
-                                                                                       "api_variant": "momentary_last_position",
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "Flare Button",
-                                                                                        "identifier": "CM_FLARE_BTN",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5404,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 1,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 0,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "push_button"
-                                                                           },
-                                                         "CM_MAN_PGRM_SW": {
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "MAN / PGRM Switch",
-                                                                                        "identifier": "CM_MAN_PGRM_SW",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5396,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 32768,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 15,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "toggle_switch"
-                                                                           },
-                                                        "CM_RIPPLE_COVER": {
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "Ripple Fire Cover",
-                                                                                        "identifier": "CM_RIPPLE_COVER",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5396,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 4096,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 12,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "toggle_switch"
-                                                                           },
-                                                           "CM_RIPPLE_SW": {
-                                                                                          "category": "Countermeasures",
-                                                                                      "control_type": "selector",
-                                                                                       "description": "Ripple Fire Switch",
-                                                                                        "identifier": "CM_RIPPLE_SW",
-                                                                                            "inputs": [ {
-                                                                                                          "description": "switch to previous or next state",
-                                                                                                            "interface": "fixed_step"
-                                                                                                      }, {
-                                                                                                          "description": "set position",
-                                                                                                            "interface": "set_state",
-                                                                                                            "max_value": 1
-                                                                                                      }, {
-                                                                                                             "argument": "TOGGLE",
-                                                                                                          "description": "Toggle switch state",
-                                                                                                            "interface": "action"
-                                                                                                      } ],
-                                                                               "momentary_positions": "none",
-                                                                                           "outputs": [ {
-                                                                                                              "address": 5396,
-                                                                                                          "description": "selector position",
-                                                                                                                 "mask": 8192,
-                                                                                                            "max_value": 1,
-                                                                                                             "shift_by": 13,
-                                                                                                               "suffix": "",
-                                                                                                                 "type": "integer"
-                                                                                                      } ],
-                                                                                  "physical_variant": "toggle_switch"
-                                                                           }
+                                                              "CM_ARMED_TEST": {
+                                                                                           "api_variant": "momentary_last_position",
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "Armed Lamp Test",
+                                                                                            "identifier": "CM_ARMED_TEST",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5404,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 2,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 1,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "push_button"
+                                                                               },
+                                                                  "CM_ARM_SW": {
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "SAFE / ARMED Switch",
+                                                                                            "identifier": "CM_ARM_SW",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5396,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 16384,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 14,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "toggle_switch"
+                                                                               },
+                                                                "CM_CHAFFCNT": {
+                                                                                       "category": "Countermeasures",
+                                                                                   "control_type": "fixed_step_dial",
+                                                                                    "description": "Chaff Counter Decrease/Increase",
+                                                                                     "identifier": "CM_CHAFFCNT",
+                                                                                         "inputs": [ {
+                                                                                                       "description": "turn left or right",
+                                                                                                         "interface": "fixed_step"
+                                                                                                   } ],
+                                                                                        "outputs": [  ]
+                                                                               },
+                                                        "CM_CHAFFCNT_DISPLAY": {
+                                                                                       "category": "Countermeasures",
+                                                                                   "control_type": "metadata",
+                                                                                    "description": "Chaff Counter Display (Number)",
+                                                                                     "identifier": "CM_CHAFFCNT_DISPLAY",
+                                                                                         "inputs": [  ],
+                                                                                        "outputs": [ {
+                                                                                                           "address": 5426,
+                                                                                                       "description": "Chaff Counter Display (Number)",
+                                                                                                              "mask": 4032,
+                                                                                                         "max_value": 60,
+                                                                                                          "shift_by": 6,
+                                                                                                            "suffix": "",
+                                                                                                              "type": "integer"
+                                                                                                   } ]
+                                                                               },
+                                                    "CM_CHAFFCNT_DISPLAY_STR": {
+                                                                                       "category": "Countermeasures",
+                                                                                   "control_type": "display",
+                                                                                    "description": "Chaff Counter (String)",
+                                                                                     "identifier": "CM_CHAFFCNT_DISPLAY_STR",
+                                                                                         "inputs": [  ],
+                                                                                        "outputs": [ {
+                                                                                                           "address": 5408,
+                                                                                                       "description": "Chaff Counter (String)",
+                                                                                                        "max_length": 2,
+                                                                                                            "suffix": "",
+                                                                                                              "type": "string"
+                                                                                                   } ]
+                                                                               },
+                                                          "CM_CHAFFCNT_RESET": {
+                                                                                           "api_variant": "momentary_last_position",
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "Chaff Counter Reset Button",
+                                                                                            "identifier": "CM_CHAFFCNT_RESET",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5404,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 8,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 3,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "push_button"
+                                                                               },
+                                                                "CM_FLARECNT": {
+                                                                                       "category": "Countermeasures",
+                                                                                   "control_type": "fixed_step_dial",
+                                                                                    "description": "Flare Counter Decrease/Increase",
+                                                                                     "identifier": "CM_FLARECNT",
+                                                                                         "inputs": [ {
+                                                                                                       "description": "turn left or right",
+                                                                                                         "interface": "fixed_step"
+                                                                                                   } ],
+                                                                                        "outputs": [  ]
+                                                                               },
+                                                        "CM_FLARECNT_DISPLAY": {
+                                                                                       "category": "Countermeasures",
+                                                                                   "control_type": "metadata",
+                                                                                    "description": "Flare Counter Display (Number)",
+                                                                                     "identifier": "CM_FLARECNT_DISPLAY",
+                                                                                         "inputs": [  ],
+                                                                                        "outputs": [ {
+                                                                                                           "address": 5426,
+                                                                                                       "description": "Flare Counter Display (Number)",
+                                                                                                              "mask": 63,
+                                                                                                         "max_value": 60,
+                                                                                                          "shift_by": 0,
+                                                                                                            "suffix": "",
+                                                                                                              "type": "integer"
+                                                                                                   } ]
+                                                                               },
+                                                    "CM_FLARECNT_DISPLAY_STR": {
+                                                                                       "category": "Countermeasures",
+                                                                                   "control_type": "display",
+                                                                                    "description": "Flare Counter (String)",
+                                                                                     "identifier": "CM_FLARECNT_DISPLAY_STR",
+                                                                                         "inputs": [  ],
+                                                                                        "outputs": [ {
+                                                                                                           "address": 5406,
+                                                                                                       "description": "Flare Counter (String)",
+                                                                                                        "max_length": 2,
+                                                                                                            "suffix": "",
+                                                                                                              "type": "string"
+                                                                                                   } ]
+                                                                               },
+                                                          "CM_FLARECNT_RESET": {
+                                                                                           "api_variant": "momentary_last_position",
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "Flare Counter Reset Button",
+                                                                                            "identifier": "CM_FLARECNT_RESET",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5404,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 4,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 2,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "push_button"
+                                                                               },
+                                                               "CM_FLARE_BTN": {
+                                                                                           "api_variant": "momentary_last_position",
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "Flare Button",
+                                                                                            "identifier": "CM_FLARE_BTN",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5404,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 1,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 0,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "push_button"
+                                                                               },
+                                                             "CM_MAN_PGRM_SW": {
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "MAN / PGRM Switch",
+                                                                                            "identifier": "CM_MAN_PGRM_SW",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5396,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 32768,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 15,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "toggle_switch"
+                                                                               },
+                                                            "CM_RIPPLE_COVER": {
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "Ripple Fire Cover",
+                                                                                            "identifier": "CM_RIPPLE_COVER",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5396,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 4096,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 12,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "toggle_switch"
+                                                                               },
+                                                               "CM_RIPPLE_SW": {
+                                                                                              "category": "Countermeasures",
+                                                                                          "control_type": "selector",
+                                                                                           "description": "Ripple Fire Switch",
+                                                                                            "identifier": "CM_RIPPLE_SW",
+                                                                                                "inputs": [ {
+                                                                                                              "description": "switch to previous or next state",
+                                                                                                                "interface": "fixed_step"
+                                                                                                          }, {
+                                                                                                              "description": "set position",
+                                                                                                                "interface": "set_state",
+                                                                                                                "max_value": 1
+                                                                                                          }, {
+                                                                                                                 "argument": "TOGGLE",
+                                                                                                              "description": "Toggle switch state",
+                                                                                                                "interface": "action"
+                                                                                                          } ],
+                                                                                   "momentary_positions": "none",
+                                                                                               "outputs": [ {
+                                                                                                                  "address": 5396,
+                                                                                                              "description": "selector position",
+                                                                                                                     "mask": 8192,
+                                                                                                                "max_value": 1,
+                                                                                                                 "shift_by": 13,
+                                                                                                                   "suffix": "",
+                                                                                                                     "type": "integer"
+                                                                                                          } ],
+                                                                                      "physical_variant": "toggle_switch"
+                                                                               }
                                                 },
                             "Course Indicator": {
                                                     "CI_COURSE_CARD": {
@@ -6849,116 +6881,196 @@
                                                                        }
                                                 },
                              "Radar Altimeter": {
-                                                    "RALT_DISPLAY": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "display",
-                                                                         "description": "Display",
-                                                                          "identifier": "RALT_DISPLAY",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5290,
-                                                                                            "description": "Display",
-                                                                                             "max_length": 4,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "string"
-                                                                                        } ]
-                                                                    },
-                                                     "RALT_HI_IDX": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "analog_gauge",
-                                                                         "description": "HI Index",
-                                                                          "identifier": "RALT_HI_IDX",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5288,
-                                                                                            "description": "gauge position",
-                                                                                                   "mask": 65535,
-                                                                                              "max_value": 65535,
-                                                                                               "shift_by": 0,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "integer"
-                                                                                        } ]
-                                                                    },
-                                                    "RALT_HI_LAMP": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "led",
-                                                                         "description": "HI Lamp (blue)",
-                                                                          "identifier": "RALT_HI_LAMP",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5142,
-                                                                                            "description": "0 if light is off, 1 if light is on",
-                                                                                                   "mask": 4096,
-                                                                                              "max_value": 1,
-                                                                                               "shift_by": 12,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "integer"
-                                                                                        } ]
-                                                                    },
-                                                     "RALT_LO_IDX": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "analog_gauge",
-                                                                         "description": "LO Index",
-                                                                          "identifier": "RALT_LO_IDX",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5286,
-                                                                                            "description": "gauge position",
-                                                                                                   "mask": 65535,
-                                                                                              "max_value": 65535,
-                                                                                               "shift_by": 0,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "integer"
-                                                                                        } ]
-                                                                    },
-                                                    "RALT_LO_LAMP": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "led",
-                                                                         "description": "LO Lamp (blue)",
-                                                                          "identifier": "RALT_LO_LAMP",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5142,
-                                                                                            "description": "0 if light is off, 1 if light is on",
-                                                                                                   "mask": 2048,
-                                                                                              "max_value": 1,
-                                                                                               "shift_by": 11,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "integer"
-                                                                                        } ]
-                                                                    },
-                                                     "RALT_NEEDLE": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "analog_gauge",
-                                                                         "description": "Needle",
-                                                                          "identifier": "RALT_NEEDLE",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5282,
-                                                                                            "description": "gauge position",
-                                                                                                   "mask": 65535,
-                                                                                              "max_value": 65535,
-                                                                                               "shift_by": 0,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "integer"
-                                                                                        } ]
-                                                                    },
-                                                        "RALT_OFF": {
-                                                                            "category": "Radar Altimeter",
-                                                                        "control_type": "analog_gauge",
-                                                                         "description": "Off Warning Flag",
-                                                                          "identifier": "RALT_OFF",
-                                                                              "inputs": [  ],
-                                                                             "outputs": [ {
-                                                                                                "address": 5284,
-                                                                                            "description": "gauge position",
-                                                                                                   "mask": 65535,
-                                                                                              "max_value": 65535,
-                                                                                               "shift_by": 0,
-                                                                                                 "suffix": "",
-                                                                                                   "type": "integer"
-                                                                                        } ]
-                                                                    }
+                                                        "RALT_DIGIT_1": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "Radar Altimeter 1.Digit",
+                                                                              "identifier": "RALT_DIGIT_1",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5418,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                        "RALT_DIGIT_2": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "Radar Altimeter 2.Digit",
+                                                                              "identifier": "RALT_DIGIT_2",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5420,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                        "RALT_DIGIT_3": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "Radar Altimeter 3.Digit",
+                                                                              "identifier": "RALT_DIGIT_3",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5422,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                        "RALT_DIGIT_4": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "Radar Altimeter 4.Digit",
+                                                                              "identifier": "RALT_DIGIT_4",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5424,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                        "RALT_DISPLAY": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "metadata",
+                                                                             "description": "Radar Altitude Display (Number)",
+                                                                              "identifier": "RALT_DISPLAY",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5416,
+                                                                                                "description": "Radar Altitude Display (Number)",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65000,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                    "RALT_DISPLAY_STR": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "display",
+                                                                             "description": "Display (String)",
+                                                                              "identifier": "RALT_DISPLAY_STR",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5290,
+                                                                                                "description": "Display (String)",
+                                                                                                 "max_length": 4,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "string"
+                                                                                            } ]
+                                                                        },
+                                                         "RALT_HI_IDX": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "HI Index",
+                                                                              "identifier": "RALT_HI_IDX",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5288,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                        "RALT_HI_LAMP": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "led",
+                                                                             "description": "HI Lamp (blue)",
+                                                                              "identifier": "RALT_HI_LAMP",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5142,
+                                                                                                "description": "0 if light is off, 1 if light is on",
+                                                                                                       "mask": 4096,
+                                                                                                  "max_value": 1,
+                                                                                                   "shift_by": 12,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                         "RALT_LO_IDX": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "LO Index",
+                                                                              "identifier": "RALT_LO_IDX",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5286,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                        "RALT_LO_LAMP": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "led",
+                                                                             "description": "LO Lamp (blue)",
+                                                                              "identifier": "RALT_LO_LAMP",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5142,
+                                                                                                "description": "0 if light is off, 1 if light is on",
+                                                                                                       "mask": 2048,
+                                                                                                  "max_value": 1,
+                                                                                                   "shift_by": 11,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                         "RALT_NEEDLE": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "Needle",
+                                                                              "identifier": "RALT_NEEDLE",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5282,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        },
+                                                            "RALT_OFF": {
+                                                                                "category": "Radar Altimeter",
+                                                                            "control_type": "analog_gauge",
+                                                                             "description": "Off Warning Flag",
+                                                                              "identifier": "RALT_OFF",
+                                                                                  "inputs": [  ],
+                                                                                 "outputs": [ {
+                                                                                                    "address": 5284,
+                                                                                                "description": "gauge position",
+                                                                                                       "mask": 65535,
+                                                                                                  "max_value": 65535,
+                                                                                                   "shift_by": 0,
+                                                                                                     "suffix": "",
+                                                                                                       "type": "integer"
+                                                                                            } ]
+                                                                        }
                                                 },
                                    "UHF Radio": {
                                                          "UHF_10MHZ": {

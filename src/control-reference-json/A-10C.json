@@ -11353,6 +11353,22 @@
                                                                                                      } ],
                                                                                  "physical_variant": "limited_rotary"
                                                                           },
+                                                          "CANOPY_VALUE": {
+                                                                                  "category": "Misc",
+                                                                              "control_type": "analog_gauge",
+                                                                               "description": "Canopy Position",
+                                                                                "identifier": "CANOPY_VALUE",
+                                                                                    "inputs": [  ],
+                                                                                   "outputs": [ {
+                                                                                                      "address": 4816,
+                                                                                                  "description": "gauge position",
+                                                                                                         "mask": 65535,
+                                                                                                    "max_value": 65535,
+                                                                                                     "shift_by": 0,
+                                                                                                       "suffix": "",
+                                                                                                         "type": "integer"
+                                                                                              } ]
+                                                                          },
                                                             "EMER_BRAKE": {
                                                                                          "category": "Misc",
                                                                                      "control_type": "selector",
@@ -13759,6 +13775,22 @@
                                                                                               } ],
                                                                           "physical_variant": "push_button"
                                                                    },
+                                                    "TISL_BITE_L": {
+                                                                           "category": "TISL Panel",
+                                                                       "control_type": "led",
+                                                                        "description": "TISL BITE Light",
+                                                                         "identifier": "TISL_BITE_L",
+                                                                             "inputs": [  ],
+                                                                            "outputs": [ {
+                                                                                               "address": 4798,
+                                                                                           "description": "0 if light is off, 1 if light is on",
+                                                                                                  "mask": 4096,
+                                                                                             "max_value": 1,
+                                                                                              "shift_by": 12,
+                                                                                                "suffix": "",
+                                                                                                  "type": "integer"
+                                                                                       } ]
+                                                                   },
                                                      "TISL_CODE1": {
                                                                                   "category": "TISL Panel",
                                                                               "control_type": "selector",
@@ -13913,6 +13945,22 @@
                                                                                               } ],
                                                                           "physical_variant": "push_button"
                                                                    },
+                                                   "TISL_ENTER_L": {
+                                                                           "category": "TISL Panel",
+                                                                       "control_type": "led",
+                                                                        "description": "TISL ENTER Light",
+                                                                         "identifier": "TISL_ENTER_L",
+                                                                             "inputs": [  ],
+                                                                            "outputs": [ {
+                                                                                               "address": 4798,
+                                                                                           "description": "0 if light is off, 1 if light is on",
+                                                                                                  "mask": 1024,
+                                                                                             "max_value": 1,
+                                                                                              "shift_by": 10,
+                                                                                                "suffix": "",
+                                                                                                  "type": "integer"
+                                                                                       } ]
+                                                                   },
                                                       "TISL_MODE": {
                                                                                   "category": "TISL Panel",
                                                                               "control_type": "selector",
@@ -13938,6 +13986,52 @@
                                                                                               } ],
                                                                           "physical_variant": "limited_rotary"
                                                                    },
+                                                  "TISL_OVERTEMP": {
+                                                                               "api_variant": "momentary_last_position",
+                                                                                  "category": "TISL Panel",
+                                                                              "control_type": "selector",
+                                                                               "description": "TISL OVER TEMP",
+                                                                                "identifier": "TISL_OVERTEMP",
+                                                                                    "inputs": [ {
+                                                                                                  "description": "switch to previous or next state",
+                                                                                                    "interface": "fixed_step"
+                                                                                              }, {
+                                                                                                  "description": "set position",
+                                                                                                    "interface": "set_state",
+                                                                                                    "max_value": 1
+                                                                                              }, {
+                                                                                                     "argument": "TOGGLE",
+                                                                                                  "description": "Toggle switch state",
+                                                                                                    "interface": "action"
+                                                                                              } ],
+                                                                       "momentary_positions": "none",
+                                                                                   "outputs": [ {
+                                                                                                      "address": 4798,
+                                                                                                  "description": "selector position",
+                                                                                                         "mask": 256,
+                                                                                                    "max_value": 1,
+                                                                                                     "shift_by": 8,
+                                                                                                       "suffix": "",
+                                                                                                         "type": "integer"
+                                                                                              } ],
+                                                                          "physical_variant": "push_button"
+                                                                   },
+                                                "TISL_OVERTEMP_L": {
+                                                                           "category": "TISL Panel",
+                                                                       "control_type": "led",
+                                                                        "description": "TISL OVER TEMP Light",
+                                                                         "identifier": "TISL_OVERTEMP_L",
+                                                                             "inputs": [  ],
+                                                                            "outputs": [ {
+                                                                                               "address": 4798,
+                                                                                           "description": "0 if light is off, 1 if light is on",
+                                                                                                  "mask": 2048,
+                                                                                             "max_value": 1,
+                                                                                              "shift_by": 11,
+                                                                                                "suffix": "",
+                                                                                                  "type": "integer"
+                                                                                       } ]
+                                                                   },
                                                "TISL_SLANT_RANGE": {
                                                                                   "category": "TISL Panel",
                                                                               "control_type": "selector",
@@ -13962,6 +14056,52 @@
                                                                                                          "type": "integer"
                                                                                               } ],
                                                                           "physical_variant": "limited_rotary"
+                                                                   },
+                                                     "TISL_TRACK": {
+                                                                               "api_variant": "momentary_last_position",
+                                                                                  "category": "TISL Panel",
+                                                                              "control_type": "selector",
+                                                                               "description": "TISL TRACK",
+                                                                                "identifier": "TISL_TRACK",
+                                                                                    "inputs": [ {
+                                                                                                  "description": "switch to previous or next state",
+                                                                                                    "interface": "fixed_step"
+                                                                                              }, {
+                                                                                                  "description": "set position",
+                                                                                                    "interface": "set_state",
+                                                                                                    "max_value": 1
+                                                                                              }, {
+                                                                                                     "argument": "TOGGLE",
+                                                                                                  "description": "Toggle switch state",
+                                                                                                    "interface": "action"
+                                                                                              } ],
+                                                                       "momentary_positions": "none",
+                                                                                   "outputs": [ {
+                                                                                                      "address": 4798,
+                                                                                                  "description": "selector position",
+                                                                                                         "mask": 512,
+                                                                                                    "max_value": 1,
+                                                                                                     "shift_by": 9,
+                                                                                                       "suffix": "",
+                                                                                                         "type": "integer"
+                                                                                              } ],
+                                                                          "physical_variant": "push_button"
+                                                                   },
+                                                   "TISL_TRACK_L": {
+                                                                           "category": "TISL Panel",
+                                                                       "control_type": "led",
+                                                                        "description": "TISL TRACK Light",
+                                                                         "identifier": "TISL_TRACK_L",
+                                                                             "inputs": [  ],
+                                                                            "outputs": [ {
+                                                                                               "address": 4798,
+                                                                                           "description": "0 if light is off, 1 if light is on",
+                                                                                                  "mask": 8192,
+                                                                                             "max_value": 1,
+                                                                                              "shift_by": 13,
+                                                                                                "suffix": "",
+                                                                                                  "type": "integer"
+                                                                                       } ]
                                                                    }
                                            },
                                "Throttle": {
