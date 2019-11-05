@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -40,6 +41,11 @@ func fetchPluginCatalog() (*pluginCatalog, error) {
 		}
 	}
 
+	resp, err := http.Get("https://raw.githubusercontent.com/dcs-bios/dcs-bios.github.io/master/plugincatalog.json")
+	if err == nil {
+		defer resp.Body.Close()
+		jsonCatalog, err = ioutil.ReadAll(resp.Body)
+	}
 	if len(jsonCatalog) == 0 {
 		return nil, errors.New("could not fetch JSON catalog")
 	}
