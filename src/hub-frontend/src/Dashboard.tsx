@@ -3,6 +3,7 @@ import SerialPortList from './SerialPortList'
 import { ControlReferenceIndex } from './ControlReference'
 
 import { ConnectionStatus } from './Status'
+import { HooksLuaReload } from './HooksLuaReload';
 
 export default function Dashboard() {
     return (
@@ -12,6 +13,8 @@ export default function Dashboard() {
             <ControlReferenceIndex showInstalledOnly />
             <h2>Serial Ports</h2>
             <SerialPortList />
+            <h2>Lua Scripting</h2>
+            <HooksLuaReload />
         </React.Fragment>
     );
 }
