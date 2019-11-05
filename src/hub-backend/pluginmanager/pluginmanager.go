@@ -56,10 +56,13 @@ func NewPluginManager(checkoutPath string, jsonAPI *jsonapi.JsonApi, crs *contro
 	}
 
 	pm.stateLock.Lock()
+	pm.initialPluginLoadInProgress = true
 	mStates, _ := pm.ReadAllInstalledPluginsFromDisk()
 	for _, mState := range mStates {
 		pm.state[mState.LocalName] = mState
 	}
+	pm.initialPluginLoadInProgress = false
+	pm.updateDcsLuaIndex()
 
 	pm.stateLock.Unlock()
 
@@ -412,7 +415,6 @@ func (pm *pluginManager) ReadAllInstalledPluginsFromDisk() ([]*PluginState, erro
 		return nil, err
 	}
 
-	pm.initialPluginLoadInProgress = true
 	pluginStateList := make([]*PluginState, 0)
 	for _, f := range files {
 		if !f.IsDir() {
@@ -425,8 +427,6 @@ func (pm *pluginManager) ReadAllInstalledPluginsFromDisk() ([]*PluginState, erro
 		pluginStateList = append(pluginStateList, state)
 		pm.loadPlugin(state)
 	}
-	pm.initialPluginLoadInProgress = false
-	pm.updateDcsLuaIndex()
 	return pluginStateList, nil
 }
 
