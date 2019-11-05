@@ -7,6 +7,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
@@ -19,6 +20,7 @@ import (
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/livedataapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/luaconsole"
+	"dcs-bios.a10c.de/dcs-bios-hub/pluginmanager"
 	"dcs-bios.a10c.de/dcs-bios-hub/serialconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/webappserver"
@@ -50,6 +52,14 @@ func runHttpServer(listenURI string) error {
 }
 
 func startServices() {
+	// find out where our executable is
+	executableFilePath, err := os.Executable()
+	if err != nil {
+		fmt.Printf("could not determine current directory: %s\n", err.Error())
+		os.Exit(1)
+	}
+	executableDir := filepath.Dir(executableFilePath)
+
 	// create configuration directory
 	if err := configstore.MakeDirs(); err != nil {
 		fmt.Println("failed to create configuration directory:", err.Error())
@@ -74,7 +84,7 @@ func startServices() {
 
 	websocketapi.JsonApi = jsonAPI
 	websocketapi.AddHandler()
-	err := runHttpServer(":5010")
+	err = runHttpServer(":5010")
 	if err != nil {
 		// already running
 		if !*autorunMode {
@@ -87,7 +97,8 @@ func startServices() {
 
 	// Control Reference Documentation
 	cref := controlreference.NewControlReferenceStore(jsonAPI)
-	go cref.LoadData()
+	cref.LoadFile(filepath.Join(executableDir, "control-reference-json", "MetadataStart.json"))
+	cref.LoadFile(filepath.Join(executableDir, "control-reference-json", "MetadataEnd.json"))
 
 	// Lua console TCP server
 	luaConsole := luaconsole.NewServer(jsonAPI)
@@ -110,6 +121,11 @@ func startServices() {
 
 	inputmap := &inputmapping.InputRemapper{}
 	inputmap.LoadFromConfigStore()
+
+	_, err = pluginmanager.NewPluginManager(configstore.GetPluginDir(), jsonAPI, cref)
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+	}
 
 	exportDataParser := &exportdataparser.ExportDataParser{}
 	currentUnitType := "NONE"
