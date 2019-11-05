@@ -18,6 +18,33 @@ Left click the icon and select the "Open web interface" menu item:
 
 .. image:: images/systraymenu.png
 
-When you see a browser window showing the DCS-BIOS Hub Dashboard, continue with the next section: :doc:`dcs-connection`.
+You should now be looking at a web browser showing the DCS-BIOS Hub web interface. 
+If that is not the case, verify that your firewall is not blocking the DCS-BIOS Hub from listening on TCP port 5010.
 
-If something goes wrong, verify that your firewall is not blocking DCS-BIOS from listening on TCP port 5010.
+Installing Plugins
+------------------
+
+The DCS-BIOS Hub only knows how to get the name of the currently active aircraft from DCS, which is not very useful.
+To teach it to interact with a specific aircraft in DCS, you need to install a module definition plugin.
+
+Click "Plugins" in the navigation menu on the left, then click "Open the plugin catalog".
+You will see a list of recommended plugins for the DCS aircraft modules that DCS-BIOS has found on your hard drive:
+
+.. figure:: images/plugin-catalog-recommended-plugins.png
+    :figclass: align-center
+
+    List of recommended plugins
+
+Click the "Install selected plugins" button.
+
+.. figure:: images/plugins-installing.png
+    :figclass: align-center
+    
+    Plugin installation in progress
+
+Once a plugin has finished, its version will be shown. In the screenshot above, the "module-commondata" plugin has already finished installing, while the plugins for the A-10C and the Harrier are still being downloaded.
+
+If the installation takes a while, you can just continue with the next step. The installation will continue in the background and you can monitor the progress by opening the "Plugins" page again at a later time.
+
+Continue with the next section: :doc:`dcs-connection`.
+

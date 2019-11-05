@@ -324,7 +324,7 @@ export function PluginCatalog() {
                 <input type="checkbox" readOnly={true} defaultChecked={showOnlyRecommended} onClick={e => setShowOnlyRecommended(!showOnlyRecommended)} />only show recommended plugins ({recommendedCount.toString()})
             </span> : null}
             <br />
-            <button onClick={installSelectedPlugins} disabled={selectedCount === 0}>Install {selectedCount} Plugins</button> or <Link to='/pluginmanager'>go back to plugin list</Link>
+            <button onClick={installSelectedPlugins} disabled={selectedCount === 0}>Install selected plugins ({selectedCount})</button> or <Link to='/pluginmanager'>go back to plugin list</Link>
 
             <table>
                 <tbody>
