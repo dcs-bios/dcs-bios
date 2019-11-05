@@ -161,52 +161,6 @@ func (crs *ControlReferenceStore) HandleQueryIOElementsRequest(req *QueryIOEleme
 	responseCh <- ret
 }
 
-// func (crs *ControlReferenceStore) LoadData() {
-// 	exec, err := os.Executable()
-// 	if err != nil {
-// 		log.Print(err)
-// 		return
-// 	}
-// 	dir := filepath.Dir(exec)
-// 	datapath := filepath.Join(dir, "control-reference-json")
-// 	files, err := filepath.Glob(filepath.Join(datapath, "*.json"))
-// 	if err != nil {
-// 		log.Print(err)
-// 		return
-// 	}
-// 	for _, filename := range files {
-// 		crs.LoadFile(filename)
-// 	}
-// 	fmt.Printf("control reference: loaded data for %d modules.\n", len(files))
-
-// 	// verify that IOElements have at most one string output and at most one integer output
-// 	// the web UI control reference assumes this to make live data handling a bit easier
-// 	// also copy the module and element names from the map keys to the .Name and .Module properties of the IOElement structs
-// 	for moduleName, module := range crs.modules {
-// 		for categoryName, cat := range module {
-// 			for elementName, elem := range cat {
-// 				elem.Name = elementName
-// 				elem.Module = moduleName
-// 				countStrOutputs := 0
-// 				countIntOutputs := 0
-// 				for _, out := range elem.Outputs {
-// 					if out.Type == "string" {
-// 						countStrOutputs++
-// 					} else if out.Type == "integer" {
-// 						countIntOutputs++
-// 					} else {
-// 						fmt.Println("unknown output type", out.Type)
-// 					}
-// 				}
-// 				if countStrOutputs > 1 || countIntOutputs > 1 {
-// 					fmt.Printf("warning: found element with more than one integer or string output: %s / %s / %s\n", moduleName, categoryName, elementName)
-// 				}
-// 			}
-// 		}
-// 	}
-// 	fmt.Println("control reference data check complete.")
-// }
-
 func (crs *ControlReferenceStore) UnloadModuleDefinition(moduleName string) {
 	crs.moduleDataLock.Lock()
 	defer crs.moduleDataLock.Unlock()
@@ -238,5 +192,29 @@ func (crs *ControlReferenceStore) LoadFile(filename string) error {
 	dec.Decode(&module)
 
 	crs.modules[moduleName] = module
+
+	for moduleName, module := range crs.modules {
+		for categoryName, cat := range module {
+			for elementName, elem := range cat {
+				elem.Name = elementName
+				elem.Module = moduleName
+				countStrOutputs := 0
+				countIntOutputs := 0
+				for _, out := range elem.Outputs {
+					if out.Type == "string" {
+						countStrOutputs++
+					} else if out.Type == "integer" {
+						countIntOutputs++
+					} else {
+						fmt.Println("unknown output type", out.Type)
+					}
+				}
+				if countStrOutputs > 1 || countIntOutputs > 1 {
+					fmt.Printf("warning: found element with more than one integer or string output: %s / %s / %s\n", moduleName, categoryName, elementName)
+				}
+			}
+		}
+	}
+
 	return nil
 }
