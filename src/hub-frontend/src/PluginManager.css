@@ -1,0 +1,48 @@
+div.plugin-state {
+    margin-bottom: 1em;
+    margin-top: 0.3em;
+}
+
+span.remote-url, span.commit-hash {
+    font-size: 80%;
+}
+
+
+.git-tag {
+    background-color: yellow;
+    margin: 4px;
+    font-size: 80%;
+    color: black;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+.git-branch {
+    background-color: lightgreen;
+    margin: 4px;
+    font-size: 80%;
+    color: black;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+.update-available {
+    background-color: blue;
+    margin: 4px;
+    font-size: 80%;
+    color: white;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+tr.plugin-catalog-entry:hover, tr.plugin-state:hover {
+    background-color: lightyellow;
+}
+
+
+tr.plugin-catalog-entry.selected > td:first-child, tr.plugin-state.selected > td:first-child {
+    background-color: lightgreen;
+}

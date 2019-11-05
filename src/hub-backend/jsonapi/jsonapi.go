@@ -42,6 +42,10 @@ type ErrorResult struct {
 	Message string `json:"message"`
 }
 
+type ProgressResult struct {
+	Message string `json:"message"`
+}
+
 type JsonApi struct {
 	dataStructFactories map[string]func() interface{}
 
@@ -139,6 +143,7 @@ func NewJsonApi() *JsonApi {
 	}
 	api.RegisterType("success", SuccessResult{})
 	api.RegisterType("error", ErrorResult{})
+	api.RegisterType("Progress", ProgressResult{})
 	return api
 }
 

@@ -5,11 +5,11 @@ package controlreference
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 )
@@ -44,11 +44,39 @@ type Output struct {
 }
 
 type ControlReferenceStore struct {
-	modules map[string]IOElementCategoriesMap
-	jsonAPI *jsonapi.JsonApi
+	modules        map[string]IOElementCategoriesMap
+	moduleDataLock sync.Mutex
+	jsonAPI        *jsonapi.JsonApi
 }
 
 type IOElementCategoriesMap map[string]map[string]*IOElement
+
+// GetIOElementByIdentifier takes an identifier of the form "module/element_name"
+// and returns a pointer to the IOElement structure, or nil if not found.
+func (crs *ControlReferenceStore) GetIOElementByIdentifier(identifier string) *IOElement {
+	crs.moduleDataLock.Lock()
+	defer crs.moduleDataLock.Unlock()
+
+	parts := strings.SplitN(identifier, "/", 2)
+	if len(parts) != 2 {
+		return nil
+	}
+	moduleId := parts[0]
+	elementId := parts[1]
+
+	for moduleName, category := range crs.modules {
+		if strings.ToLower(moduleName) == strings.ToLower(moduleId) {
+			for _, elements := range category {
+				for elementName, element := range elements {
+					if strings.ToLower(elementName) == strings.ToLower(elementId) {
+						return element
+					}
+				}
+			}
+		}
+	}
+	return nil
+}
 
 func NewControlReferenceStore(jsonAPI *jsonapi.JsonApi) *ControlReferenceStore {
 	crs := &ControlReferenceStore{
@@ -70,6 +98,9 @@ type GetModulesRequest struct{}
 type GetModulesRequestResult map[string][]string
 
 func (crs *ControlReferenceStore) HandleGetModulesListRequest(req *GetModulesRequest, responseCh chan<- interface{}, followupCh <-chan interface{}) {
+	crs.moduleDataLock.Lock()
+	defer crs.moduleDataLock.Unlock()
+
 	defer close(responseCh)
 	var ret GetModulesRequestResult = make(map[string][]string)
 	for moduleName, moduleData := range crs.modules {
@@ -91,6 +122,9 @@ type QueryIOElementsRequest struct {
 type QueryIOElementsResult []IOElement
 
 func (crs *ControlReferenceStore) HandleQueryIOElementsRequest(req *QueryIOElementsRequest, responseCh chan<- interface{}, followupCh <-chan interface{}) {
+	crs.moduleDataLock.Lock()
+	defer crs.moduleDataLock.Unlock()
+
 	defer close(responseCh)
 	var ret QueryIOElementsResult = make([]IOElement, 0)
 
@@ -127,64 +161,82 @@ func (crs *ControlReferenceStore) HandleQueryIOElementsRequest(req *QueryIOEleme
 	responseCh <- ret
 }
 
-func (crs *ControlReferenceStore) LoadData() {
-	exec, err := os.Executable()
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	dir := filepath.Dir(exec)
-	datapath := filepath.Join(dir, "control-reference-json")
-	files, err := filepath.Glob(filepath.Join(datapath, "*.json"))
-	if err != nil {
-		log.Print(err)
-		return
-	}
-	for _, filename := range files {
-		crs.loadFile(filename)
-	}
-	fmt.Printf("control reference: loaded data for %d modules.\n", len(files))
+// func (crs *ControlReferenceStore) LoadData() {
+// 	exec, err := os.Executable()
+// 	if err != nil {
+// 		log.Print(err)
+// 		return
+// 	}
+// 	dir := filepath.Dir(exec)
+// 	datapath := filepath.Join(dir, "control-reference-json")
+// 	files, err := filepath.Glob(filepath.Join(datapath, "*.json"))
+// 	if err != nil {
+// 		log.Print(err)
+// 		return
+// 	}
+// 	for _, filename := range files {
+// 		crs.LoadFile(filename)
+// 	}
+// 	fmt.Printf("control reference: loaded data for %d modules.\n", len(files))
 
-	// verify that IOElements have at most one string output and at most one integer output
-	// the web UI control reference assumes this to make live data handling a bit easier
-	// also copy the module and element names from the map keys to the .Name and .Module properties of the IOElement structs
-	for moduleName, module := range crs.modules {
-		for categoryName, cat := range module {
-			for elementName, elem := range cat {
-				elem.Name = elementName
-				elem.Module = moduleName
-				countStrOutputs := 0
-				countIntOutputs := 0
-				for _, out := range elem.Outputs {
-					if out.Type == "string" {
-						countStrOutputs++
-					} else if out.Type == "integer" {
-						countIntOutputs++
-					} else {
-						fmt.Println("unknown output type", out.Type)
-					}
-				}
-				if countStrOutputs > 1 || countIntOutputs > 1 {
-					fmt.Printf("warning: found element with more than one integer or string output: %s / %s / %s\n", moduleName, categoryName, elementName)
-				}
-			}
-		}
+// 	// verify that IOElements have at most one string output and at most one integer output
+// 	// the web UI control reference assumes this to make live data handling a bit easier
+// 	// also copy the module and element names from the map keys to the .Name and .Module properties of the IOElement structs
+// 	for moduleName, module := range crs.modules {
+// 		for categoryName, cat := range module {
+// 			for elementName, elem := range cat {
+// 				elem.Name = elementName
+// 				elem.Module = moduleName
+// 				countStrOutputs := 0
+// 				countIntOutputs := 0
+// 				for _, out := range elem.Outputs {
+// 					if out.Type == "string" {
+// 						countStrOutputs++
+// 					} else if out.Type == "integer" {
+// 						countIntOutputs++
+// 					} else {
+// 						fmt.Println("unknown output type", out.Type)
+// 					}
+// 				}
+// 				if countStrOutputs > 1 || countIntOutputs > 1 {
+// 					fmt.Printf("warning: found element with more than one integer or string output: %s / %s / %s\n", moduleName, categoryName, elementName)
+// 				}
+// 			}
+// 		}
+// 	}
+// 	fmt.Println("control reference data check complete.")
+// }
+
+func (crs *ControlReferenceStore) UnloadModuleDefinition(moduleName string) {
+	crs.moduleDataLock.Lock()
+	defer crs.moduleDataLock.Unlock()
+
+	_, ok := crs.modules[moduleName]
+	if ok {
+		delete(crs.modules, moduleName)
 	}
-	fmt.Println("control reference data check complete.")
 }
 
-func (crs *ControlReferenceStore) loadFile(filename string) {
+func (crs *ControlReferenceStore) LoadFile(filename string) error {
+	crs.moduleDataLock.Lock()
+	defer crs.moduleDataLock.Unlock()
+
 	basename := filepath.Base(filename)
 	moduleName := basename[:len(basename)-len(filepath.Ext(basename))]
+
+	if _, ok := crs.modules[moduleName]; ok {
+		return fmt.Errorf("control reference: module already loaded: %s", moduleName)
+	}
+
 	module := make(IOElementCategoriesMap)
 	f, err := os.Open(filename)
 	if err != nil {
-		log.Printf("error loading module %s: %v", moduleName, err)
-		return
+		return fmt.Errorf("error loading module %s: %v", moduleName, err)
 	}
 	defer f.Close()
 	dec := json.NewDecoder(f)
 	dec.Decode(&module)
 
 	crs.modules[moduleName] = module
+	return nil
 }

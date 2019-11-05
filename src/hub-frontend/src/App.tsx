@@ -12,6 +12,7 @@ import { ControlReference } from './ControlReference'
 import Dashboard from './Dashboard'
 import { LuaSnippet } from './LuaConsole';
 import SetupUI from './SetupUI';
+import { PluginManager, PluginCatalog } from './PluginManager'
 
 const RootUrlContext = React.createContext("")
 
@@ -33,12 +34,15 @@ function App() {
             <li><NavLink to='/controlreference' activeStyle={{ fontWeight: "bold" }}>Control Reference</NavLink></li>
             <li><NavLink to='/luaconsole' activeStyle={{ fontWeight: "bold" }}>Lua Console</NavLink></li>
             <li><NavLink to='/setup' activeStyle={{ fontWeight: "bold" }}>DCS Connection</NavLink></li>
+            <li><NavLink to='/pluginmanager' activeStyle={{ fontWeight: "bold" }}>Plugins</NavLink></li>
             <li><a target="_blank" href="/app/doc/">Documentation</a></li>
           </ul>
         </div>
         <div className="content">
             <Route exact path='/' component={Dashboard}/>
             <Route path='/setup' component={SetupUI}/>
+            <Route path='/pluginmanager' component={PluginManager}/>
+            <Route path='/plugincatalog' component={PluginCatalog}/>
             <Route path='/controlreference' component={ControlReference}/>
             <Route path='/luaconsole' component={LuaSnippet} />
         </div>

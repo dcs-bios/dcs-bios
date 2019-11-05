@@ -17,6 +17,7 @@ import (
 	"github.com/andygrunwald/vdf"
 	"golang.org/x/sys/windows/registry"
 
+	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 )
 
@@ -255,7 +256,8 @@ func GetExportLuaSetupLine() (string, error) {
 		return "", err
 	}
 	luaScriptDir := filepath.Join(filepath.Dir(executableFile), "dcs-lua") + string(os.PathSeparator)
-	exportLuaSetupLine := "BIOS = {}; BIOS.LuaScriptDir = [[" + luaScriptDir + "]];if lfs.attributes(BIOS.LuaScriptDir..[[BIOS.lua]]) ~= nil then dofile(BIOS.LuaScriptDir..[[BIOS.lua]]) end --[[DCS-BIOS Automatic Setup]]"
+	pluginDir := configstore.GetPluginDir() + string(os.PathSeparator)
+	exportLuaSetupLine := "BIOS = {}; BIOS.LuaScriptDir = [[" + luaScriptDir + "]]; BIOS.PluginDir = [[" + pluginDir + "]]; if lfs.attributes(BIOS.LuaScriptDir..[[BIOS.lua]]) ~= nil then dofile(BIOS.LuaScriptDir..[[BIOS.lua]]) end --[[DCS-BIOS Automatic Setup]]"
 	return exportLuaSetupLine, nil
 }
 
