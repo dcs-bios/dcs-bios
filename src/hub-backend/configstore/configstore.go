@@ -29,6 +29,7 @@ func MakeDirs() error {
 	dir := os.ExpandEnv("${APPDATA}")
 	os.MkdirAll(filepath.Join(dir, "DCS-BIOS", "Config"), 0600)
 	os.MkdirAll(filepath.Join(dir, "DCS-BIOS", "Plugins"), 0600)
+	os.MkdirAll(filepath.Join(dir, "DCS-BIOS", "control-reference-json"), 0600)
 	return nil
 }
 
