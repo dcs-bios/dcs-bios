@@ -5,6 +5,7 @@ package controlreference
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -168,6 +169,12 @@ func (crs *ControlReferenceStore) UnloadModuleDefinition(moduleName string) {
 	_, ok := crs.modules[moduleName]
 	if ok {
 		delete(crs.modules, moduleName)
+
+		jsonCopyFilePath := filepath.Join(os.ExpandEnv("${APPDATA}"), "DCS-BIOS", "control-reference-json", moduleName+".json")
+		stat, err := os.Stat(jsonCopyFilePath)
+		if err == nil && !stat.IsDir() {
+			os.Remove(jsonCopyFilePath)
+		}
 	}
 }
 
@@ -192,6 +199,14 @@ func (crs *ControlReferenceStore) LoadFile(filename string) error {
 	dec.Decode(&module)
 
 	crs.modules[moduleName] = module
+
+	jsonCopyFilePath := filepath.Join(os.ExpandEnv("${APPDATA}"), "DCS-BIOS", "control-reference-json", moduleName+".json")
+	f.Seek(0, 0)
+	copy, err := os.Create(jsonCopyFilePath)
+	if err == nil {
+		io.Copy(copy, f)
+	}
+	copy.Close()
 
 	for moduleName, module := range crs.modules {
 		for categoryName, cat := range module {
