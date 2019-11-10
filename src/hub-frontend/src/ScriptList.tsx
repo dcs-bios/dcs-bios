@@ -26,9 +26,19 @@ export function ScriptList() {
         return () => monitorScriptListWebsocket.close()
     }, [])
 
+    // transform '"foo bar"' to 'foo bar'
+    const unquote = (s: string) => {
+        const match = s.match(/^"(.*)"$/)
+        if (match == null || match.length != 2) {
+            return s
+        }
+        return match[1]
+    }
+
     const addEntry = () => {
         let path = prompt("Path to script file:")
         if (path == null) return;
+        path = unquote(path)
 
         let newScriptList = scriptList.slice()
         newScriptList.push({
