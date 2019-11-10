@@ -70,6 +70,16 @@ the original command from being sent to DCS::
         end
     end)
 
+
+.. note::
+
+    Output callbacks are executed in the order they were registered. An output callback that has been registered later can overwrite panel data that was set by callbacks that were registered earlier.
+
+    Input callbacks are executed in the *reverse* order they were registered. If one input callback returns true, the remaining ones will not be called.
+    An input callback that has been registered later can intercept a command before callbacks that were registered earlier get the chance.
+
+    This means that when multiple hub scripts want to set the same output value or intercept the same command, the script that is last in the list always wins.
+
 Sending Commands to DCS: World
 ------------------------------
 

@@ -162,7 +162,8 @@ func sendSimCommand(L *lua.LState) int {
 // or to other callback functions.
 func registerInputCallback(L *lua.LState) int {
 	fn := L.ToFunction(1)
-	inputCallbacks = append(inputCallbacks, fn)
+	// insert new callback before all others
+	inputCallbacks = append([]*lua.LFunction{fn}, inputCallbacks...)
 	return 0
 }
 
