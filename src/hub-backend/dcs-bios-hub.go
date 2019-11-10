@@ -119,7 +119,6 @@ func startServices() {
 	lda := livedataapi.NewLiveDataApi(jsonAPI)
 
 	dcssetup.RegisterApi(jsonAPI)
-	dcssetup.GetInstalledModulesList()
 
 	_, err = pluginmanager.NewPluginManager(configstore.GetPluginDir(), jsonAPI, cref)
 	if err != nil {

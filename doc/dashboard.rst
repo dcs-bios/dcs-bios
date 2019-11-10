@@ -25,14 +25,6 @@ The other two indicators show the current state of two settings that you can tog
 .. warning::
     Note that if both of these settings are enabled at the same time, anyone who can access TCP port 5010 on your computer can run arbitrary code on your machine. If you do this, make sure your computer is not directly reachable via the internet.
 
-
-Installed Modules
------------------
-
-Below the status indicators, you will find shortcuts to the :doc:`control reference documentation <control-reference>` for any installed DCS: World modules that are supported by DCS-BIOS.
-
-.. note:: DCS-BIOS counts a module it knows about as "installed" if it can find a folder of the same name under `mods/aircraft` in either the release or open beta version of DCS: World. This does not work when the folder name differs from the name of the DCS-BIOS module definition, e.g. for the F-18.
-
 Managing Serial Port Connections
 --------------------------------
 

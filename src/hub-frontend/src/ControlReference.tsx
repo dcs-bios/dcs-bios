@@ -127,7 +127,7 @@ function ControlReference() {
   )
 }
 
-function ControlReferenceIndex(props: { showInstalledOnly: boolean }) {
+function ControlReferenceIndex() {
   const [moduleNames, setModuleNames] = React.useState<string[]>([])
   const [modules, setModules] = React.useState<any>({})
 
@@ -142,54 +142,19 @@ function ControlReferenceIndex(props: { showInstalledOnly: boolean }) {
       setModules(msg.data)
     })
   }, [])
-
-
-  let [installedModuleNamesApiResult, setInstalledModuleNamesApiResult] = useState<string[]>([]);
-  useEffect(() => {
-    apiPost({
-      datatype: "get_installed_module_names",
-      data: {}
-    }).then(result => {
-      setInstalledModuleNamesApiResult(result.data)
-    })
-  }, [])
-
-  // The API gives us the list of installed modules in lower case.
-  // Look up the proper capitalization in the list of all available modules.
-  const installedModuleNames = []
-  let installedModulesElement: ReactElement | null = null
-  if (installedModuleNamesApiResult.length > 0 && moduleNames.length > 0) {
-    for (let moduleName of moduleNames) {
-      if (installedModuleNamesApiResult.indexOf(moduleName.toLowerCase()) >= 0) {
-        installedModuleNames.push(moduleName)
-      }
-    }
-
-    installedModulesElement = (<div>
-      <h2>Installed Modules</h2>
-      {
-        installedModuleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
-      }
-    </div>);
-  }
-
   
-  let allModulesElement: ReactElement | null = null;
-  if (!props.showInstalledOnly) {
-    allModulesElement = (
+  let allModulesElement = (
       <div>
-        <h2>All Available Modules</h2>
+        <h2>Control Reference</h2>
         {
           moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
         }
       </div>);
-  }
-
+  
   return (
     <div>
-      {installedModulesElement}
-      <div style={{ clear: "both" }}></div>
       {allModulesElement}
+      <div style={{ clear: "both" }}></div>
     </div>
   )
 }
@@ -823,4 +788,4 @@ function LiveVariableStepInputControls(props: { control: TIOElement, input: TInp
   )
 }
 
-export { ControlReference, ControlReferenceIndex }
+export { ControlReference }
