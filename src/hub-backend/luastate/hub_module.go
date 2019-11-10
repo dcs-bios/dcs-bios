@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/exportdataparser"
+
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -22,7 +23,7 @@ var ExportDataBuffer *exportdataparser.DataBuffer
 var SimCommandChannel = make(chan string, 10)
 
 var inputCallbacks []*lua.LFunction
-var exportDataCallbacks []*lua.LFunction
+var outputCallbacks []*lua.LFunction
 
 // Loader is called by luastate.go to provide the "hub" module
 // to the Lua environment.
@@ -75,7 +76,7 @@ func NotifyInputCallbacks(cmdString string) (handledByLua bool) {
 
 func NotifyOutputCallbacks() {
 	WithLuaStateDo(func(L *lua.LState) {
-		for _, cb := range exportDataCallbacks {
+		for _, cb := range outputCallbacks {
 			L.CallByParam(lua.P{
 				Fn:      cb,
 				NRet:    0,
@@ -172,13 +173,13 @@ func registerInputCallback(L *lua.LState) int {
 // to remap export data.
 func registerExportDataCallback(L *lua.LState) int {
 	fn := L.ToFunction(1)
-	exportDataCallbacks = append(exportDataCallbacks, fn)
+	outputCallbacks = append(outputCallbacks, fn)
 	return 0
 }
 
 // clearCallbacks unregisters all input and export data callbacks.
 func clearCallbacks(L *lua.LState) int {
 	inputCallbacks = nil
-	exportDataCallbacks = nil
+	outputCallbacks = nil
 	return 0
 }

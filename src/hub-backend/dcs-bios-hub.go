@@ -8,6 +8,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"path/filepath"
+	"time"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
 	"dcs-bios.a10c.de/dcs-bios-hub/controlreference"
@@ -126,13 +127,8 @@ func startServices() {
 	}
 
 	// the Lua state that user-defined remapping scripts are executed in
-	if err := luastate.DoFile("hooks.lua"); err != nil {
-		workdir, getwderr := os.Getwd()
-		if getwderr != nil {
-			workdir = "(could not determine current directory)"
-		}
-		fmt.Printf("error loading hooks.lua from %s: %s", workdir, err.Error())
-	}
+	luastate.Reset(os.Stdout)
+
 	luastate.RegisterJsonApiCalls(jsonAPI)
 
 	exportDataParser := exportdataparser.NewParser(cref)
