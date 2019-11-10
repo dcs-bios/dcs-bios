@@ -42,3 +42,13 @@ The "Disconnect All" button disconnects from all COM ports.
 
 The "Connect All Auto" button connects to all COM ports that have autoconnect enabled.
 
+Managing Hub Scripts
+--------------------
+
+At the end of the Dashboard, you can manage a list of "hub scripts". Hub scripts can be used to remap commands and exported data, so you can use a simpit you built for one specific airframe with other DCS: World modules.
+Learn more in the :doc:`hub-scripts` section.
+
+* Add a hub script by clicking the "Add" button and entering the full path to the script file. You can copy the full path of a file to your clipboard by holding the Shift key while right-clicking it in Windows Explorer and then selecting "Copy as path" from the context menu.
+* To remove a hub script from the list, click the "x" button next to it.
+* Enable or disable a hub script with the checkbox in front of it. Disabled scripts remain in the list but are not loaded.
+* Reload all hub scripts by clicking the "Reload Scripts" button above the list. Note that scripts are not automatically reloaded when you enable, disable, add or remove a list item; you have to click the "Reload Scripts" button for changes to take effect.

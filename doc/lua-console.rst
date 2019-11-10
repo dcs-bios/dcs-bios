@@ -3,7 +3,10 @@ The Lua Console
 
 The Lua Console page in the web interface allows you to execute snippets of Lua code in one of three different environments within DCS ("gui", "export" and "mission").
 
-At the top of the screen are some status indicators; both have to be green for the feature to work.
+You can also use it to debug your :doc:`hub-scripts` by choosing the "hub" environment.
+
+At the top of the screen are some status indicators; both have to be green to execute code within DCS: World. To execute code in the "hub" environment, the DCS connection is not required.
+
 .. image:: images/lua-console-indicators.png
 
 If "DCS Connection" is not active, check that you have enabled the Lua Console in the :doc:`DCS Connection<dcs-connection>` page and that DCS: World is running. If "Enabled in Systray" is inactive, enable the Lua Console through the system tray menu.
@@ -17,6 +20,7 @@ To use the Lua Console:
 The Environments
 ----------------
 
+* "hub" executes code in the DCS-BIOS Hub itself. See the :doc:`hub-scripts` section for more information.
 * "gui" executes the code in the same environment that the hook that implements the Lua Console is running in.
   For more information about hooks, see "API\DCS_ControlAPI.html" in your DCS: World installation folder.
 * "export" executes the code in the Export.lua environment. This is useful if you are developing a new module definition for DCS-BIOS.

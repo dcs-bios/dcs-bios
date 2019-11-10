@@ -41,7 +41,6 @@ var exports = map[string]lua.LGFunction{
 	"registerInputCallback":  registerInputCallback,
 	"registerOutputCallback": registerExportDataCallback,
 	"sendSimCommand":         sendSimCommand,
-	"clearCallbacks":         clearCallbacks,
 }
 
 // NotifyInputCallbacks passes the given command string to the
@@ -174,12 +173,5 @@ func registerInputCallback(L *lua.LState) int {
 func registerExportDataCallback(L *lua.LState) int {
 	fn := L.ToFunction(1)
 	outputCallbacks = append(outputCallbacks, fn)
-	return 0
-}
-
-// clearCallbacks unregisters all input and export data callbacks.
-func clearCallbacks(L *lua.LState) int {
-	inputCallbacks = nil
-	outputCallbacks = nil
 	return 0
 }
