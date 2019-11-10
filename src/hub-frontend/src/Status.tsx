@@ -24,7 +24,6 @@ function useStatus() {
     useEffect(() => {
         const socket = getApiConnection()
         socket.onopen = () => {
-            console.log("subscribing to status updates")
             socket.send(JSON.stringify({
                 datatype: "get_status_updates",
                 data: {}
@@ -33,7 +32,6 @@ function useStatus() {
         socket.onmessage = (msg => {
             let json = JSON.parse(msg.data)
             if (json.datatype === "status_update") {
-                console.log(json.data)
                 setStatus(json.data)
             }
         })
