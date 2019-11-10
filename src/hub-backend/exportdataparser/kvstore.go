@@ -155,6 +155,16 @@ func (db *DataBuffer) SetIntegerValue(valueIdentifier string, value int) bool {
 	return false
 }
 
+func (db *DataBuffer) SetFFFEDirty() {
+	for i := range db.BinaryData {
+		if db.BinaryData[i].Address == 0xFFFE {
+			db.BinaryData[i].Dirty = true
+			return
+		}
+	}
+	db.SetUint16(0xFFFE, 0)
+}
+
 // GetValueAtAddress returns the value for an entry at the given address, or 0x0000 if no entry is found.
 func (db *DataBuffer) GetValueAtAddress(address uint16) uint16 {
 	for i := range db.BinaryData {

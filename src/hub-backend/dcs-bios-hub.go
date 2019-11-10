@@ -159,6 +159,11 @@ func startServices() {
 				updatePacket := enc.Update()
 				portManager.Write(updatePacket)
 				lda.WriteExportData(updatePacket)
+
+			case <-time.After(60 * time.Millisecond):
+				updatePacket := enc.Update()
+				portManager.Write(updatePacket)
+				lda.WriteExportData(updatePacket)
 			}
 		}
 	}()

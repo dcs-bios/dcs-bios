@@ -19,6 +19,8 @@ func byteSliceFromUint16(value uint16) []byte {
 }
 
 func (enc *encoder) Update() []byte {
+	enc.DataBuffer.SetFFFEDirty()
+
 	updatePacket := make([]byte, 0)
 
 	dataBuffer := enc.DataBuffer
