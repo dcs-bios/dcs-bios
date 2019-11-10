@@ -11,7 +11,7 @@ export default function Dashboard() {
             <ConnectionStatus />
             <h2>Serial Ports</h2>
             <SerialPortList />
-            <h2>Lua Scripting</h2>
+            <h2>Hub Scripts</h2>
             <ReloadScripts /><br/>
             <ScriptList/>
         </React.Fragment>
