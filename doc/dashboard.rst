@@ -23,7 +23,7 @@ The other two indicators show the current state of two settings that you can tog
 * When **Enable Lua Console** is checked and the Lua Console has been set up on the :doc:`DCS Connection<dcs-connection>` screen, you can use the web interface to execute arbitrary snippets of Lua code within DCS.
 
 .. warning::
-    Note that if both of these settings are enabled at the same time, anyone who can access TCP port 5010 on your computer can run arbitrary code on your machine. If you do this, make sure your computer is not directly reachable via the internet.
+    Note that if the Lua Console is enabled, anyone who can access TCP port 5010 on your computer can run arbitrary code on your machine. If you enable "access over the network" as well, this includes anyone who can directly connect to your computer over the network. If you do this, make sure your computer is not directly reachable from the public internet.
 
 Managing Serial Port Connections
 --------------------------------
