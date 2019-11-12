@@ -343,6 +343,7 @@ type SnippetDescriptionPair = { snippet: ReactElement, description: string }
 
 function IOElementDocumentation(props: { item: TIOElement }) {
   const inputSnippetPrecedence = [
+    "Potentiometer",
     "Switch2Pos",
     "Switch3Pos",
     "SwitchMultiPos",
