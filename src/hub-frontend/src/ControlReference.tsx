@@ -351,8 +351,8 @@ function IOElementDocumentation(props: { item: TIOElement }) {
     "ActionButton",
     "LED",
     "StringBuffer",
-    "ServoOutput",
     "IntegerBuffer",
+    "ServoOutput",
   ];
   // take a list of inputs and transform it into a list of { CodeSnippet, Description } pairs
   let inputSnippets: Array<SnippetDescriptionPair> = props.item.inputs.flatMap(input => getInputCodeSnippets(props.item, input).map(snippet => ({ snippet, description: input.description })));
@@ -438,11 +438,11 @@ function getOutputCodeSnippets(control: TIOElement, output: TOutputElement) {
   if (output.type === "integer" && output.max_value === 1) {
     codeSnippets.push(<LEDSnippet key="LED" {...props} />);
   }
-  if (output.type === "integer" && output.max_value === 65535) {
-    codeSnippets.push(<ServoOutputSnippet key="ServoOutput" {...props} />);
-  }
   if (output.type === "integer") {
     codeSnippets.push(<IntegerBufferSnippet key="IntegerBuffer" {...props} />);
+  }
+  if (output.type === "integer" && output.max_value === 65535) {
+    codeSnippets.push(<ServoOutputSnippet key="ServoOutput" {...props} />);
   }
   if (output.type === "string") {
     codeSnippets.push(<StringBufferSnippet key="StringBuffer" {...props} />);
@@ -612,18 +612,18 @@ function ServoOutputSnippet(props: { control: TIOElement, output: TOutputElement
 
 function StringBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
   let { control, output } = props;
-  return <code>void on{idCamelCase(control.name)}Change(char* newValue) {'{'}<br />
+  return <code>void {idCamelCase("ON_"+control.name)}Change(char* newValue) {'{'}<br />
     &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
     {'}'}<br />
-    DcsBios::StringBuffer&lt;{output.max_length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
+    DcsBios::StringBuffer&lt;{output.max_length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, {idCamelCase("ON_"+control.name)}Change);</code>
 }
 
 function IntegerBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
   let { control, output } = props;
-  return <code>void on{idCamelCase(control.name)}Change(unsigned int newValue) {'{'}<br />
+  return <code>void {idCamelCase("ON_"+control.name)}Change(unsigned int newValue) {'{'}<br />
     &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
     {'}'}<br />
-    DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
+    DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, {hex(output.mask)}, {output.shift_by.toString()}, {idCamelCase("ON_"+control.name)}Change);</code>
 }
 
 
