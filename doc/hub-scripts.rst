@@ -1,6 +1,12 @@
 Hub Scripts
 ===========
 
+.. note::
+
+    Hub Scripts are a new feature. Although it has been tested in a practical use case for about a week,
+    the API that is available to the scripts might still be changed if serious bugs or performance issues
+    are discovered with the current implementation.
+
 Hub scripts are scripts written in the `Lua programming language <https://www.lua.org/manual/5.1/>`_ that are executed by the DCS-BIOS Hub.
 A hub script can read data that is coming from DCS ("sim data") and override data that is sent to the serial ports ("panel data").
 It can also intercept commands being sent to the DCS-BIOS Hub and send commands to DCS.
