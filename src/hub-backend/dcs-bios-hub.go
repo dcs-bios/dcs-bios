@@ -30,6 +30,7 @@ import (
 var gitSha1 string = "development build"
 var gitTag string = "development build"
 var autorunMode *bool = flag.Bool("autorun-mode", false, "Silently exit when binding TCP port 5010 fails. This prevents a message box when the program is being started by DCS but is already running.")
+var enableIdleUpdates = flag.Bool("enable-idle-updates", false, "Send data updates to COM ports when no data has been received from the simulation for 60 ms. Can be useful for custom Lua scripts, but might break Arduino Mega 2560 panels which can get stuck in the boot loader when data is sent too early after connection.")
 
 func runHttpServer(listenURI string) error {
 	handlerFunc := func(w http.ResponseWriter, r *http.Request) {
@@ -156,9 +157,11 @@ func startServices() {
 				lda.WriteExportData(updatePacket)
 
 			case <-time.After(60 * time.Millisecond):
-				updatePacket := enc.Update()
-				portManager.Write(updatePacket)
-				lda.WriteExportData(updatePacket)
+				if *enableIdleUpdates {
+					updatePacket := enc.Update()
+					portManager.Write(updatePacket)
+					lda.WriteExportData(updatePacket)
+				}
 			}
 		}
 	}()
