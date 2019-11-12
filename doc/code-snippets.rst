@@ -99,6 +99,24 @@ it sends "-" or "+" followed by a number. This number must be between 0 and 6553
 Most code examples set this number to 3200 by default, but you can change it to suit your needs.
 For a course dial (such as found on an HSI), setting this to 182 (65536/360) will likely advance the virtual cockpit dial by one degree for each detent.
 
+Potentiometer
+-------------
+
+The Potentiometer code snippet will read the position of a potentiometer connected to an analog input pin::
+
+    DcsBios::PotentiometerEWMA<5, 128, 5> stallVol("STALL_VOL", A0);
+
+Connect one outer pin of the potentiometer to the supply voltage, the other outer pin to ground, and the middle pin ("slider") to an analog input pin on your Arduino board.
+
+The numbers in the angle brackets are the poll interval in milliseconds (default 5), the hysteresis (default 128) and the divisor (default 5) for an `exponentially weighted moving average filter <https://en.wikipedia.org/wiki/Moving_average>`_.
+The default values should be OK for most cases. If the potentiometer is so noisy that it constantly sends new values, try increasing the hysteresis or increasing the divisor.
+If the potentiometer in the virtual cockpit takes too long to catch up to the real one, you can try decreasing the divisor or decreasing the poll interval.
+
+.. note::
+
+    The hysteresis is applied after scaling the value read from the Arduino's analog input to a range of 0  to 65535. Because the resolution of the Arduino board's analog-to-digital converter is 10 bit (0 to 1024),
+    the hysteresis value should be a multiple of 64 (modifications in smaller increments do not make much sense). The default of 128 is equal to two counts of the ADC.
+
 ActionButton
 ------------
 

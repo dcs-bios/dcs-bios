@@ -577,7 +577,7 @@ function RotaryEncoderFixedStepSnippet(props: { control: TIOElement, input: TInp
 
 function PotentiometerSnippet(props: { control: TIOElement, input: TInputElement }) {
   let { control } = props;
-  return <code>DcsBios::Potentiometer {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN</b>);</code>;
+  return <code>DcsBios::PotentiometerEWMA&lt;5, 128, 5&gt; {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN</b>);</code>;
 }
 
 
