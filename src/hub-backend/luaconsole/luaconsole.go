@@ -9,6 +9,7 @@ import (
 
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
+	"dcs-bios.a10c.de/dcs-bios-hub/luastate"
 	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
 )
 
@@ -106,6 +107,22 @@ func (lcs *LuaConsoleServer) HandleExecuteSnippetRequest(req *ExecuteSnippetRequ
 	defer close(responseCh)
 	if !gui.IsLuaConsoleEnabled() {
 		responseCh <- jsonapi.ErrorResult{Message: "The Lua Console is disabled."}
+		return
+	}
+
+	if req.LuaEnvironment == "hub" {
+		resultStr, err := luastate.DoStringAndSerializeResult(req.LuaCode)
+		if err != nil {
+			responseCh <- jsonapi.ErrorResult{
+				Message: err.Error(),
+			}
+			return
+		}
+		responseCh <- LuaResult{
+			Type:   "string",
+			Status: "success",
+			Result: resultStr,
+		}
 		return
 	}
 

@@ -23,15 +23,7 @@ The other two indicators show the current state of two settings that you can tog
 * When **Enable Lua Console** is checked and the Lua Console has been set up on the :doc:`DCS Connection<dcs-connection>` screen, you can use the web interface to execute arbitrary snippets of Lua code within DCS.
 
 .. warning::
-    Note that if both of these settings are enabled at the same time, anyone who can access TCP port 5010 on your computer can run arbitrary code on your machine. If you do this, make sure your computer is not directly reachable via the internet.
-
-
-Installed Modules
------------------
-
-Below the status indicators, you will find shortcuts to the :doc:`control reference documentation <control-reference>` for any installed DCS: World modules that are supported by DCS-BIOS.
-
-.. note:: DCS-BIOS counts a module it knows about as "installed" if it can find a folder of the same name under `mods/aircraft` in either the release or open beta version of DCS: World. This does not work when the folder name differs from the name of the DCS-BIOS module definition, e.g. for the F-18.
+    Note that if the Lua Console is enabled, anyone who can access TCP port 5010 on your computer can run arbitrary code on your machine. If you enable "access over the network" as well, this includes anyone who can directly connect to your computer over the network. If you do this, make sure your computer is not directly reachable from the public internet.
 
 Managing Serial Port Connections
 --------------------------------
@@ -50,3 +42,13 @@ The "Disconnect All" button disconnects from all COM ports.
 
 The "Connect All Auto" button connects to all COM ports that have autoconnect enabled.
 
+Managing Hub Scripts
+--------------------
+
+At the end of the Dashboard, you can manage a list of "hub scripts". Hub scripts can be used to remap commands and exported data, so you can use a simpit you built for one specific airframe with other DCS: World modules.
+Learn more in the :doc:`hub-scripts` section.
+
+* Add a hub script by clicking the "Add" button and entering the full path to the script file. You can copy the full path of a file to your clipboard by holding the Shift key while right-clicking it in Windows Explorer and then selecting "Copy as path" from the context menu.
+* To remove a hub script from the list, click the "x" button next to it.
+* Enable or disable a hub script with the checkbox in front of it. Disabled scripts remain in the list but are not loaded.
+* Reload all hub scripts by clicking the "Reload Scripts" button above the list. Note that scripts are not automatically reloaded when you enable, disable, add or remove a list item; you have to click the "Reload Scripts" button for changes to take effect.

@@ -3,6 +3,8 @@ package exportdataparser
 import (
 	"bytes"
 	"sync"
+
+	"dcs-bios.a10c.de/dcs-bios-hub/controlreference"
 )
 
 type parserState int
@@ -35,14 +37,26 @@ func (buf *twoByteBuffer) SetUint16(n uint16) {
 }
 
 type ExportDataParser struct {
-	state            parserState
-	syncByteCount    int
-	addressBuffer    twoByteBuffer
-	countBuffer      twoByteBuffer
-	dataBuffer       twoByteBuffer
-	totalBuffer      [65536]byte
-	stringBuffers    []stringBuffer
-	stringBufferLock sync.Mutex
+	state                 parserState
+	protocolSyncByteCount int
+	protocolAddressBuffer twoByteBuffer
+	protocolCountBuffer   twoByteBuffer
+	protocolDataBuffer    twoByteBuffer
+	totalBuffer           [65536]byte
+	dataBuffer            DataBuffer
+	stringBuffers         []stringBuffer
+	stringBufferLock      sync.Mutex
+	FrameData             chan *DataBuffer
+}
+
+func NewParser(crs *controlreference.ControlReferenceStore) *ExportDataParser {
+	ep := &ExportDataParser{
+		FrameData: make(chan *DataBuffer, 1),
+		dataBuffer: DataBuffer{
+			controlReferenceStore: crs,
+		},
+	}
+	return ep
 }
 
 func (ep *ExportDataParser) SubscribeStringBuffer(address int, length int, callback func([]byte)) {
@@ -62,45 +76,46 @@ func (ep *ExportDataParser) ProcessByte(b uint8) {
 	case StateWaitForSync:
 
 	case StateAddressLow:
-		ep.addressBuffer[0] = b
+		ep.protocolAddressBuffer[0] = b
 		ep.state = StateAddressHigh
 
 	case StateAddressHigh:
-		ep.addressBuffer[1] = b
-		if ep.addressBuffer.AsUint16() != 0x555 {
+		ep.protocolAddressBuffer[1] = b
+		if ep.protocolAddressBuffer.AsUint16() != 0x555 {
 			ep.state = StateCountLow
 		} else {
 			ep.state = StateWaitForSync
 		}
 
 	case StateCountLow:
-		ep.countBuffer[0] = b
+		ep.protocolCountBuffer[0] = b
 		ep.state = StateCountHigh
 
 	case StateCountHigh:
-		ep.countBuffer[1] = b
+		ep.protocolCountBuffer[1] = b
 		ep.state = StateDataLow
 
 	case StateDataLow:
-		ep.dataBuffer[0] = b
+		ep.protocolDataBuffer[0] = b
 		ep.state = StateDataHigh
-		ep.countBuffer.SetUint16(ep.countBuffer.AsUint16() - 1)
+		ep.protocolCountBuffer.SetUint16(ep.protocolCountBuffer.AsUint16() - 1)
 		ep.state = StateDataHigh
 
 	case StateDataHigh:
-		ep.dataBuffer[1] = b
-		ep.countBuffer.SetUint16(ep.countBuffer.AsUint16() - 1)
-		ep.totalBuffer[ep.addressBuffer.AsUint16()] = ep.dataBuffer[0]
-		ep.totalBuffer[ep.addressBuffer.AsUint16()+1] = ep.dataBuffer[1]
+		ep.protocolDataBuffer[1] = b
+		ep.protocolCountBuffer.SetUint16(ep.protocolCountBuffer.AsUint16() - 1)
+		ep.totalBuffer[ep.protocolAddressBuffer.AsUint16()] = ep.protocolDataBuffer[0]
+		ep.totalBuffer[ep.protocolAddressBuffer.AsUint16()+1] = ep.protocolDataBuffer[1]
+		ep.dataBuffer.SetUint16(ep.protocolAddressBuffer.AsUint16(), ep.protocolDataBuffer.AsUint16())
 
-		if ep.addressBuffer.AsUint16() == 0xfffe {
+		if ep.protocolAddressBuffer.AsUint16() == 0xfffe {
 			// end of update
 			ep.notify()
 		}
 
-		ep.addressBuffer.SetUint16(ep.addressBuffer.AsUint16() + 2)
+		ep.protocolAddressBuffer.SetUint16(ep.protocolAddressBuffer.AsUint16() + 2)
 
-		if ep.countBuffer.AsUint16() == 0 {
+		if ep.protocolCountBuffer.AsUint16() == 0 {
 			ep.state = StateAddressLow
 		} else {
 			ep.state = StateDataLow
@@ -109,14 +124,14 @@ func (ep *ExportDataParser) ProcessByte(b uint8) {
 	}
 
 	if b == 0x55 {
-		ep.syncByteCount++
+		ep.protocolSyncByteCount++
 	} else {
-		ep.syncByteCount = 0
+		ep.protocolSyncByteCount = 0
 	}
 
-	if ep.syncByteCount == 4 {
+	if ep.protocolSyncByteCount == 4 {
 		ep.state = StateAddressLow
-		ep.syncByteCount = 0
+		ep.protocolSyncByteCount = 0
 	}
 }
 
@@ -135,4 +150,6 @@ func (ep *ExportDataParser) notify() {
 		sb.callback(sb.data[:nullTerminatorPos])
 	}
 	ep.stringBufferLock.Unlock()
+	ep.FrameData <- ep.dataBuffer.Copy()
+	ep.dataBuffer.ClearDirtyFlags()
 }

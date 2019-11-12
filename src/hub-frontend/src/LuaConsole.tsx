@@ -20,7 +20,7 @@ class LuaSnippet extends React.Component<{}, LuaSnippetState> {
     constructor(props: {}) {
         super(props)
         this.state = {
-            luaEnvironment: "gui",
+            luaEnvironment: "hub",
             code: "",
             responseStatus: "",
             responseText: "",
@@ -75,6 +75,7 @@ class LuaSnippet extends React.Component<{}, LuaSnippetState> {
                 <LuaConsoleStatus/>
 
                 <b>Lua Environment:</b> <select value={this.state.luaEnvironment} onChange={(e) => {this.setState({ luaEnvironment: e.target.value });}}>
+                    <option value="hub">hub</option>
                     <option value="mission">mission</option>
                     <option value="export">export</option>
                     <option value="gui">gui</option>

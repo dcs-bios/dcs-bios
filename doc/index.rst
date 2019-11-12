@@ -21,3 +21,4 @@ If you already know what you are looking for, use the search bar below the logo 
     hardware
     code-snippets
     lua-console
+    hub-scripts

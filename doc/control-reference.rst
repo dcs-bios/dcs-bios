@@ -1,10 +1,14 @@
 The Control Reference
 =====================
 
-A big part of DCS-BIOS are "module definitions" which tell DCS-BIOS which input and output elements exist in an aircraft, how to determine their current state, and how to operate them in the virtual cockpit using Lua scripts in DCS: World.
+"Module definitions" tell DCS-BIOS which input and output elements exist in an aircraft, how to determine their current state, and how to operate them in the virtual cockpit using Lua scripts in DCS: World.
 The Control Reference lets you look at everything that is defined in a module definition.
-
 In other words, it shows you every dial, toggle switch, push button, indicator light and display that DCS-BIOS knows about.
+
+.. note::
+
+    Module definitions are installed using the plugin manager (see :doc:`installation`). The exception are the built-in "MetadataStart" and "MetadataEnd" modules, which provide the name of the currently active aircraft and a counter that is increased after every frame.
+
 
 On the first screen, you can select a module definition, which usually corresponds with an aircraft model.
 

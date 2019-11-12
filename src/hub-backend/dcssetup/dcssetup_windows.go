@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -30,18 +29,7 @@ type DcsInstallation struct {
 	AutostartHubHookInstalled bool   `json:"autostartHubHookInstalled"`
 }
 
-type GetInstalledModuleNamesRequest struct{}
-type GetInstalledModuleNamesResult []string
-
-func HandleGetInstalledModuleNamesRequest(req *GetInstalledModuleNamesRequest, responseCh chan<- interface{}, followupCh <-chan interface{}) {
-	defer close(responseCh)
-	responseCh <- GetInstalledModuleNamesResult(GetInstalledModulesList())
-}
-
 func RegisterApi(jsonAPI *jsonapi.JsonApi) {
-	jsonAPI.RegisterType("get_installed_module_names", GetInstalledModuleNamesRequest{})
-	jsonAPI.RegisterApiCall("get_installed_module_names", HandleGetInstalledModuleNamesRequest)
-	jsonAPI.RegisterType("module_names_list", GetInstalledModuleNamesResult(nil))
 
 	jsonAPI.RegisterType("get_setup_info", GetSetupInfoRequest{})
 	jsonAPI.RegisterApiCall("get_setup_info", HandleGetSetupInfoRequest)
@@ -52,42 +40,6 @@ func RegisterApi(jsonAPI *jsonapi.JsonApi) {
 
 	jsonAPI.RegisterType("modify_hook", ModifyHookRequest{})
 	jsonAPI.RegisterApiCall("modify_hook", HandleModifyHookRequest)
-}
-
-// GetInstalledModulesList returns a list of all installed DCS: World modules.
-func GetInstalledModulesList() []string {
-	var folderNamesToModuleDefinitionNames = map[string][]string{
-		"FA-18C": {"FA-18C_hornet"},
-	}
-	moduleSet := make(map[string]struct{}, 0)
-
-	scanDcsInstallDir := func(path string) {
-		fileinfoList, err := ioutil.ReadDir(filepath.Join(path, "mods", "aircraft"))
-		if err != nil {
-			return
-		}
-		for _, fi := range fileinfoList {
-			if fi.IsDir() {
-				moduleSet[strings.ToLower(fi.Name())] = struct{}{}
-			}
-			if otherDefinitonNames, ok := folderNamesToModuleDefinitionNames[fi.Name()]; ok {
-				for _, name := range otherDefinitonNames {
-					moduleSet[strings.ToLower(name)] = struct{}{}
-				}
-			}
-		}
-	}
-
-	for _, install := range GetDcsInstallations() {
-		scanDcsInstallDir(install.InstallDir)
-	}
-
-	moduleList := make([]string, len(moduleSet))
-	for s := range moduleSet {
-		moduleList = append(moduleList, s)
-	}
-	sort.Strings(moduleList)
-	return moduleList
 }
 
 type ModifyExportLuaRequest struct {

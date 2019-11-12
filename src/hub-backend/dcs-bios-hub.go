@@ -8,7 +8,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"path/filepath"
-	"strings"
+	"time"
 
 	"dcs-bios.a10c.de/dcs-bios-hub/configstore"
 	"dcs-bios.a10c.de/dcs-bios-hub/controlreference"
@@ -16,10 +16,10 @@ import (
 	"dcs-bios.a10c.de/dcs-bios-hub/dcssetup"
 	"dcs-bios.a10c.de/dcs-bios-hub/exportdataparser"
 	"dcs-bios.a10c.de/dcs-bios-hub/gui"
-	"dcs-bios.a10c.de/dcs-bios-hub/inputmapping"
 	"dcs-bios.a10c.de/dcs-bios-hub/jsonapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/livedataapi"
 	"dcs-bios.a10c.de/dcs-bios-hub/luaconsole"
+	"dcs-bios.a10c.de/dcs-bios-hub/luastate"
 	"dcs-bios.a10c.de/dcs-bios-hub/pluginmanager"
 	"dcs-bios.a10c.de/dcs-bios-hub/serialconnection"
 	"dcs-bios.a10c.de/dcs-bios-hub/statusapi"
@@ -30,6 +30,7 @@ import (
 var gitSha1 string = "development build"
 var gitTag string = "development build"
 var autorunMode *bool = flag.Bool("autorun-mode", false, "Silently exit when binding TCP port 5010 fails. This prevents a message box when the program is being started by DCS but is already running.")
+var enableIdleUpdates = flag.Bool("enable-idle-updates", false, "Send data updates to COM ports when no data has been received from the simulation for 60 ms. Can be useful for custom Lua scripts, but might break Arduino Mega 2560 panels which can get stuck in the boot loader when data is sent too early after connection.")
 
 func runHttpServer(listenURI string) error {
 	handlerFunc := func(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +67,8 @@ func startServices() {
 		os.Exit(1)
 	}
 
+	os.Chdir(configstore.GetFilePath(""))
+
 	// create jsonAPI instance
 	// this is passed to the other services to make their API calls available
 	jsonAPI := jsonapi.NewJsonApi()
@@ -74,7 +77,7 @@ func startServices() {
 	// the jsonAPI will be available via websockets at /api/websocket
 	// Web pages will be served from /apps/appname.
 	webappserver.JsonApi = jsonAPI
-	webappserver.AddHandler("apps")
+	webappserver.AddHandler(filepath.Join(executableDir, "apps"))
 
 	statusapi.RegisterApiCalls(jsonAPI)
 	statusapi.WithStatusInfoDo(func(si *statusapi.StatusInfo) {
@@ -117,51 +120,75 @@ func startServices() {
 	lda := livedataapi.NewLiveDataApi(jsonAPI)
 
 	dcssetup.RegisterApi(jsonAPI)
-	dcssetup.GetInstalledModulesList()
-
-	inputmap := &inputmapping.InputRemapper{}
-	inputmap.LoadFromConfigStore()
 
 	_, err = pluginmanager.NewPluginManager(configstore.GetPluginDir(), jsonAPI, cref)
 	if err != nil {
 		fmt.Printf("error: %s\n", err.Error())
 	}
 
-	exportDataParser := &exportdataparser.ExportDataParser{}
-	currentUnitType := "NONE"
-	exportDataParser.SubscribeStringBuffer(0, 16, func(nameBytes []byte) {
-		name := strings.Trim(string(nameBytes), " ")
-		if currentUnitType != name {
-			currentUnitType = name
-			statusapi.WithStatusInfoDo(func(status *statusapi.StatusInfo) {
-				status.UnitType = name
-			})
-			inputmap.SetActiveAircraft(name)
+	// the Lua state that user-defined remapping scripts are executed in
+	luastate.Reset(os.Stdout)
+
+	luastate.RegisterJsonApiCalls(jsonAPI)
+
+	exportDataParser := exportdataparser.NewParser(cref)
+
+	go func() {
+		exportBuffer := exportdataparser.NewDataBuffer(cref)
+		enc := exportdataparser.NewEncoder(exportBuffer)
+		simData := exportdataparser.NewDataBuffer(cref)
+
+		luastate.ExportDataBuffer = exportBuffer
+		luastate.SimDataBuffer = simData
+
+		for {
+			select {
+			case simData = <-exportDataParser.FrameData:
+				luastate.SimDataBuffer = simData
+				// remap here
+				for _, v := range simData.BinaryData {
+					exportBuffer.SetUint16(v.Address, v.Data)
+				}
+
+				luastate.NotifyOutputCallbacks()
+
+				updatePacket := enc.Update()
+				portManager.Write(updatePacket)
+				lda.WriteExportData(updatePacket)
+
+			case <-time.After(60 * time.Millisecond):
+				if *enableIdleUpdates {
+					updatePacket := enc.Update()
+					portManager.Write(updatePacket)
+					lda.WriteExportData(updatePacket)
+				}
+			}
 		}
-	})
+	}()
 
 	// transmit data between DCS and the serial ports
 	go func() {
 		for {
 			select {
+
 			case icstr := <-lda.InputCommands:
-				cmdStr := inputmap.Remap(string(icstr))
-				cmd := []byte(cmdStr + "\n")
+				cmd := []byte(string(icstr) + "\n")
+				dcsConn.TrySend(cmd)
+
+			case cmdFromLua := <-luastate.SimCommandChannel:
+				cmd := []byte(cmdFromLua + "\n")
 				dcsConn.TrySend(cmd)
 
 			case ic := <-portManager.InputCommands:
-				cmdStr := inputmap.Remap(string(ic.Command))
-				cmd := []byte(cmdStr + "\n")
-
-				dcsConn.TrySend(cmd)
+				if !luastate.NotifyInputCallbacks(string(ic.Command)) {
+					cmd := []byte(string(ic.Command) + "\n")
+					dcsConn.TrySend(cmd)
+				}
 
 			case data := <-dcsConn.ExportData:
 				for _, b := range data {
 					exportDataParser.ProcessByte(b)
 				}
-				portManager.Write(data)
-				lda.WriteExportData(data)
-
 			}
 		}
 	}()

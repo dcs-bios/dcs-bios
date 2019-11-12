@@ -127,7 +127,7 @@ function ControlReference() {
   )
 }
 
-function ControlReferenceIndex(props: { showInstalledOnly: boolean }) {
+function ControlReferenceIndex() {
   const [moduleNames, setModuleNames] = React.useState<string[]>([])
   const [modules, setModules] = React.useState<any>({})
 
@@ -142,54 +142,19 @@ function ControlReferenceIndex(props: { showInstalledOnly: boolean }) {
       setModules(msg.data)
     })
   }, [])
-
-
-  let [installedModuleNamesApiResult, setInstalledModuleNamesApiResult] = useState<string[]>([]);
-  useEffect(() => {
-    apiPost({
-      datatype: "get_installed_module_names",
-      data: {}
-    }).then(result => {
-      setInstalledModuleNamesApiResult(result.data)
-    })
-  }, [])
-
-  // The API gives us the list of installed modules in lower case.
-  // Look up the proper capitalization in the list of all available modules.
-  const installedModuleNames = []
-  let installedModulesElement: ReactElement | null = null
-  if (installedModuleNamesApiResult.length > 0 && moduleNames.length > 0) {
-    for (let moduleName of moduleNames) {
-      if (installedModuleNamesApiResult.indexOf(moduleName.toLowerCase()) >= 0) {
-        installedModuleNames.push(moduleName)
-      }
-    }
-
-    installedModulesElement = (<div>
-      <h2>Installed Modules</h2>
-      {
-        installedModuleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
-      }
-    </div>);
-  }
-
   
-  let allModulesElement: ReactElement | null = null;
-  if (!props.showInstalledOnly) {
-    allModulesElement = (
+  let allModulesElement = (
       <div>
-        <h2>All Available Modules</h2>
+        <h2>Control Reference</h2>
         {
           moduleNames.map(name => <IndexCard key={name} moduleName={name} categories={modules[name]} />)
         }
       </div>);
-  }
-
+  
   return (
     <div>
-      {installedModulesElement}
-      <div style={{ clear: "both" }}></div>
       {allModulesElement}
+      <div style={{ clear: "both" }}></div>
     </div>
   )
 }
@@ -378,6 +343,7 @@ type SnippetDescriptionPair = { snippet: ReactElement, description: string }
 
 function IOElementDocumentation(props: { item: TIOElement }) {
   const inputSnippetPrecedence = [
+    "Potentiometer",
     "Switch2Pos",
     "Switch3Pos",
     "SwitchMultiPos",
@@ -386,8 +352,8 @@ function IOElementDocumentation(props: { item: TIOElement }) {
     "ActionButton",
     "LED",
     "StringBuffer",
-    "ServoOutput",
     "IntegerBuffer",
+    "ServoOutput",
   ];
   // take a list of inputs and transform it into a list of { CodeSnippet, Description } pairs
   let inputSnippets: Array<SnippetDescriptionPair> = props.item.inputs.flatMap(input => getInputCodeSnippets(props.item, input).map(snippet => ({ snippet, description: input.description })));
@@ -473,11 +439,11 @@ function getOutputCodeSnippets(control: TIOElement, output: TOutputElement) {
   if (output.type === "integer" && output.max_value === 1) {
     codeSnippets.push(<LEDSnippet key="LED" {...props} />);
   }
-  if (output.type === "integer" && output.max_value === 65535) {
-    codeSnippets.push(<ServoOutputSnippet key="ServoOutput" {...props} />);
-  }
   if (output.type === "integer") {
     codeSnippets.push(<IntegerBufferSnippet key="IntegerBuffer" {...props} />);
+  }
+  if (output.type === "integer" && output.max_value === 65535) {
+    codeSnippets.push(<ServoOutputSnippet key="ServoOutput" {...props} />);
   }
   if (output.type === "string") {
     codeSnippets.push(<StringBufferSnippet key="StringBuffer" {...props} />);
@@ -611,7 +577,7 @@ function RotaryEncoderFixedStepSnippet(props: { control: TIOElement, input: TInp
 
 function PotentiometerSnippet(props: { control: TIOElement, input: TInputElement }) {
   let { control } = props;
-  return <code>DcsBios::Potentiometer {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN</b>);</code>;
+  return <code>DcsBios::PotentiometerEWMA&lt;5, 128, 5&gt; {idCamelCase(control.name)}("{control.name}", <b className="pinNo">PIN</b>);</code>;
 }
 
 
@@ -647,18 +613,18 @@ function ServoOutputSnippet(props: { control: TIOElement, output: TOutputElement
 
 function StringBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
   let { control, output } = props;
-  return <code>void on{idCamelCase(control.name)}Change(char* newValue) {'{'}<br />
+  return <code>void {idCamelCase("ON_"+control.name)}Change(char* newValue) {'{'}<br />
     &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
     {'}'}<br />
-    DcsBios::StringBuffer&lt;{output.max_length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
+    DcsBios::StringBuffer&lt;{output.max_length}&gt; {idCamelCase(control.name)}Buffer({hex(output.address)}, {idCamelCase("ON_"+control.name)}Change);</code>
 }
 
 function IntegerBufferSnippet(props: { control: TIOElement, output: TOutputElement }) {
   let { control, output } = props;
-  return <code>void on{idCamelCase(control.name)}Change(unsigned int newValue) {'{'}<br />
+  return <code>void {idCamelCase("ON_"+control.name)}Change(unsigned int newValue) {'{'}<br />
     &nbsp;&nbsp;&nbsp;&nbsp;/* your code here */<br />
     {'}'}<br />
-    DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, on{idCamelCase(control.name)}Change);</code>
+    DcsBios::IntegerBuffer {idCamelCase(control.name)}Buffer({hex(output.address)}, {hex(output.mask)}, {output.shift_by.toString()}, {idCamelCase("ON_"+control.name)}Change);</code>
 }
 
 
@@ -823,4 +789,4 @@ function LiveVariableStepInputControls(props: { control: TIOElement, input: TInp
   )
 }
 
-export { ControlReference, ControlReferenceIndex }
+export { ControlReference }

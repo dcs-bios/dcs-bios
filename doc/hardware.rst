@@ -10,7 +10,7 @@ With DCS-BIOS, you can build your own control panels and connect them to DCS: Wo
 Choosing an Arduino board
 -------------------------
 
-Arduino board are small PCBs built around a microcontroller, which you can program with the Arduino IDE (Integrated Development Environment). You can learn more about the Arduino project at `<https://www.arduino.cc>`_.
+Arduino boards are small PCBs built around a microcontroller, which you can program with the Arduino IDE (Integrated Development Environment). You can learn more about the Arduino project at `<https://www.arduino.cc>`_.
 
 There are many different Arduino boards available. DCS-BIOS supports boards that feature the ATMega328 or the ATMega2560 microcontrollers. That includes the Arduino Uno, Nano, Pro Mini and Mega 2560 boards.
 
