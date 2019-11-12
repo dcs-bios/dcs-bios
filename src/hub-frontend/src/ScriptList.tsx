@@ -29,7 +29,7 @@ export function ScriptList() {
     // transform '"foo bar"' to 'foo bar'
     const unquote = (s: string) => {
         const match = s.match(/^"(.*)"$/)
-        if (match == null || match.length != 2) {
+        if (match === null || match.length !== 2) {
             return s
         }
         return match[1]
