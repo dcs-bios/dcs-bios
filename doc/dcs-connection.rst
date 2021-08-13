@@ -14,4 +14,10 @@ In the image above, for illustration purposes the Lua Console is enabled for the
 * The **Autostart DCS-BIOS** setting will automatically start the DCS-BIOS Hub in the background after you have started DCS: World.
 * The **Lua Console** is an optional feature for users who write Lua scripts for DCS: World or make missions with custom triggers. You can learn more about it in the :doc:`Lua Console <lua-console>` section. Leave it disabled if you do not need it.
 
+If the **Saved Games** folder has been moved from **C:\\Users\\username\\Saved Games** to another location you will have to either move it back to the original place or create a junction to it in Windows. Do this for every installation you want to connect to. To create a junction to the folder, type the following in a command window (the last argument will vary depending on where you moved it):
+
+.. code-block::
+
+  mklink /J "C:\\Users\\username\\Saved Games\\DCS" "G:\\Saved Games\\DCS"
+
 In the next section, we will take a closer look at the :doc:`Dashboard <dashboard>` screen.
