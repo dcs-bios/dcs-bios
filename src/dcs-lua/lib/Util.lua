@@ -275,14 +275,15 @@ function BIOS.util.MemoryMap:allocateString(args)
 end
 
 
-function BIOS.util.defineIndicatorLight(msg, arg_number, category, description)
+function BIOS.util.defineIndicatorLight(msg, arg_number, category, description, threshold)
 	--moduleBeingDefined.highFrequencyMap[msg] = function(dev0) return string.format("%.0f", dev0:get_argument_value(arg_number)) end
+	threshold = threshold or 0.5  -- Set default on/off threshold value
 	local value = moduleBeingDefined.memoryMap:allocateInt {
 		maxValue = 1
 	}
 	assert(value.shiftBy ~= nil)
 	moduleBeingDefined.exportHooks[#moduleBeingDefined.exportHooks+1] = function(dev0)
-		if dev0:get_argument_value(arg_number) < 0.5 then
+		if dev0:get_argument_value(arg_number) < threshold then
 			value:setValue(0)
 		else
 			value:setValue(1)
